@@ -1,44 +1,35 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <div>
-      <label>Username: </label>
-      <input type="text" v-model="username">
-      <br>
-      <label>Password: </label>
-      <input type="password" v-model="password">
-      <br>
-      <label>User type: </label>
-      <input type="radio" v-model="usertype" value="consultant">
-      <label> Consultant</label>
-      <input type="radio" v-model="usertype" value="ELeader">
-      <label>Educational Leader</label><br>
-      <br>
-      <button @click="updateInfo()">Create User</button>
+    <div id="nav">
+      <router-link to="/login">Login</router-link>
+      <router-link to="/Registration">Registration</router-link>
     </div>
+    <router-view></router-view>
+    <div><Rating :grade="0"></Rating></div>
   </div>
 </template>
 
+
 <script>
-//import HelloWorld from './components/HelloWorld.vue'
-import {db} from "./firebaseConfig";
+import Rating from './components/Rating.vue'
+
 
 export default {
   data(){
     return{
-      username:"Username",
-      password:"",
-      usertype:""
+
     }
   },
   methods:{
-    updateInfo(){
-      db.collection("userInfo").doc(this.username).set({username:this.username,password:this.password,usertype:this.usertype})
-    }
+
   },
   name: 'App',
   components: {
-    //HelloWorld
+    Rating
+  },
+  mounted(){
+
   }
 }
 

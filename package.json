@@ -5,27 +5,43 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "test": "jest"
   },
   "dependencies": {
+    "@vue/cli-plugin-unit-jest": "^4.5.3",
+    "axios": "^0.19.2",
     "core-js": "^3.6.5",
+    "eslint-plugin-jest": "^23.20.0",
     "firebase": "^7.18.0",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^9.0.3",
     "vue": "^2.6.11",
+    "vue-awesome": "^4.1.0",
+    "vue-jest": "^3.0.6",
     "vuefire": "^2.2.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "@vue/server-test-utils": "^1.0.4",
+    "@vue/test-utils": "^1.0.4",
     "babel-eslint": "^10.1.0",
+    "babel-jest": "^26.3.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "jest": "^26.4.0",
+    "vue-router": "^3.4.3",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
     "root": true,
     "env": {
-      "node": true
+      "node": true,
+      "jest": true
     },
     "extends": [
       "plugin:vue/essential",
@@ -34,7 +50,9 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "import/no-extraneous-dependencies": "off"
+    }
   },
   "browserslist": [
     "> 1%",
