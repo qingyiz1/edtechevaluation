@@ -14,7 +14,6 @@
       <label> Consultant</label>
       <input type="radio" v-model="usertype" value="ELeader">
       <label>Educational Leader</label><br>
-      <br>
       <button type="submit">Create User</button>
     </form>
 
@@ -22,7 +21,7 @@
 </template>
 
 <script>
-import {createDocument} from "@/firebaseTool"
+import {createDocument} from "@/tools/firebaseTool"
 import * as firebase from "firebase/app"
 import "firebase/auth"
 
@@ -30,7 +29,7 @@ export default {
   name: "Registration",
   data(){
     return{
-      email:"",
+      email:'',
       password:'',
       usertype:'',
       error:''
@@ -44,6 +43,8 @@ export default {
         //this.$router.replace({name:"admin"});
         createDocument("userInfo",this.email,this.$data)
         console.log(user)
+        window.alert(this.email+" created").then(console.log("clicked"))
+        await this.$router.push("Profile")
       }catch(err){
         console.log(err)
       }

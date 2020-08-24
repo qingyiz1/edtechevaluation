@@ -1,4 +1,4 @@
-import {db} from "@/firebaseConfig";
+import {db} from "@/tools/firebaseConfig";
 
 export function createDocument(collection,ID, data) {
     db.collection(collection)

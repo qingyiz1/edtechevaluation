@@ -1,24 +1,35 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
+    <top-header></top-header>
+    <br>
     <div id="nav">
-      <router-link to="/login">Login</router-link>
-      <router-link to="/Registration">Registration</router-link>
+      <router-link to="/login">Login</router-link> |
+      <router-link to="/Registration">Registration</router-link> |
+      <router-link to="/Profile">Profile</router-link>
     </div>
+
     <router-view></router-view>
+
     <div><Rating :grade="0"></Rating></div>
   </div>
 </template>
 
 
 <script>
-import Rating from './components/Rating.vue'
-
+import TopHeader from "@/components/Top-Header"
+import Rating from "@/components/Rating";
+import {db} from './tools/firebaseConfig'
+const documentPath = 'userInfo/test@gmail.com'
 
 export default {
   data(){
     return{
-
+      firebaseData: null,
+    }
+  },
+  firestore(){
+    return{
+      firebaseData: db.doc(documentPath)
     }
   },
   methods:{
@@ -26,6 +37,7 @@ export default {
   },
   name: 'App',
   components: {
+    TopHeader,
     Rating
   },
   mounted(){
@@ -48,5 +60,8 @@ export default {
 }
 button{
   background-color: transparent;
+}
+.router-link{
+  margin: 20px;
 }
 </style>
