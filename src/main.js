@@ -5,6 +5,8 @@ import router from "./router"
 import {firestorePlugin } from 'vuefire'
 import axios from "axios";
 import firebase from "firebase";
+import './tools/bootstrap-vue'
+
 
 Vue.prototype.$axios = axios;
 Vue.use(firestorePlugin)
