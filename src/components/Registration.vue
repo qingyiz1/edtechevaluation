@@ -1,7 +1,7 @@
 <template>
   <body>
     <div v-if="error" class="error">{{error.message}}</div>
-    <form class="form-signin" @submit.prevent="pressed">
+    <form class="form-signin" @submit.prevent="createUser">
       <h1 class="h3 mb-3 font-weight-normal">Create User</h1>
       <label for="inputEmail" class="sr-only">Email address</label>
       <input type="email" v-model="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
@@ -9,11 +9,7 @@
       <input type="password" v-model="password" id="inputPassword" class="form-control" placeholder="Password" required>
       <label for="inputNickname" class="sr-only">Nickname</label>
       <input type="nickname" v-model="nickname" id="nickname" class="form-control" placeholder="Nickname" required>
-      <label id="usertypeLabel">User type: </label><br>
-      <input type="radio" name="usertype" v-model="usertype" value="Consultant" checked>
-      <label style="padding-left:2px;padding-right:5px"> Consultant</label>
-      <input type="radio" name="usertype" v-model="usertype" value="Educational Leader">
-      <label style="padding-left:2px;padding-right:5px">Educational Leader</label><br>
+      <b-form-select id="usertypeselect" v-model="usertype" :options="options"></b-form-select>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Create User</button>
     </form>
   </body>
@@ -30,24 +26,33 @@ export default {
     return{
       email:'',
       password:'',
-      usertype:'Consultant',
       nickname:'',
+      usertype: null,
+        options: [
+          { value: null, text: 'Please select a User Type' },
+          { value: 'Consultant', text: 'Consultant' },
+          { value: 'Educational Leader', text: 'Educational Leader' }],
       error:''
     }
   },
   methods:{
-    async pressed(){
+    async createUser(){
       try{
-        firebase.auth().createUserWithEmailAndPassword(this.email,this.password)
-          .then(async (user) => {
-            user = firebase.auth().currentUser;
-            createDocument("userInfo",this.email,this.$data)
-            window.alert(this.email+" created")
-            await this.$router.push("Profile")   
-            console.log(user); 
-          }).catch((_error) => {
-            window.alert("Registration Failed!"+_error);
-          })
+        if(this.usertype === null){
+          window.alert("Please choose user type")
+        }else{
+          firebase.auth().createUserWithEmailAndPassword(this.email,this.password)
+            .then(async (user) => {
+              user = firebase.auth().currentUser;
+              createDocument("userInfo",this.email,this.$data)
+              window.alert(this.email+" created")
+              await this.$router.push("Profile")   
+              console.log(user); 
+            }).catch((_error) => {
+              window.alert("Registration Failed!"+_error);
+            })
+        }
+        
       }catch(err){
         console.log(err)
       }
@@ -60,4 +65,7 @@ export default {
 
 <style scoped>
 @import "../css/general.css";
+#usertypeselect{
+  margin-bottom: 10px;
+}
 </style>

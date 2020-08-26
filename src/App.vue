@@ -2,13 +2,6 @@
   <div id="app">
     <top-header></top-header>
     <br>
-    <div id="nav">
-      <router-link to="/login">Login</router-link> |
-      <router-link to="/registration">Registration</router-link> |
-      <router-link to="/framework">Framework</router-link> |
-      <router-link to="/profile">Profile</router-link>
-    </div>
-
     <router-view></router-view>
 
     <div><Rating :grade="0"></Rating></div>
@@ -58,7 +51,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 button{
   background-color: transparent;

@@ -16,6 +16,7 @@
       <button class="btn btn-lg btn-primary btn-block" v-if="!editable" @click.prevent="Edit()">Edit</button>
       <button class="btn btn-lg btn-primary btn-block" v-if="editable" @click.prevent="updateProfile()">Save</button>
     </form>
+    <UserList v-if="showList"></UserList>
   </body>
 
       
@@ -29,11 +30,14 @@ import {db} from "@/tools/firebaseConfig"
 import "firebase/auth"
 import * as firebase from "firebase";
 import {updateDocument} from "@/tools/firebaseTool"
+import UserList from "@/components/UserList.vue"
+
 //let email
 
 export default {
   name:"Profile",
-  mounted() {
+  components: {
+    UserList
   },
   methods: {
     Edit(){
@@ -47,7 +51,8 @@ export default {
   data(){
     return {
       userdata:'',
-      editable:false
+      editable:false,
+      showList:false
     }
   },
   firestore(){
