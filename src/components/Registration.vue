@@ -10,7 +10,7 @@
       <label for="inputNickname" class="sr-only">Nickname</label>
       <input type="nickname" v-model="nickname" id="nickname" class="form-control" placeholder="Nickname" required>
       <label id="usertypeLabel">User type: </label><br>
-      <input type="radio" name="usertype" v-model="usertype" value="Consultant">
+      <input type="radio" name="usertype" v-model="usertype" value="Consultant" checked>
       <label style="padding-left:2px;padding-right:5px"> Consultant</label>
       <input type="radio" name="usertype" v-model="usertype" value="Educational Leader">
       <label style="padding-left:2px;padding-right:5px">Educational Leader</label><br>
@@ -30,7 +30,7 @@ export default {
     return{
       email:'',
       password:'',
-      usertype:'consultant',
+      usertype:'Consultant',
       nickname:'',
       error:''
     }
@@ -38,13 +38,16 @@ export default {
   methods:{
     async pressed(){
       try{
-        const user = firebase.auth().createUserWithEmailAndPassword(this.email,this.password)
-        //redirect to user management page
-        //this.$router.replace({name:"admin"});
-        createDocument("userInfo",this.email,this.$data)
-        console.log(user)
-        window.alert(this.email+" created").then(console.log("clicked"))
-        await this.$router.push("Profile")
+        firebase.auth().createUserWithEmailAndPassword(this.email,this.password)
+          .then(async (user) => {
+            user = firebase.auth().currentUser;
+            createDocument("userInfo",this.email,this.$data)
+            window.alert(this.email+" created")
+            await this.$router.push("Profile")   
+            console.log(user); 
+          }).catch((_error) => {
+            window.alert("Registration Failed!"+_error);
+          })
       }catch(err){
         console.log(err)
       }
