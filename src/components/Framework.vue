@@ -73,7 +73,7 @@ export default {
     let data = (await docRef.get() ).data();
 
     if (!data) {
-      data = { name: '', phone: '', email: '' }
+      data = { name: '', section: '', question: '' }
       await docRef.set(data)
     }
 

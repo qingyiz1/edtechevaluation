@@ -31,6 +31,7 @@ export default {
   firestore(){
     return{
       firebaseData: db.doc(documentPath)
+      
     }
   },
   methods:{

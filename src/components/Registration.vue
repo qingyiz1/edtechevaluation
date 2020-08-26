@@ -7,10 +7,12 @@
       <input type="email" v-model="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
       <label for="inputPassword" class="sr-only">Password</label>
       <input type="password" v-model="password" id="inputPassword" class="form-control" placeholder="Password" required>
-      <label>User type: </label><br>
-      <input type="radio" name="usertype" v-model="usertype" value="consultant">
+      <label for="inputNickname" class="sr-only">Nickname</label>
+      <input type="nickname" v-model="nickname" id="nickname" class="form-control" placeholder="Nickname" required>
+      <label id="usertypeLabel">User type: </label><br>
+      <input type="radio" name="usertype" v-model="usertype" value="Consultant">
       <label style="padding-left:2px;padding-right:5px"> Consultant</label>
-      <input type="radio" name="usertype" v-model="usertype" value="ELeader">
+      <input type="radio" name="usertype" v-model="usertype" value="Educational Leader">
       <label style="padding-left:2px;padding-right:5px">Educational Leader</label><br>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Create User</button>
     </form>
@@ -29,6 +31,7 @@ export default {
       email:'',
       password:'',
       usertype:'consultant',
+      nickname:'',
       error:''
     }
   },
@@ -79,6 +82,9 @@ body {
   padding: 10px;
   font-size: 16px;
 }
+#usertypeLabel{
+  margin-bottom:0px !important;
+}
 .form-signin .form-control:focus {
   z-index: 2;
 }
@@ -88,6 +94,11 @@ body {
   border-bottom-left-radius: 0;
 }
 .form-signin input[type="password"] {
+  margin-bottom: -1px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.form-signin input[type="nickname"] {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
