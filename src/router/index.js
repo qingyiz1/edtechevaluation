@@ -12,7 +12,8 @@ const routes = [
     {
         path:'/registration',
         name:'Registration',
-        component: Registration
+        component: Registration,
+        meta:{requiresAuth: true}
     },
     {
         path:'/login',

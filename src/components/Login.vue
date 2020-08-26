@@ -36,61 +36,14 @@ export default {
       }
     }
   },
+  mounted(){
+    if(firebase.auth().currentUser !== null){
+      this.$router.replace({name:"Profile"})
+    }
+  }
 }
 </script>
 
 <style scoped>
-body {
-  height: 100%;
-  width: 100%;
-}
-
-body {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-align: center;
-  align-items: center;
-}
-
-.form-signin {
-  background-color: #f5f5f5;
-  width: 100%;
-  max-width: 330px;
-  padding: 0px 15px 15px 15px;
-  margin: auto;
-}
-.form-signin .form-control {
-  position: relative;
-  box-sizing: border-box;
-  height: auto;
-  padding: 10px;
-  font-size: 16px;
-}
-.form-signin .form-control:focus {
-  z-index: 2;
-}
-.form-signin input[type="email"] {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-.form-signin input[type="password"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
-.btn{
-  background-color: royalblue;
-
-}
-.btn:hover {
-  background-color: #2c3e50;
-}
-.h3{
-  background: #2c3e50;
-  padding:10px;
-  text-align: center;
-  color:#fff;
-  border-radius: 0px 0px 10px 10px;
-}
+@import "../css/general.css";
 </style>
