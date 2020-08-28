@@ -6,7 +6,7 @@ import {firestorePlugin } from 'vuefire'
 import axios from "axios";
 import firebase from "firebase";
 import './tools/bootstrap-vue'
-
+import {store} from '@/store/index'
 
 Vue.prototype.$axios = axios;
 Vue.use(firestorePlugin)
@@ -17,7 +17,6 @@ firebase.auth().onAuthStateChanged(async user => {
   if (!app) {
     //wait to get user
     user = await firebase.auth().currentUser;
-
     //start app
     app = new Vue({
       router,
@@ -27,6 +26,7 @@ firebase.auth().onAuthStateChanged(async user => {
           this.$router.push("/Login");
         }
       },
+      store,
       render: h => h(App)
     }).$mount("#app");
   }
