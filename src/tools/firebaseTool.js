@@ -1,4 +1,4 @@
-import {db} from "@/tools/firebaseConfig";
+import {db, database} from "@/tools/firebaseConfig";
 
 export function createDocument(collection,ID, data) {
     db.collection(collection)
@@ -10,6 +10,17 @@ export function createDocument(collection,ID, data) {
         .catch((error) => {
             console.error("Error writing document: ", error);
         });
+}
+
+export function createReference(nodePath, data) {
+    var parentNode = database.ref(nodePath);
+    parentNode.set(data)
+  .then(function() {
+    console.log('Reference Created Successed');
+  })
+  .catch(function() {
+    console.log('Reference Created Failed');
+  });
 }
 
 export function updateDocument(collection,ID, data) {

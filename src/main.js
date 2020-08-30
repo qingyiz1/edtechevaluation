@@ -5,11 +5,14 @@ import router from "./router"
 import {firestorePlugin } from 'vuefire'
 import axios from "axios";
 import firebase from "firebase";
-import './tools/bootstrap-vue'
+import './tools/bootstrap-vue';
+import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue';
 
 
 Vue.prototype.$axios = axios;
 Vue.use(firestorePlugin)
+Vue.use(BootstrapVue)
+Vue.use(BootstrapVueIcons)
 Vue.config.productionTip = false
 let app
 
