@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
     state:{
-        isLogged: false,
+        loggedIn: false,
         user:{
             id:'',
             email:'',
@@ -19,9 +19,20 @@ export const store = new Vuex.Store({
         UserData(state){
             return state.userdata
         },
+        loggedIn(state){
+            return state.loggedIn
+        },
     },
-    mutations:{
-
+    mutations: {
+        loggedIn (state) {
+            state.loggedIn = true
+        },
+        loggedOut (state) {
+            state.loggedIn = false
+        },
+        setStoreToken(state, accessToken) {
+            state.accessToken = accessToken
+        },
     },
     actions:{
 

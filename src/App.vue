@@ -1,17 +1,13 @@
 <template>
   <div id="app">
-    <top-header></top-header>
-    <br>
+    <Topheader v-if="$store.getters.loggedIn" :key="$store.getters.loggedIn"></Topheader>
     <router-view></router-view>
-
-    <div><Rating :grade="0"></Rating></div>
   </div>
 </template>
 
 
 <script>
-import TopHeader from "@/components/Top-Header"
-import Rating from "@/components/Rating";
+import Topheader from './components/Top-Header'
 import {db} from './tools/firebaseConfig'
 const documentPath = 'userInfo/test@gmail.com'
 
@@ -32,8 +28,7 @@ export default {
   },
   name: 'App',
   components: {
-    TopHeader,
-    Rating
+    Topheader
   },
   mounted(){
 
@@ -51,6 +46,8 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  height: 100%;
+  background-size: auto;
 }
 button{
   background-color: transparent;

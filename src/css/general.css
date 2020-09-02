@@ -1,17 +1,64 @@
 body {
+    background: #343a40;
 height: 100%;
 width: 100%;
 align-items: center;
+    margin: 0 auto;
 }
 
+#cloud-container{
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    overflow:hidden;
+    background-size: cover;
+    background-color: transparent;
+    background-repeat: no-repeat;
+
+    background-image: url("../../src/assets/background1.jpg");
+    z-index:-1; /* Remove this line if it's not going to be a background! */
+}
+
+#Logo-container{
+    position: absolute;
+    left: 50%;
+    margin-left: -100px;
+    top: 50%;
+    margin-top: -300px;
+    width: 200px;
+    height: 200px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-image: url("../../src/assets/Logo.png");
+}
 .form-signin {
 background-color: #f5f5f5;
 width: 100%;
 max-width: 330px;
 padding: 0px 15px 15px 15px;
-margin: auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -165px;
 }
-.form-signin .form-control {
+
+.form-signup {
+    align-self: center;
+    background-color: #f5f5f5;
+    width: 100%;
+    max-width: 330px;
+    padding: 0px 15px 15px 15px;
+    position: fixed;
+    left: 50%;
+    margin-top: 20px;
+    margin-left:-165px;
+}
+
+.form-control {
 position: relative;
 box-sizing: border-box;
 height: auto;
