@@ -26,27 +26,11 @@ export default {
     }
   },
   methods: {
-    async login() {
-      try {
-        firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(user => {
-          if (user) {
-            // User is signed in.
-            this.$store.commit('loggedIn')
-            window.alert(this.email + " logged in")
-            //redirect to user profile page after login
-            this.$router.push({path: "/profile/" + this.email})
-            //this.$router.go(0)
-            //location.reload()
-          } else {
-            // No user is signed in.
-            this.$store.commit('loggedOut ')
-          }
-        });
-
-
-      } catch (err) {
-        console.log(err)
-      }
+    login() {
+      this.$store.dispatch('login', {
+        email: this.email,
+        password: this.password
+      })
     }
   },
   mounted(){

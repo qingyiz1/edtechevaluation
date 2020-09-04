@@ -10,8 +10,8 @@
       <input type="nickname" v-model="userInfo['nickname']" id="inputNickname" class="form-control" placeholder="Nickname" required>
       <label for="inputEmployer" class="sr-only">Employer</label>
       <input type="employer" v-model="userInfo['employer']" id="inputEmployer" class="form-control" placeholder="Employer" required>
-      <label for="inputPhonenumber" class="sr-only">Phonenumber</label>
-      <input type="tel" v-model="userInfo['phonenumber']" id="inputPhonenumber" class="form-control" placeholder="Phone Number" required>
+      <label for="inputPhoneNumber" class="sr-only">Phone Number</label>
+      <input type="tel" v-model="userInfo['phoneNumber']" id="inputPhoneNumber" class="form-control" placeholder="Phone Number" required>
       <b-form-select id="roleselect" v-model="userInfo['role']" :options="options" required></b-form-select>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Create User</button>
     </form>
@@ -44,8 +44,8 @@ export default {
         role: null,
         nickname:'',
         isActive: true,
-        empployer:'',
-        phonenumber:''
+        employer:'',
+        phoneNumber:''
       },
       options: [
         { value: null, text: 'Please select a User Type' },
@@ -54,21 +54,18 @@ export default {
     }
   },
   methods:{
-    async createUser(){
-        if(this.role === null){
-          window.alert("Please choose user role!")
-        }else{
-          firebase.auth().createUserWithEmailAndPassword(this.userInfo['email'],this.userInfo['password'])
-            .then(async (user) => {
-              user = firebase.auth().currentUser;
-              createDocument("userInfo",this.userInfo['email'],this.userInfo)
-              window.alert(this.userInfo['email']+" created")
-              await this.$router.push("Profile")   
-              console.log(user); 
-            }).catch((_error) => {
-              window.alert("Registration Failed!"+_error);
-            })
-        }
+    createUser(){
+      if(this.role === null){
+        window.alert("Please choose user role!")
+      }else{
+        firebase.auth().createUserWithEmailAndPassword(this.userInfo['email'],this.userInfo['password'])
+          .then(async () => {
+            createDocument("userInfo",this.userInfo['email'],this.userInfo)
+            window.alert(this.userInfo['email']+" created")
+          }).catch((_error) => {
+            window.alert("Registration Failed!"+_error);
+          })
+      }
     },
   }
 }

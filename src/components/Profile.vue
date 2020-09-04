@@ -35,7 +35,7 @@
       </div>
 
       <br>
-      <button class="btn btn-lg btn-primary btn-block" v-if="!editable&&userdata['role']==='Senior Consultant'" @click.prevent="Edit()">Edit</button>
+      <button class="btn btn-lg btn-primary btn-block" v-if="!editable&&this.$store.getters.userProfile['role']==='Senior Consultant'" @click.prevent="Edit()">Edit</button>
       <button class="btn btn-lg btn-primary btn-block" v-if="editable" @click.prevent="updateProfile()">Save</button>
     </form>
   </body>
