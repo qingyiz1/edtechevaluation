@@ -8,9 +8,9 @@
            <b-navbar-nav>
              <b-nav-item v-if="!$store.getters.loggedIn" to="/login">Login</b-nav-item>
              <b-nav-item v-if="userdata['role']==='Senior Consultant'" to="/registration">Registration</b-nav-item>
-             <b-nav-item to="/framework">Framework</b-nav-item>
-             <b-nav-item-dropdown variant="outline-primary" text="User">
-                 <b-dropdown-item :to=" '/profile/' + this.userdata['email']" >Profile</b-dropdown-item>
+             <b-nav-item v-if="$store.getters.loggedIn" to="/framework">Framework</b-nav-item>
+             <b-nav-item-dropdown v-if="$store.getters.loggedIn" variant="outline-primary" text="User">
+                 <b-dropdown-item v-if="$store.getters.loggedIn" :to=" '/profile/' + this.userdata['email']" >Profile</b-dropdown-item>
                  <b-dropdown-item href="#">User List</b-dropdown-item>
              </b-nav-item-dropdown>
              <b-nav-item v-if="$store.getters.loggedIn" @click="signOut">Sign out</b-nav-item>
@@ -41,20 +41,9 @@ import {db} from "@/tools/firebaseConfig";
 export default {
   name: "top-header",
   mounted() {
-    this.setupFirebase();
+
   },
   methods: {
-    setupFirebase() {
-      firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          // User is signed in.
-          this.$store.commit('loggedIn')
-        } else {
-          // No user is signed in.
-          this.$store.commit('loggedOut')
-        }
-      });
-    },
     signOut() {
       firebase.auth().signOut()
           .then(() => {

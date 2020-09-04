@@ -8,30 +8,37 @@
 
 <script>
 import Topheader from './components/Top-Header'
-import {db} from './tools/firebaseConfig'
-const documentPath = 'userInfo/test@gmail.com'
+import * as firebase from "firebase";
 
 export default {
   data(){
     return{
-      firebaseData: null,
     }
   },
   firestore(){
     return{
-      firebaseData: db.doc(documentPath)
       
     }
   },
-  methods:{
-
+  methods: {
+    setupFirebase() {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          // User is signed in.
+          this.$store.commit('loggedIn')
+        } else {
+          // No user is signed in.
+          this.$store.commit('loggedOut')
+        }
+      });
+    },
   },
   name: 'App',
   components: {
     Topheader
   },
-  mounted(){
-
+  created(){
+    this.setupFirebase();
   }
 }
 
