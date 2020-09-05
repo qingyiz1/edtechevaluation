@@ -12,7 +12,7 @@
              <b-nav-item to="/framework">Framework</b-nav-item>
              <b-nav-item-dropdown variant="outline-primary" text="User" right>
                  <b-dropdown-item to="/profile">Profile</b-dropdown-item>
-                 <b-dropdown-item href="#">User List</b-dropdown-item>
+                 <b-dropdown-item to="/userlist">User List</b-dropdown-item>
              </b-nav-item-dropdown>
              <b-nav-item v-if="loggedIn" @click="signOut">Sign out</b-nav-item>
               <div style="margin-top:8px">
