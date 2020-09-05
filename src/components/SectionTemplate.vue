@@ -3,11 +3,11 @@
     <b-row class="framework-row">
         <b-col>
                 <b-row align-h="between">
-                    <b-col cols="10">
+                    <b-col cols="11" style="padding-right:0">
                         <b-button  @click="onCollapse" class="section-btn">Section</b-button>
                     </b-col>
-                    <b-col cols="1">
-                        <b-button class="section-btn" @click="onDeleteSection(section.id)">
+                    <b-col cols="1" style="padding-left:0">
+                        <b-button class="section-btn" style="background-color:#dc3545 !important" @click="onDeleteSection(section.id)">
                             <b-icon icon="trash"></b-icon>
                         </b-button>
                     </b-col>
@@ -33,7 +33,7 @@
                         <b-form-input id="questionName" v-model="question.questionName"></b-form-input>
                     </b-col>
                     <b-col cols="1">
-                        <b-button @click="onDeleteQuestion(question.id)">
+                        <b-button style="background-color:#dc3545 !important" @click="onDeleteQuestion(question.id)">
                         <b-icon icon="trash"></b-icon>
                         </b-button>
                     </b-col>

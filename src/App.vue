@@ -4,14 +4,14 @@
     <br>
     <router-view></router-view>
 
-    <div><Rating :grade="0"></Rating></div>
+    <!-- <div><Rating :grade="0"></Rating></div> -->
   </div>
 </template>
 
 
 <script>
 import TopHeader from "@/components/Top-Header"
-import Rating from "@/components/Rating";
+// import Rating from "@/components/Rating";
 import {db} from './tools/firebaseConfig'
 const documentPath = 'userInfo/test@gmail.com'
 
@@ -33,7 +33,7 @@ export default {
   name: 'App',
   components: {
     TopHeader,
-    Rating
+    // Rating
   },
   mounted(){
 
