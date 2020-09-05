@@ -1,4 +1,6 @@
-import firebase from "firebase";
+import * as firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/firestore'
 
 var firebaseConfig ={
     apiKey: "AIzaSyAnhJtV8YpQFS2y24bCnqGdchZABlZPWuo",
@@ -12,5 +14,21 @@ var firebaseConfig ={
 }
 
 export default firebase.initializeApp(firebaseConfig);
-export const db = firebase.firestore();
-export const database = firebase.database();
+
+// utils
+const db = firebase.firestore()
+const auth = firebase.auth()
+
+// collection references
+const usersCollection = db.collection('userInfo')
+const frameworkCollection = db.collection('comments')
+const evaluationCollection = db.collection('likes')
+
+// export utils/refs
+export {
+    db,
+    auth,
+    usersCollection,
+    frameworkCollection,
+    evaluationCollection
+}
