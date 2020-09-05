@@ -25,8 +25,7 @@
       </el-table-column>
     </el-table>
 
-     <b-btn variant="primary" to="/registration" >Create user</b-btn>
-
+    <el-button type="primary" @click = "showAddDialog()">Add user</el-button>
 
     <el-dialog title="Edit information" :visible.sync="editDialogVisible" width="50%">
       <el-form ref="form" :model="editForm" label-width="120px">
@@ -40,7 +39,11 @@
           <el-input v-model="editForm.phoneNumber"></el-input>
         </el-form-item>
         <el-form-item label="Role">
-          <el-input v-model="editForm.role"></el-input>
+          <el-radio-group v-model="editForm.role">
+            <el-radio label="Senior Consultant" border size="medium">Senior Consultant</el-radio>
+            <el-radio label="Consultant" border size="medium">Consultant</el-radio>
+            <el-radio label="Ed Leader" border size="medium">Ed Leader</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="Employer">
           <el-input v-model="editForm.employer"></el-input>
@@ -97,9 +100,12 @@ export default {
     
   },
   methods: {
-    redirect(){
+
+    showAddDialog(){
+      this.addDialogVisible = true
 
     },
+
     async showEditDialog(id){
       const Data = await getDocument("userInfo",id)
       console.log(Data)
