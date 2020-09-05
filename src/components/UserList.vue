@@ -25,7 +25,8 @@
       </el-table-column>
     </el-table>
 
-    <el-button type="primary" @click = "showAddDialog()">Add user</el-button>
+     <b-btn variant="primary" to="/registration" >Create user</b-btn>
+
 
     <el-dialog title="Edit information" :visible.sync="editDialogVisible" width="50%">
       <el-form ref="form" :model="editForm" label-width="120px">
@@ -96,12 +97,9 @@ export default {
     
   },
   methods: {
-
-    showAddDialog(){
-      this.addDialogVisible = true
+    redirect(){
 
     },
-
     async showEditDialog(id){
       const Data = await getDocument("userInfo",id)
       console.log(Data)

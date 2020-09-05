@@ -7,7 +7,7 @@
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
             <b-nav-item v-if="!$store.getters.loggedIn" to="/login">Login</b-nav-item>
-            <b-nav-item v-if="userdata['role']==='Senior Consultant'" to="/registration">Registration</b-nav-item>
+            <b-nav-item v-if="userdata['role']==='Senior Consultant'" to="/registration">Create User</b-nav-item>
             <b-nav-item v-if="$store.getters.loggedIn" to="/framework">Framework</b-nav-item>
             <b-nav-item v-if="$store.getters.loggedIn" to="/evaluation">Evaluation</b-nav-item>
             <b-nav-item v-if="$store.getters.loggedIn" :to=" '/profile/' + this.userdata['email']">Profile</b-nav-item>
