@@ -36,7 +36,7 @@
           <el-input v-model="editForm.nickname"></el-input>
         </el-form-item>
         <el-form-item label="Phone Number">
-          <el-input v-model="editForm.phonenumber"></el-input>
+          <el-input v-model="editForm.phoneNumber"></el-input>
         </el-form-item>
         <el-form-item label="Role">
           <el-input v-model="editForm.role"></el-input>
@@ -60,7 +60,7 @@
           <el-input v-model="editForm.nickname"></el-input>
         </el-form-item>
         <el-form-item label="Phone Number">
-          <el-input v-model="editForm.phonenumber"></el-input>
+          <el-input v-model="editForm.phoneNumber"></el-input>
         </el-form-item>
         <el-form-item label="Role">
           <el-input v-model="editForm.role"></el-input>

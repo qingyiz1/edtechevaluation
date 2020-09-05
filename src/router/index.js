@@ -7,6 +7,7 @@ import Profile from '@/components/Profile'
 import Framework from "@/components/Framework";
 import Framework_Template from "@/components/FrameworkTemplate";
 import Evaluations from "@/components/Evaluations";
+import Userlist from "@/components/UserList";
 
 Vue.use(VueRouter)
 
@@ -45,8 +46,13 @@ const routes = [
         name:'Evaluation',
         component:Evaluations,
         meta:{requiresAuth: true}
-    }
-
+    },
+    {
+        path:'/userlist',
+        name:'Userlist',
+        component: Userlist,
+        meta:{requiresAuth: true}
+    },
 ]
 const router = new VueRouter({
     mode:'history',
