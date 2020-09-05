@@ -12,17 +12,6 @@ export function createDocument(collection,ID, data) {
         });
 }
 
-export function createReference(nodePath, data) {
-    var parentNode = db.ref(nodePath);
-    parentNode.set(data)
-  .then(function() {
-    console.log('Reference Created Successed');
-  })
-  .catch(function() {
-    console.log('Reference Created Failed');
-  });
-}
-
 export function updateDocument(collection,ID, data) {
     db.collection(collection)
         .doc(ID)
