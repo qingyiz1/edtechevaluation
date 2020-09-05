@@ -10,10 +10,8 @@
             <b-nav-item v-if="userdata['role']==='Senior Consultant'" to="/registration">Registration</b-nav-item>
             <b-nav-item v-if="$store.getters.loggedIn" to="/framework">Framework</b-nav-item>
             <b-nav-item v-if="$store.getters.loggedIn" to="/evaluation">Evaluation</b-nav-item>
-            <b-nav-item-dropdown v-if="$store.getters.loggedIn" variant="outline-primary" text="User">
-              <b-dropdown-item v-if="$store.getters.loggedIn" :to=" '/profile/' + this.userdata['email']" >Profile</b-dropdown-item>
-              <b-dropdown-item v-if="$store.getters.userProfile['role']==='Senior Consultant'" to="/userlist">User List</b-dropdown-item>
-            </b-nav-item-dropdown>
+            <b-nav-item v-if="$store.getters.loggedIn" :to=" '/profile/' + this.userdata['email']">Profile</b-nav-item>
+            <b-nav-item v-if="$store.getters.loggedIn&&$store.getters.userProfile['role']==='Senior Consultant'" to="/userlist">User List</b-nav-item>
             <b-nav-item v-if="$store.getters.loggedIn" @click="signOut">Sign out</b-nav-item>
 
           </b-navbar-nav>
