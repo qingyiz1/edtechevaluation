@@ -27,7 +27,7 @@
                   <b-form-input id="frameworkName" v-model="frameworkName"></b-form-input>
                 </b-col>
                 <b-col cols="2">
-                  <b-button @click="onCreateNewSecion">New Section</b-button>
+                  <b-button @click="onCreateNewSecion" variant="primary">New Section</b-button>
                 </b-col>
               </b-row>
               <!-- </b-form-group> -->
@@ -37,10 +37,10 @@
           </b-form>
           <b-row align-h="center">
             <b-col cols="3">
-              <b-button v-b-modal="'submit'" >Submit</b-button>
+              <b-button v-b-modal="'submit'" variant="primary" >Submit</b-button>
             </b-col>
             <b-col cols="3">
-              <b-button class="btn-reset" v-b-modal="'reset'">Reset</b-button>
+              <b-button class="btn-reset" v-b-modal="'reset'" variant="danger">Reset</b-button>
             </b-col>
           </b-row>
       </b-card>
@@ -62,7 +62,7 @@
 
 </template>
 <script>
-import { createDocument,createReference } from "@/tools/firebaseTool";
+import { createDocument} from "@/tools/firebaseTool";
 import "firebase/auth";
 import {db} from "@/tools/firebaseConfig";
 import * as firebase from "firebase";
@@ -125,11 +125,19 @@ export default {
           }
         }
         if (checkSection && checkQuestion) {
-          createDocument("framework",frameworkPath,this.framework);
           for (let i = 0; i < this.sections.length; i++ ) {
             createDocument("Section",sectionPath,this.sections[i]);
           }
-          await createReference(frameworkPath+"/section", this.sections);
+          this.framework = {
+          name:this.frameworkName,
+          section:db.doc('Section' + sectionPath),
+          dateCreated: Date.parse(new Date()),
+          dateEdited: Date.parse(new Date()),
+          author:this.author,
+          version:this.version,
+          isActive:true
+        }
+          createDocument("framework",frameworkPath,this.framework);
           this.showOverlay = false;
           this.$router.push('/framework')
         }
@@ -190,8 +198,8 @@ export default {
 
 <style scoped>
 @import "../css/general.css";
-.btn-reset {
-  background-color:#dc3545 !important;
+.framework-container {
+  margin-top: 10px;
 }
 .framework-row {
   margin-bottom: 20px;

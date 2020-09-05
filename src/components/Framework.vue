@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="framework-list">
     <b-overlay
     :show="show"
     opacity="0.6"
@@ -28,14 +28,26 @@
                 </b-card-text>
               </b-col>
               <b-col md="2">
-                <b-button-group size="small">
+                <!-- <b-button-group size="small">
                   <b-button 
                   @click="onActive(framework)"
                   :style="{'background-color':framework.isActive ? '#28a745 !important':'' }">Active</b-button>
                   <b-button 
                   @click="onInactive(framework)"
                   :style="{'background-color':framework.isActive ? '#6c757d !important':'' }">Inactive</b-button>
-                </b-button-group>
+                </b-button-group> -->
+                <b-form-checkbox 
+                v-model="framework.isActive" 
+                name="check-button" 
+                size="lg"
+                @change="onActive(framework)"
+                style="margin-bottom: 10px"
+                switch
+                ></b-form-checkbox>
+                <b-button 
+                variant="primary" 
+                :disabled="!framework.isActive"
+                @click="onStartEvaluation(framework)">Start Evaluation</b-button>
               </b-col>
             </b-row>
           </b-card>
@@ -87,17 +99,11 @@ export default {
     this.show = false;
   },
   onActive: function (framework) {
-    if(!framework.isActive) {
-      framework.isActive = true;
+      framework.isActive = !framework.isActive;
       updateDocument("framework",framework.id, framework);
-    }
   },
-  onInactive: function (framework) {
-    if(framework.isActive) {
-      framework.isActive = false;
-      updateDocument("framework",framework.id, framework);
-    }
-
+  onStartEvaluation: function(framework) {
+    console.log(framework);
   },
   timeConverter: function (timestamp) {
   let tempDate = new Date(timestamp);
@@ -139,6 +145,9 @@ export default {
 .framework-card{
   margin: 10px 50px;
   text-align: left;
+}
+.framework-list {
+  margin-top: 10px;
 }
 
 </style>
