@@ -11,7 +11,7 @@
              <b-nav-item v-if="$store.getters.loggedIn" to="/framework">Framework</b-nav-item>
              <b-nav-item-dropdown v-if="$store.getters.loggedIn" variant="outline-primary" text="User">
                  <b-dropdown-item v-if="$store.getters.loggedIn" :to=" '/profile/' + this.userdata['email']" >Profile</b-dropdown-item>
-                 <b-dropdown-item href="#">User List</b-dropdown-item>
+                 <b-dropdown-item to="/userlist">User List</b-dropdown-item>
              </b-nav-item-dropdown>
              <b-nav-item v-if="$store.getters.loggedIn" @click="signOut">Sign out</b-nav-item>
               
