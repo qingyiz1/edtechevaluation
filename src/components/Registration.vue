@@ -1,15 +1,18 @@
 <template>
-  <body>
-    <div v-if="error" class="error">{{error.message}}</div>
-    <form class="form-signin" @submit.prevent="createUser">
+  <body class="align-content-center">
+    <form class="form-signup" @submit.prevent="createUser">
       <h1 class="h3 mb-3 font-weight-normal">Create User</h1>
       <label for="inputEmail" class="sr-only">Email address</label>
-      <input type="email" v-model="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+      <input type="email" v-model="userInfo['email']" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
       <label for="inputPassword" class="sr-only">Password</label>
-      <input type="password" v-model="password" id="inputPassword" class="form-control" placeholder="Password" required>
+      <input type="password" v-model="userInfo['password']" id="inputPassword" class="form-control" placeholder="Password" required>
       <label for="inputNickname" class="sr-only">Nickname</label>
-      <input type="nickname" v-model="nickname" id="nickname" class="form-control" placeholder="Nickname" required>
-      <b-form-select id="usertypeselect" v-model="usertype" :options="options"></b-form-select>
+      <input type="nickname" v-model="userInfo['nickname']" id="inputNickname" class="form-control" placeholder="Nickname" required>
+      <label for="inputEmployer" class="sr-only">Employer</label>
+      <input type="employer" v-model="userInfo['employer']" id="inputEmployer" class="form-control" placeholder="Employer" required>
+      <label for="inputPhoneNumber" class="sr-only">Phone Number</label>
+      <input type="tel" v-model="userInfo['phoneNumber']" id="inputPhoneNumber" class="form-control" placeholder="Phone Number" required>
+      <b-form-select id="roleselect" v-model="userInfo['role']" :options="options" required></b-form-select>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Create User</button>
     </form>
   </body>
@@ -19,45 +22,50 @@
 import {createDocument} from "@/tools/firebaseTool"
 import * as firebase from "firebase/app"
 import "firebase/auth"
+import $ from 'jquery'
+
+
+
 
 export default {
   name: "Registration",
+  mounted(){
+    $(function() { 
+        $("input[type='tel']").on('input', function() { 
+            $(this).val($(this).val().replace(/[^0-9]/g, '')); 
+        }); 
+    });
+  },
   data(){
     return{
-      email:'',
-      password:'',
-      nickname:'',
-      usertype: null,
-        options: [
-          { value: null, text: 'Please select a User Type' },
-          { value: 'Consultant', text: 'Consultant' },
-          { value: 'Educational Leader', text: 'Educational Leader' }],
-      error:''
+      userInfo:{
+        email:'',
+        password:'',
+        role: null,
+        nickname:'',
+        isActive: true,
+        employer:'',
+        phoneNumber:''
+      },
+      options: [
+        { value: null, text: 'Please select a User Type' },
+        { value: 'Consultant', text: 'Consultant' },
+        { value: 'Educational Leader', text: 'Educational Leader' }],
     }
   },
   methods:{
-    async createUser(){
-      try{
-        if(this.usertype === null){
-          window.alert("Please choose user type")
-        }else{
-          firebase.auth().createUserWithEmailAndPassword(this.email,this.password)
-            .then(async (user) => {
-              user = firebase.auth().currentUser;
-              createDocument("userInfo",this.email,this.$data)
-              window.alert(this.email+" created")
-              await this.$router.push("Profile")   
-              console.log(user); 
-            }).catch((_error) => {
-              window.alert("Registration Failed!"+_error);
-            })
-        }
-        
-      }catch(err){
-        console.log(err)
+    createUser(){
+      if(this.role === null){
+        window.alert("Please choose user role!")
+      }else{
+        firebase.auth().createUserWithEmailAndPassword(this.userInfo['email'],this.userInfo['password'])
+          .then(async () => {
+            createDocument("userInfo",this.userInfo['email'],this.userInfo)
+            window.alert(this.userInfo['email']+" created")
+          }).catch((_error) => {
+            window.alert("Registration Failed!"+_error);
+          })
       }
-
-
     },
   }
 }
@@ -65,7 +73,22 @@ export default {
 
 <style scoped>
 @import "../css/general.css";
-#usertypeselect{
+#roleselect{
   margin-bottom: 10px;
+}
+.form-signin input[type="nickname"] {
+margin-bottom: -1px;
+border-top-left-radius: 0;
+border-top-right-radius: 0;
+}
+.form-signin input[type="employer"] {
+margin-bottom: -1px;
+border-top-left-radius: 0;
+border-top-right-radius: 0;
+}
+#phonenumber{
+  margin-bottom: 5px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 </style>
