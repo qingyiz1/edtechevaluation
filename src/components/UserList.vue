@@ -9,6 +9,7 @@
   </body>
 </template>
 
+//test
 <script>
 import {db} from "@/tools/firebaseConfig"
 //import * as firebase from "firebase/app"
