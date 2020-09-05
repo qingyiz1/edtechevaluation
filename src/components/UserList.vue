@@ -4,7 +4,7 @@
       <el-table-column type="index" label="#" width="40" align="center" />
       <el-table-column label="Email" align="center" prop="email" />
       <el-table-column label="Nickname" align="center" prop="nickname" />
-      <el-table-column label="Phone Number" align="center" prop="phonenumber"  />
+      <el-table-column label="Phone Number" align="center" prop="phoneNumber"  />
       <el-table-column label="Role" align="center" prop="role"  />
       <el-table-column label="Employer" align="center" prop="employer" width="120" />
       <el-table-column label="isActive" align="center">
@@ -47,7 +47,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">cancel</el-button>
-        <el-button type="primary" @click="editDialogVisible = false">Confirm</el-button>
+        <el-button type="primary" @click="updateProfile(editForm.email)">Confirm</el-button>
         </span>
     </el-dialog>
 
@@ -83,7 +83,6 @@
 import {db} from "@/tools/firebaseConfig"
 //import * as firebase from "firebase/app"
 import "firebase/auth"
-import * as firebase from "firebase";
 import {updateDocument} from "@/tools/firebaseTool"
 import {getDocument} from "@/tools/firebaseTool"
 import {deleteDocument} from "@/tools/firebaseTool"
@@ -123,20 +122,13 @@ export default {
         }
 
       deleteDocument("userInfo", msg)
-
-
-        
     },
-
     isActiveChange(msg){
       updateDocument("userInfo", msg.email, {"isActive": msg.isActive})
     },
-    
-  
-
-    updateProfile(){
-      this.editable = false
-      updateDocument("userInfo",firebase.auth().currentUser.email,{"nickname":this.userdata['nickname'],"usertype":this.userdata['usertype']})
+    updateProfile(id){
+      updateDocument("userInfo",id,this.editForm)
+      this.editDialogVisible = false
     },
   },
 
@@ -147,7 +139,7 @@ export default {
       editDialogVisible: false,
       addDialogVisible: false,
       editForm: {}
-      
+
     }
   },
 
