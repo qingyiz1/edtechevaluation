@@ -5,6 +5,7 @@ import Registration from '@/components/Registration.vue'
 import Profile from '@/components/Profile'
 import Framework from "@/components/Framework";
 import Framework_Template from "@/components/FrameworkTemplate";
+import Userlist from "@/components/UserList";
 import * as firebase from "firebase"
 
 Vue.use(VueRouter)
@@ -37,6 +38,12 @@ const routes = [
         path:'/framework/new_framework',
         name:'Framework_Template',
         component: Framework_Template,
+    },
+    {
+        path:'/userlist',
+        name:'Userlist',
+        component: Userlist,
+        meta:{requiresAuth: true}
     },
 ]
 const router = new VueRouter({
