@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import {auth} from "@/tools/firebaseConfig"
 import Login from '@/components/Login.vue'
 import Registration from '@/components/Registration.vue'
 import Profile from '@/components/Profile'
 import Framework from "@/components/Framework";
 import Framework_Template from "@/components/FrameworkTemplate";
-import * as firebase from "firebase"
+import Evaluations from "@/components/Evaluations";
 
 Vue.use(VueRouter)
 
@@ -37,7 +38,15 @@ const routes = [
         path:'/framework/new_framework',
         name:'Framework_Template',
         component: Framework_Template,
+        meta:{requiresAuth: true}
     },
+    {
+        path:'/evaluation',
+        name:'Evaluation',
+        component:Evaluations,
+        meta:{requiresAuth: true}
+    }
+
 ]
 const router = new VueRouter({
     mode:'history',
@@ -47,7 +56,7 @@ const router = new VueRouter({
 
 router.beforeEach((to,from,next)=>{
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    const isAuthenticated = firebase.auth().currentUser;
+    const isAuthenticated = auth.currentUser;
     if(requiresAuth && !isAuthenticated){
         next("/login")
     }else{

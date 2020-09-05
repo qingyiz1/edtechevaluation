@@ -154,5 +154,5 @@ export default {
 
 <style scoped>
 @import "../css/general.css";
-@import "../css/evas.css";
+/*@import "../css/evas.css";*/
 </style>

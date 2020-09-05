@@ -1,42 +1,44 @@
 <template>
   <div id="app">
-    <top-header></top-header>
-    <br>
+    <topHeader v-if="$store.getters.loggedIn" :key="$store.getters.loggedIn"></topHeader>
     <router-view></router-view>
-
-    <!-- <div><Rating :grade="0"></Rating></div> -->
   </div>
 </template>
 
 
 <script>
-import TopHeader from "@/components/Top-Header"
-// import Rating from "@/components/Rating";
-import {db} from './tools/firebaseConfig'
-const documentPath = 'userInfo/test@gmail.com'
+import topHeader from './components/Top-Header'
+import * as firebase from "firebase";
 
 export default {
   data(){
     return{
-      firebaseData: null,
     }
   },
   firestore(){
     return{
-      firebaseData: db.doc(documentPath)
-      
+
     }
   },
-  methods:{
-
+  methods: {
+    setupFirebase() {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          // User is signed in.
+          this.$store.commit('loggedIn')
+        } else {
+          // No user is signed in.
+          this.$store.commit('loggedOut')
+        }
+      });
+    },
   },
   name: 'App',
   components: {
-    TopHeader,
-    // Rating
+    topHeader
   },
-  mounted(){
-
+  created(){
+    this.setupFirebase();
   }
 }
 
@@ -51,6 +53,8 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  height: 100%;
+  background-size: auto;
 }
 button{
   background-color: transparent;

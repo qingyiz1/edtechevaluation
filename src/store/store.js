@@ -32,10 +32,18 @@ export const store = new Vuex.Store({
     actions:{
         async login({ dispatch }, form) {
             // sign user in
-            const { user } = await firebase.auth.signInWithEmailAndPassword(form.email, form.password)
+            await firebase.auth.signInWithEmailAndPassword(form.email, form.password)
+                .then(async (user) => {
+                    if(user != null){
+                        // fetch user profile and set in state
+                        dispatch('fetchUserProfile', user)
+                    }
+                }).catch((_error) => {
+                    window.alert("Login Failed!"+_error);
+                })
 
-            // fetch user profile and set in state
-            dispatch('fetchUserProfile', user)
+
+
         },
         async fetchUserProfile({ commit }, user) {
             // fetch user profile
@@ -43,7 +51,7 @@ export const store = new Vuex.Store({
 
             // set user profile in state
             commit('setUserProfile', userProfile.data())
-            window.alert(user.email + " logged in")
+            window.alert("Welcome Back! "+userProfile.data().nickname)
             // change route to dashboard
             await router.push({path: "/profile/" + user.email})
         },

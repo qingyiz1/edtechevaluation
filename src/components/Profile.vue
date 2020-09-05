@@ -1,48 +1,48 @@
 <template>
   <body style="margin-top: 20px">
-    <div style="font-size:50px;text-align: center" v-if="userdata === null">User not found!</div>
-    <form v-if="userdata !== null" class="form-profile">
-      <h1 class="h3 mb-3 font-weight-normal">User Profile</h1>
-      <div class="user-attribute">
-        <h5>Email: </h5>
-        <p>{{userdata['email']}}</p>
-      </div>
-      <div class="user-attribute">
-        <h5>Role: </h5>
-        <!--        <div v-if="editable">-->
-        <!--           <input type="radio" name="role" v-model="userdata['role']" value="Consultant">-->
-        <!--           <label style="padding-left:2px;padding-right:5px"> Consultant</label>-->
-        <!--           <input type="radio" name="role" v-model="userdata['role']" value="Educational Leader">-->
-        <!--           <label style="padding-left:2px;padding-right:5px">Educational Leader</label>-->
-        <!--        </div>-->
-        <p>{{userdata['role']}}</p>
-      </div>
-      <div class="user-attribute">
-        <h5>Nickname: </h5>
-        <p v-if="!editable">{{userdata['nickname']}}</p>
-        <input v-if="editable" type="nickname" v-model="userdata['nickname']" id="nickname" class="form-control" placeholder="Nickname" >
-      </div>
-      <div class="user-attribute">
-        <h5>Employer: </h5>
-        <p v-if="!editable">{{userdata['employer']}}</p>
-        <input v-if="editable" type="employer" v-model="userdata['employer']" id="employer" class="form-control" placeholder="Employer" required>
-      </div>
-      <div class="user-attribute">
-        <h5>Phone Number: </h5>
-        <p v-if="!editable">{{userdata['phonenumber']}}</p>
-        <label for="inputPhonenumber" class="sr-only">Phonenumber</label>
-        <input v-if="editable" type="tel" v-model="userdata['phonenumber']" id="inputPhonenumber" class="form-control" placeholder="Phone Number" required>
-      </div>
+  <div style="font-size:50px;text-align: center" v-if="userdata === null">User not found!</div>
+  <form v-if="userdata !== null" class="form-profile">
+    <h1 class="h3 mb-3 font-weight-normal">User Profile</h1>
+    <div class="user-attribute">
+      <h5>Email: </h5>
+      <p>{{userdata['email']}}</p>
+    </div>
+    <div class="user-attribute">
+      <h5>Role: </h5>
+      <!--        <div v-if="editable">-->
+      <!--           <input type="radio" name="role" v-model="userdata['role']" value="Consultant">-->
+      <!--           <label style="padding-left:2px;padding-right:5px"> Consultant</label>-->
+      <!--           <input type="radio" name="role" v-model="userdata['role']" value="Educational Leader">-->
+      <!--           <label style="padding-left:2px;padding-right:5px">Educational Leader</label>-->
+      <!--        </div>-->
+      <p>{{userdata['role']}}</p>
+    </div>
+    <div class="user-attribute">
+      <h5>Nickname: </h5>
+      <p v-if="!editable">{{userdata['nickname']}}</p>
+      <input v-if="editable" type="nickname" v-model="userdata['nickname']" id="nickname" class="form-control" placeholder="Nickname" >
+    </div>
+    <div class="user-attribute">
+      <h5>Employer: </h5>
+      <p v-if="!editable">{{userdata['employer']}}</p>
+      <input v-if="editable" type="employer" v-model="userdata['employer']" id="employer" class="form-control" placeholder="Employer" required>
+    </div>
+    <div class="user-attribute">
+      <h5>Phone Number: </h5>
+      <p v-if="!editable">{{userdata['phoneNumber']}}</p>
+      <label for="inputPhoneNumber" class="sr-only">Phone Number</label>
+      <input v-if="editable" type="tel" v-model="userdata['phoneNumber']" id="inputPhoneNumber" class="form-control" placeholder="Phone Number" required>
+    </div>
 
-      <br>
-      <button class="btn btn-lg btn-primary btn-block" v-if="!editable&&this.$store.getters.userProfile['role']==='Senior Consultant'" @click.prevent="Edit()">Edit</button>
-      <button class="btn btn-lg btn-primary btn-block" v-if="editable" @click.prevent="updateProfile()">Save</button>
-    </form>
+    <br>
+    <button class="btn btn-lg btn-primary btn-block" v-if="!editable&&$store.getters.userProfile['role']==='Senior Consultant'" @click.prevent="Edit()">Edit</button>
+    <button class="btn btn-lg btn-primary btn-block" v-if="editable" @click.prevent="updateProfile()">Save</button>
+  </form>
   </body>
 
-      
 
-  
+
+
 </template>
 
 <script>
