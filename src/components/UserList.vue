@@ -104,13 +104,10 @@ export default {
     },
 
     async showEditDialog(id){
-
-
-      this.editDialogVisible = true
-      const {data: res} = await getDocument("userInfo",id)
-      this.editForm = res.data
-      console.log(this.editForm)
- 
+      const Data = await getDocument("userInfo",id)
+      console.log(Data)
+      this.editDialogVisible = true;
+      this.editForm = Data
     },
 
     async Delete(msg) {
