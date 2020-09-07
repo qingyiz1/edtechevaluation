@@ -144,12 +144,9 @@ export default {
 
     }
   },
-
   firestore(){
     return{
-    
       users: db.collection("userInfo")
-   
     }
   },
 

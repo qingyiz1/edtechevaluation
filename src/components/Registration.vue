@@ -14,7 +14,21 @@
       <input type="tel" v-model="userInfo['phoneNumber']" id="inputPhoneNumber" class="form-control" placeholder="Phone Number" required>
       <b-form-select id="roleselect" v-model="userInfo['role']" :options="options" required></b-form-select>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Create User</button>
+      <p style="margin-top:5px;font-weight:bold;text-align: center;font-size: 20px">Or</p>
+      <button class="btn btn-lg btn-primary btn-block" @click.prevent="openSendWindow()">Send Invitation Code</button>
     </form>
+
+    <el-dialog title="Send Invitation Code" :visible.sync="sendWindowVisible" width="360px">
+      <el-form ref="form" :model="inviteUser" label-width="80px">
+        <el-form-item label="Email">
+          <el-input v-model="inviteUser.email"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="sendWindowVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="sendEmail">Confirm</el-button>
+      </span>
+    </el-dialog>
   </body>
 </template>
 
@@ -23,7 +37,7 @@ import {createDocument} from "@/tools/firebaseTool"
 import * as firebase from "firebase/app"
 import "firebase/auth"
 import $ from 'jquery'
-
+import {Email} from "@/tools/smtp"
 
 
 
@@ -38,6 +52,10 @@ export default {
   },
   data(){
     return{
+      sendWindowVisible: false,
+      inviteUser:{
+        email:"",
+      },
       userInfo:{
         email:'',
         password:'',
@@ -68,25 +86,48 @@ export default {
           })
       }
     },
+    openSendWindow(){
+      this.sendWindowVisible = true
+    },
+    sendEmail() {
+      Email.send({
+        Host: "smtp.gmail.com",
+        Username : "edtech.echidna@gmail.com",
+        Password : "edtechechidna",
+        To : this.inviteUser.email,
+        From : "edtech.echidna@gmail.com",
+        Subject : "Invitation code",
+        Body : "Welcome to EdTech, Your invitation code is 730283",
+      }).then(
+        this.sendWindowVisible = false,
+        window.alert("Invitation code sent to "+this.inviteUser.email),
+        this.inviteUser.email="",
+    )
+    }
   }
 }
 </script>
 
 <style scoped>
 @import "../css/general.css";
+
 #roleselect{
   margin-bottom: 10px;
 }
-.form-signin input[type="nickname"] {
-margin-bottom: -1px;
-border-top-left-radius: 0;
-border-top-right-radius: 0;
+
+.form-signup {
+  align-self: center;
+  background-color: white;
+  width: 100%;
+  max-width: 330px;
+  padding: 0px 15px 15px 15px;
+  position: absolute;
+  left: 50%;
+  margin-top: 20px;
+  margin-left:-165px;
+  border-radius: 10px 10px 10px 10px;
 }
-.form-signin input[type="employer"] {
-margin-bottom: -1px;
-border-top-left-radius: 0;
-border-top-right-radius: 0;
-}
+
 #phonenumber{
   margin-bottom: 5px;
   border-top-left-radius: 0;
