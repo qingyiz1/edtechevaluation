@@ -1,9 +1,14 @@
+.section{
+    width: 600px;
+    margin: 40px auto;
+    color: #000;
+}
+
 .question{
     font-size: 16px;
     text-align: left;
-    width: 600px;
-    margin: 40px auto;
     border: 1px solid #000;
+    margin: 30px;
     border-radius: 5px;
 }
 

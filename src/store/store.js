@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as firebase from "@/tools/firebaseConfig";
-import router from '../router/index'
+// import router from '../router/index'
 
 Vue.use(Vuex)
 
@@ -53,7 +53,7 @@ export const store = new Vuex.Store({
             commit('setUserProfile', userProfile.data())
             window.alert("Welcome Back! "+userProfile.data().nickname)
             // change route to dashboard
-            await router.push({path: "/profile/" + user.email})
+            // await router.push({path: "/profile/" + user.email})
         },
     }
 });
