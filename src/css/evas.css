@@ -1,0 +1,27 @@
+div{
+    /* color: #F00; */
+}
+
+.evaluation{
+    width: 600px;
+    margin: 0 auto;
+    padding: 20px 20px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    text-align: left;
+}
+
+.evaluation .evaluation-title{
+    display: flex;
+    justify-content: space-between;
+}
+
+.evaluation .evaluation-title1{
+    font-size: larger;
+    font-weight: bold;
+}
+
+.evaluation .evaluation-footer{
+    display: flex;
+    justify-content: space-between;
+}

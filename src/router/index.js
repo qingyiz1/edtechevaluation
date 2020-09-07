@@ -4,6 +4,8 @@ import Login from '@/components/Login.vue'
 import Registration from '@/components/Registration.vue'
 import Profile from '@/components/Profile'
 import Framework from "@/components/Framework";
+import Evaluations from "@/components/Evaluations";
+import EditEva from "@/components/EditEva";
 import * as firebase from "firebase"
 
 Vue.use(VueRouter)
@@ -30,6 +32,18 @@ const routes = [
         path:'/framework',
         name:'Framework',
         component: Framework,
+        meta:{requiresAuth: true}
+    },
+    {
+        path:'/evaluations',
+        name:'Evaluations',
+        component: Evaluations,
+        meta:{requiresAuth: true}
+    },
+    {
+        path:'/editEva',
+        name:'EditEva',
+        component: EditEva,
         meta:{requiresAuth: true}
     },
 ]
