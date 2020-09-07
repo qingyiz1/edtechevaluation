@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as firebase from "@/tools/firebaseConfig";
-// import router from '../router/index'
+import router from '../router/index'
 
 Vue.use(Vuex)
 
@@ -37,23 +37,20 @@ export const store = new Vuex.Store({
                     if(user != null){
                         // fetch user profile and set in state
                         dispatch('fetchUserProfile', user)
+                        // change route to user profile
+                        await router.push({path: "/profile/" + form.email})
+                        window.alert("Welcome Back!")
                     }
                 }).catch((_error) => {
                     window.alert("Login Failed!"+_error);
                 })
-
-
-
         },
         async fetchUserProfile({ commit }, user) {
             // fetch user profile
             const userProfile = await firebase.usersCollection.doc(user.email).get()
 
             // set user profile in state
-            commit('setUserProfile', userProfile.data())
-            window.alert("Welcome Back! "+userProfile.data().nickname)
-            // change route to dashboard
-            // await router.push({path: "/profile/" + user.email})
+            await commit('setUserProfile', userProfile.data())
         },
     }
 });
