@@ -1,12 +1,24 @@
 <template>
   <div id="app" class="framework-list">
+
+    <b-alert
+        id="frameworkDeleteAlert"
+        :show="dismissCountDown"
+        dismissible
+        fade
+        variant="danger"
+        @dismiss-count-down="countDownChanged"
+    >
+      <p>Framework Successfully Deleted!</p>
+    </b-alert>
+
     <b-overlay
     :show="show"
     opacity="0.6"
     variant="transparent"
     @hidden="onHidden">
       <b-button variant="success" @click="createNewFrameowrk">Create a New Framework</b-button>
-      <b-row v-for="framework in frameworks" :key=framework.id>
+      <b-row v-for="(framework,index) in frameworks" :key=framework.id>
         <b-col>
           <b-card
           :header="framework.name"
@@ -43,7 +55,7 @@
                 @change="onActive(framework)"
                 style="margin-bottom: 10px"
                 switch
-                ></b-form-checkbox>
+                ><b-button variant="danger" size="sm" @click="deleteFramework(framework,index)">Delete</b-button></b-form-checkbox>
                 <b-button 
                 variant="primary" 
                 :disabled="!framework.isActive"
@@ -59,7 +71,7 @@
 
 <script>
 import {db} from "@/tools/firebaseConfig"
-import {updateDocument} from "@/tools/firebaseTool"
+import {updateDocument, deleteDocument} from "@/tools/firebaseTool"
 // import {router} from "@/router/index.js"
 // import {debounce} from 'debounce'
 const frameworkPath = "framework/"
@@ -73,7 +85,9 @@ export default {
       frameworks:[],
       errorMessage:"",
       show:"",
-      isActive:""
+      isActive:"",
+      dismissSecs: 1.5,
+      dismissCountDown: 0,
     }
   },
   // computed:{
@@ -92,6 +106,9 @@ export default {
   //   }
   // },
   methods:{
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown
+    },
   createNewFrameowrk: function () {
    this.$router.push('/framework/new_framework')
   },
@@ -105,6 +122,19 @@ export default {
   onStartEvaluation: function(framework) {
     console.log(framework);
   },
+    deleteFramework(framework,index){
+      this.dismissCountDown = this.dismissSecs
+      deleteDocument('framework',framework.id)
+      if(this.frameworks[index] === framework) {
+        // The template passes index as the second parameter to avoid indexOf,
+        // it will be better for the performance especially for one large array
+        // (because indexOf actually loop the array to do the match)
+        this.frameworks.splice(index, 1)
+      } else {
+        let found = this.frameworks.indexOf(framework)
+        this.frameworks.splice(found, 1)
+      }
+    },
   timeConverter: function (timestamp) {
   let tempDate = new Date(timestamp);
   let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -149,5 +179,12 @@ export default {
 .framework-list {
   margin-top: 10px;
 }
-
+#frameworkDeleteAlert{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -35px;
+  margin-left: -160px;
+  z-index: 10;
+}
 </style>
