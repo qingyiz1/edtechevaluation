@@ -1,12 +1,18 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import {auth} from "@/tools/firebaseConfig"
 import Login from '@/components/Login.vue'
 import Registration from '@/components/Registration.vue'
 import Profile from '@/components/Profile'
 import Framework from "@/components/Framework";
+<<<<<<< HEAD
 import Evaluations from "@/components/Evaluations";
 import EditEva from "@/components/EditEva";
 import * as firebase from "firebase"
+import Framework_Template from "@/components/FrameworkTemplate";
+import Evaluations from "@/components/Evaluations";
+import Userlist from "@/components/UserList";
+
 
 Vue.use(VueRouter)
 
@@ -23,7 +29,7 @@ const routes = [
         component: Login
     },
     {
-        path:'/profile',
+        path:'/profile/:nickname',
         name:'Profile',
         component: Profile,
         meta:{requiresAuth: true}
@@ -35,15 +41,21 @@ const routes = [
         meta:{requiresAuth: true}
     },
     {
-        path:'/evaluations',
-        name:'Evaluations',
-        component: Evaluations,
+        path:'/framework/new_framework',
+        name:'Framework_Template',
+        component: Framework_Template,
         meta:{requiresAuth: true}
     },
     {
-        path:'/editEva',
-        name:'EditEva',
-        component: EditEva,
+        path:'/evaluation',
+        name:'Evaluation',
+        component:Evaluations,
+        meta:{requiresAuth: true}
+    },
+    {
+        path:'/userlist',
+        name:'Userlist',
+        component: Userlist,
         meta:{requiresAuth: true}
     },
 ]
@@ -55,7 +67,7 @@ const router = new VueRouter({
 
 router.beforeEach((to,from,next)=>{
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    const isAuthenticated = firebase.auth().currentUser;
+    const isAuthenticated = auth.currentUser;
     if(requiresAuth && !isAuthenticated){
         next("/login")
     }else{
