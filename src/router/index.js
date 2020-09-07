@@ -9,7 +9,7 @@ import Evaluations from "@/components/Evaluations";
 import EditEva from "@/components/EditEva";
 import Framework_Template from "@/components/FrameworkTemplate";
 import Userlist from "@/components/UserList";
-
+import CreateUser from "@/components/CreateUser";
 
 Vue.use(VueRouter)
 
@@ -18,6 +18,11 @@ const routes = [
         path:'/registration',
         name:'Registration',
         component: Registration,
+    },
+    {
+        path:'/createuser',
+        name:'CreateUser',
+        component: CreateUser,
         meta:{requiresAuth: true}
     },
     {

@@ -48,14 +48,15 @@
                   @click="onInactive(framework)"
                   :style="{'background-color':framework.isActive ? '#6c757d !important':'' }">Inactive</b-button>
                 </b-button-group> -->
-                <b-form-checkbox 
-                v-model="framework.isActive" 
-                name="check-button" 
-                size="lg"
-                @change="onActive(framework)"
-                style="margin-bottom: 10px"
-                switch
-                ><b-button v-if="framework.isActive === false" variant="danger" size="sm" @click="deleteFramework(framework,index)">Delete</b-button></b-form-checkbox>
+                <b-form-checkbox
+                  v-if="$store.getters.userProfile['role']==='Senior Consultant'"
+                  v-model="framework.isActive"
+                  name="check-button"
+                  size="lg"
+                  @change="onActive(framework)"
+                  style="margin-bottom: 10px"
+                  switch>
+                <b-button v-if="framework.isActive === false&&$store.getters.userProfile['role']==='Senior Consultant'" variant="danger" size="sm" @click="deleteFramework(framework,index)">Delete</b-button></b-form-checkbox>
                 <b-button 
                 variant="primary" 
                 :disabled="!framework.isActive"

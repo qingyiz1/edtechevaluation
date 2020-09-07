@@ -7,13 +7,12 @@
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
             <b-nav-item v-if="!$store.getters.loggedIn" to="/login">Login</b-nav-item>
-            <b-nav-item v-if="userdata['role']==='Senior Consultant'" to="/registration">Create User</b-nav-item>
+            <b-nav-item v-if="userdata['role']==='Senior Consultant'" to="/createuser">Create User</b-nav-item>
             <b-nav-item v-if="$store.getters.loggedIn" to="/framework">Framework</b-nav-item>
             <b-nav-item v-if="$store.getters.loggedIn" to="/evaluation">Evaluation</b-nav-item>
             <b-nav-item v-if="$store.getters.loggedIn" :to=" '/profile/' + this.userdata['email']">Profile</b-nav-item>
             <b-nav-item v-if="$store.getters.loggedIn&&$store.getters.userProfile['role']==='Senior Consultant'" to="/userlist">User List</b-nav-item>
             <b-nav-item v-if="$store.getters.loggedIn" @click="signOut">Sign out</b-nav-item>
-
           </b-navbar-nav>
         </b-collapse>
 

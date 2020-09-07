@@ -32,18 +32,24 @@ export const store = new Vuex.Store({
     actions:{
         async login({ dispatch }, form) {
             // sign user in
-            await firebase.auth.signInWithEmailAndPassword(form.email, form.password)
-                .then(async (user) => {
-                    if(user != null){
-                        // fetch user profile and set in state
-                        dispatch('fetchUserProfile', user)
-                        // change route to user profile
-                        await router.push({path: "/profile/" + form.email})
-                        window.alert("Welcome Back!")
-                    }
-                }).catch((_error) => {
-                    window.alert("Login Failed!"+_error);
-                })
+            if((await firebase.usersCollection.doc(form.email).get()).data()['isActive'] === true)
+            {
+                await firebase.auth.signInWithEmailAndPassword(form.email, form.password)
+                    .then(async (user) => {
+                        if(user != null){
+                            // fetch user profile and set in state
+                            dispatch('fetchUserProfile', user)
+                            // change route to user profile
+                            await router.push({path: "/profile/" + form.email})
+                            window.alert("Welcome Back!")
+                        }
+                    }).catch((_error) => {
+                        window.alert("Login Failed!"+_error);
+                    })
+            }else{
+                window.alert("Your account is deactivated, please contact your senior consultant!")
+            }
+
         },
         async fetchUserProfile({ commit }, user) {
             // fetch user profile
