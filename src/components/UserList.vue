@@ -40,7 +40,11 @@
           <el-input v-model="editForm.phoneNumber"></el-input>
         </el-form-item>
         <el-form-item label="Role">
-          <el-input v-model="editForm.role"></el-input>
+          <el-radio-group v-model="editForm.role">
+            <el-radio label="Senior Consultant" border size="medium">Senior Consultant</el-radio>
+            <el-radio label="Consultant" border size="medium">Consultant</el-radio>
+            <el-radio label="Ed Leader" border size="medium">Ed Leader</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="Employer">
           <el-input v-model="editForm.employer"></el-input>
