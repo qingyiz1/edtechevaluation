@@ -1,72 +1,19 @@
 <template>
   <div>
-    <div class="evaluation">
+    <div class="evaluation" v-on:click="createEva" v-for="eva in evaluationList" v-bind:key="eva.id">
       <div class="evaluation-title">
-        <div class="evaluation-title1">Test Evaluation</div>
-        <div class="evaluation-state">completed</div>
+        <div class="evaluation-title1">{{eva.name}}</div>
+        <div class="evaluation-state" v-if="eva.isCompleted">completed</div>
       </div>
 
-      <div class="evaluation-author">Created By: Jack Handerson</div>
+      <div class="evaluation-author">Created By: {{eva.author}}</div>
 
       <div class="evaluation-footer">
-        <div class="evaluation-date">03/08/2020</div>
-        <div class="evaluation-framework">Primary Edtech Framework</div>
-      </div>
-    </div>
-    <div class="evaluation">
-      <div class="evaluation-title">
-        <div class="evaluation-title1">Test Evaluation</div>
-        <div class="evaluation-state">completed</div>
-      </div>
-
-      <div class="evaluation-author">Created By: Jack Handerson</div>
-
-      <div class="evaluation-footer">
-        <div class="evaluation-date">03/08/2020</div>
-        <div class="evaluation-framework">Primary Edtech Framework</div>
-      </div>
-    </div>
-    <div class="evaluation">
-      <div class="evaluation-title">
-        <div class="evaluation-title1">Test Evaluation</div>
-        <div class="evaluation-state">Active</div>
-      </div>
-
-      <div class="evaluation-author">Created By: Jack Handerson</div>
-
-      <div class="evaluation-footer">
-        <div class="evaluation-date">03/08/2020</div>
-        <div class="evaluation-framework">Primary Edtech Framework</div>
-      </div>
-    </div>
-        <div class="evaluation">
-      <div class="evaluation-title">
-        <div class="evaluation-title1">Test Evaluation</div>
-        <div class="evaluation-state">completed</div>
-      </div>
-
-      <div class="evaluation-author">Created By: Jack Handerson</div>
-
-      <div class="evaluation-footer">
-        <div class="evaluation-date">03/08/2020</div>
-        <div class="evaluation-framework">Primary Edtech Framework</div>
-      </div>
-    </div>
-        <div class="evaluation">
-      <div class="evaluation-title">
-        <div class="evaluation-title1">Test Evaluation</div>
-        <div class="evaluation-state">completed</div>
-      </div>
-
-      <div class="evaluation-author">Created By: Jack Handerson</div>
-
-      <div class="evaluation-footer">
-        <div class="evaluation-date">03/08/2020</div>
-        <div class="evaluation-framework">Primary Edtech Framework</div>
+        <div class="evaluation-date">Start From: {{getDate(eva.dateCreated)}}</div>
+        <div class="evaluation-framework">{{eva.frameworkId}}</div>
       </div>
     </div>
   </div>
-
   <!-- <div id="app">
 
     <div v-if="state === 'synced'">
@@ -97,10 +44,11 @@
 </template>
 
 <script>
+// import {getDocuments} from "@/tools/firebaseTool";
+import { createDocument } from "@/tools/firebaseTool";
 import { db } from "@/tools/firebaseConfig";
-import { debounce } from "debounce";
-const frameworkPath = "framework/" + "framework1";
-
+import * as firebase from "firebase";
+const evaluationPath = "evaluation/";
 export default {
   name: "Evaluations",
   data() {
@@ -109,43 +57,44 @@ export default {
       firebaseData: null,
       formData: {},
       errorMessage: "",
-    };
-  },
-  firestore() {
-    return {
-      firebaseData: db.doc(frameworkPath),
+
+      evaluationList: []
     };
   },
   methods: {
-    async updateFirebase() {
-      try {
-        await db.doc(frameworkPath).set(this.formData);
-        this.state = "synced";
-      } catch (error) {
-        this.errorMessage = JSON.stringify(error);
-        this.state = "error";
-      }
+    createEva: async function () {
+      let evaData = {
+        author: "Admin",
+        dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
+        dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
+        frameworkId: "framework1",
+        id: "evaluation2",
+        isCompleted: true,
+        name: "Edtech Evaluation2",
+        section: "",
+        summary: "This is a summary",
+      };
+      createDocument(evaluationPath, "evaluation2", evaData);
     },
-    fieldUpdate() {
-      this.state = "modified";
-      this.debouncedUpdate();
-    },
-    debouncedUpdate: debounce(function () {
-      this.updateFirebase();
-    }, 1500),
+    getDate: function(rawDate){
+      let m = new Date(rawDate.seconds*1000)
+
+      return m.toDateString();
+    }
   },
   created: async function () {
-    const docRef = db.doc(frameworkPath);
-
-    let data = (await docRef.get()).data();
-
-    if (!data) {
-      data = { name: "", section: "", question: "" };
-      await docRef.set(data);
-    }
-
-    this.formData = data;
-    this.state = "synced";
+    //How can I use firebaseTool.js/getDocuments() ?????
+    db.collection(evaluationPath)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          console.log(doc.data());
+          this.evaluationList.push(doc.data())
+        });
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
   },
 };
 </script>
@@ -154,5 +103,5 @@ export default {
 
 <style scoped>
 @import "../css/general.css";
-/*@import "../css/evas.css";*/
+@import "../css/evas.css";
 </style>

@@ -5,9 +5,11 @@ import Login from '@/components/Login.vue'
 import Registration from '@/components/Registration.vue'
 import Profile from '@/components/Profile'
 import Framework from "@/components/Framework";
-import Framework_Template from "@/components/FrameworkTemplate";
 import Evaluations from "@/components/Evaluations";
+import EditEva from "@/components/EditEva";
+import Framework_Template from "@/components/FrameworkTemplate";
 import Userlist from "@/components/UserList";
+
 
 Vue.use(VueRouter)
 
@@ -45,6 +47,12 @@ const routes = [
         path:'/evaluation',
         name:'Evaluation',
         component:Evaluations,
+        meta:{requiresAuth: true}
+    },
+    {
+        path:'/EditEva',
+        name:'EditEva',
+        component:EditEva,
         meta:{requiresAuth: true}
     },
     {
