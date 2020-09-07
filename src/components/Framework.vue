@@ -55,7 +55,7 @@
                 @change="onActive(framework)"
                 style="margin-bottom: 10px"
                 switch
-                ><b-button variant="danger" size="sm" @click="deleteFramework(framework,index)">Delete</b-button></b-form-checkbox>
+                ><b-button v-if="framework.isActive === false" variant="danger" size="sm" @click="deleteFramework(framework,index)">Delete</b-button></b-form-checkbox>
                 <b-button 
                 variant="primary" 
                 :disabled="!framework.isActive"
