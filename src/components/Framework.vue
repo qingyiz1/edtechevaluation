@@ -11,7 +11,6 @@
     >
       <p>Framework Successfully Deleted!</p>
     </b-alert>
-
     <b-overlay
     :show="show"
     opacity="0.6"
@@ -123,19 +122,40 @@ export default {
   onStartEvaluation: function(framework) {
     console.log(framework);
   },
-    deleteFramework(framework,index){
-      this.dismissCountDown = this.dismissSecs
-      deleteDocument('framework',framework.id)
-      if(this.frameworks[index] === framework) {
-        // The template passes index as the second parameter to avoid indexOf,
-        // it will be better for the performance especially for one large array
-        // (because indexOf actually loop the array to do the match)
-        this.frameworks.splice(index, 1)
-      } else {
-        let found = this.frameworks.indexOf(framework)
-        this.frameworks.splice(found, 1)
+  deleteFramework(framework,index){
+    this.$bvModal.msgBoxConfirm('This action will delete the framework permanently.', {
+      title: 'Warning!',
+      size: 'sm',
+      buttonSize: 'sm',
+      headerBgVariant:'warning',
+      okVariant: 'danger',
+      okTitle: 'Confirm',
+      cancelTitle: 'Cancel',
+      footerClass: 'p-2',
+      hideHeaderClose: false,
+      centered: true
+    })
+    .then(value => {
+      if(value === true){
+        this.dismissCountDown = this.dismissSecs
+        deleteDocument('framework',framework.id)
+        if(this.frameworks[index] === framework) {
+          // The template passes index as the second parameter to avoid indexOf,
+          // it will be better for the performance especially for one large array
+          // (because indexOf actually loop the array to do the match)
+          this.frameworks.splice(index, 1)
+        } else {
+          let found = this.frameworks.indexOf(framework)
+          this.frameworks.splice(found, 1)
+        }
       }
-    },
+    })
+    .catch(err => {
+      // An error occurred
+      window.alert(err)
+    })
+
+  },
   timeConverter: function (timestamp) {
   let tempDate = new Date(timestamp);
   let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];

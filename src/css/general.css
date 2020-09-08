@@ -85,12 +85,6 @@ border-top-left-radius: 0;
 border-top-right-radius: 0;
 }
 
-.btn{
-background-color: royalblue;
-}
-.btn:hover {
-background-color: #343a40;
-}
 .h3{
 background: #343a40;
 padding:10px;
