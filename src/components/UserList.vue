@@ -115,7 +115,7 @@ export default {
       const confirmResult = await this.$confirm('This operation will delete this user information, are you sure?', 'Alert', {
           confirmButtonText: 'Yes',
           cancelButtonText: 'No',
-          type: 'warning'
+          type: 'warning',
         }
         ).catch(err => console.log(err))
 

@@ -18,7 +18,8 @@ const routes = [
     {
         path:'/',
         name:'Dashboard',
-        component: Dashboard
+        component: Dashboard,
+        meta:{requiresAuth: true}
     },
     {
         path:'/registration',
