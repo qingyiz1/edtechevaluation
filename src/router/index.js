@@ -10,10 +10,16 @@ import EditEva from "@/components/EditEva";
 import Framework_Template from "@/components/FrameworkTemplate";
 import Userlist from "@/components/UserList";
 import CreateUser from "@/components/CreateUser";
+import Dashboard from "@/components/Dashboard";
 
 Vue.use(VueRouter)
 
 const routes = [
+    {
+        path:'/',
+        name:'Dashboard',
+        component: Dashboard
+    },
     {
         path:'/registration',
         name:'Registration',

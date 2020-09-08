@@ -53,26 +53,32 @@ export default {
   },
   methods: {
     async createUser(){
+      let codeValid = false;
       await db.collection('invitationCode').doc(this.userInfo['invitationCode']).get()
-      .then(function(doc) {
-        if (doc.exists) {
-          auth.createUserWithEmailAndPassword(this.userInfo['email'],this.userInfo['password'])
-              .then(async () => {
-                createDocument("userInfo",this.userInfo['email'],this.userInfo)
-                window.alert(this.userInfo['email']+" created")
-                this.$store.commit("loggedIn")
-                await this.$router.push({path: "/profile/" + this.userInfo['email']})
-              }).catch((_error) => {
-            window.alert("Registration Failed!"+_error);
-          })
-        } else {
-          // doc.data() will be undefined in this case
-          window.alert("Your invitation code is invalid!")
-        }
-      }).catch(function(error) {
+          .then(function(doc) {
+            if (doc.exists) {
+              return codeValid = true;
+            } else {
+              // doc.data() will be undefined in this case
+              window.alert("Your invitation code is invalid!")
+            }
+          }).catch(function(error) {
             console.log("Error getting document:", error);
-      });
+          });
+      if(codeValid){
+        auth.createUserWithEmailAndPassword(this.userInfo['email'],this.userInfo['password'])
+            .then(async () => {
+              createDocument("userInfo",this.userInfo['email'],this.userInfo)
+              window.alert(this.userInfo['email']+" created")
+              this.$store.commit("loggedIn")
+              await this.$router.push({path: "/profile/" + this.userInfo['email']})
+            }).catch((_error) => {
+          window.alert("Registration Failed!"+_error);
+        })
+      }
     }
+
+
   },
   mounted(){
     if(firebase.auth().currentUser !== null){
