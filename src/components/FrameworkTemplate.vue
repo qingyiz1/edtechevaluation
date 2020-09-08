@@ -68,7 +68,6 @@ import {db} from "@/tools/firebaseConfig";
 import * as firebase from "firebase";
 import SectionTemplate from "@/components/SectionTemplate";
 const frameworkPath = "/framework" + Math.ceil(Math.random()*100);
-const sectionPath = "/section" + Math.ceil(Math.random()*100);
 export default {
   name: "Framework_Template",
   data(){
@@ -125,12 +124,15 @@ export default {
           }
         }
         if (checkSection && checkQuestion) {
+          let sectionArray = [];
           for (let i = 0; i < this.sections.length; i++ ) {
+          let sectionPath = "/section" + Math.ceil(Math.random()*100);
             createDocument("Section",sectionPath,this.sections[i]);
+            sectionArray.push(db.doc('Section' + sectionPath));
           }
           this.framework = {
           name:this.frameworkName,
-          section:db.doc('Section' + sectionPath),
+          section:sectionArray,
           dateCreated: Date.parse(new Date()),
           dateEdited: Date.parse(new Date()),
           author:this.author,
