@@ -64,8 +64,9 @@
             </b-card>
           </b-collapse>
         </div>
-        <b-button v-b-modal.modal-tall v-on:click="save">Save</b-button>
+
         <div>
+          <b-button v-on:click="save" class="btn">Save</b-button>
           <b-button v-b-modal.modal-tall v-on:click="generateReport">Generate report</b-button>
 
           <b-modal id="modal-tall" title="Evaluation Outcome">
@@ -82,6 +83,7 @@
 <script>
 // import * as firebase from "firebase";
 import { db } from "@/tools/firebaseConfig";
+import * as firebase from "firebase";
 export default {
   name: "EditEva",
   data() {
@@ -99,13 +101,29 @@ export default {
           .update({
             question: this.questions[sectionIndex],
           })
-          .then(function () {
-            console.log("Document successfully updated!");
-          })
+          .then(function () {})
           .catch(function (error) {
             console.error("Error updating document: ", error);
           });
       }
+      let evaData = {
+        author: "Admin",
+        dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
+        dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
+        frameworkId: "framework1",
+        id: "evaluation2",
+        isCompleted: true,
+        name: "Edtech Evaluation",
+        section: this.sections,
+        summary: "This is a summary",
+      };
+      await db
+        .collection("evaluation")
+        .add(evaData)
+        .then(function (docRef) {
+          console.log(docRef)
+        });
+      window.alert("Evaluation successfully updated!");
     },
     generateReport: function () {
       this.report = "";
@@ -179,7 +197,7 @@ export default {
     //change this.session into the new sessions created just before
     for (let sectionIndex in this.sections) {
       await db
-        .collection("evaluation")
+        .collection("Section")
         .add({
           name: this.sections[sectionIndex].id + "Duplication",
           question: this.questions[sectionIndex],
@@ -201,6 +219,9 @@ export default {
 .section {
   margin-bottom: 30px;
   text-align: left;
+}
+.btn {
+  margin: 0px 40px;
 }
 </style>
 
