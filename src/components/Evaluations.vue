@@ -19,11 +19,11 @@
 </template>
 
 <script>
-// import {getDocuments} from "@/tools/firebaseTool";
-import { createDocument } from "@/tools/firebaseTool";
-import { db } from "@/tools/firebaseConfig";
+import {createDocument} from "@/tools/firebaseTool";
 import * as firebase from "firebase";
+import {db} from "@/tools/firebaseConfig";
 const evaluationPath = "evaluation/";
+
 export default {
   name: "Evaluations",
   data() {
@@ -58,6 +58,7 @@ export default {
     },
   },
   created: async function () {
+
     db.collection(evaluationPath)
       .get()
       .then((querySnapshot) => {
@@ -70,6 +71,11 @@ export default {
         console.log("Error getting documents: ", error);
       });
   },
+  firestore(){
+    return{
+      evaluationList:db.collection(evaluationPath)
+    }
+  }
 };
 </script>
 

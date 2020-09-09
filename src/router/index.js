@@ -10,15 +10,27 @@ import EditEva from "@/components/EditEva";
 import DisplayEva from "@/components/DisplayEva";
 import Framework_Template from "@/components/FrameworkTemplate";
 import Userlist from "@/components/UserList";
-
+import CreateUser from "@/components/CreateUser";
+import Dashboard from "@/components/Dashboard";
 
 Vue.use(VueRouter)
 
 const routes = [
     {
+        path:'/',
+        name:'Dashboard',
+        component: Dashboard,
+        meta:{requiresAuth: true}
+    },
+    {
         path:'/registration',
         name:'Registration',
         component: Registration,
+    },
+    {
+        path:'/createuser',
+        name:'CreateUser',
+        component: CreateUser,
         meta:{requiresAuth: true}
     },
     {

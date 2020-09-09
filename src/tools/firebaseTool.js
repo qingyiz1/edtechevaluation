@@ -43,24 +43,19 @@ export async function getDocument(collection,ID) {
     return Data;
 }
 
-export function getDocuments(collection) {
+export async function getDocuments(collection) {
     let Data = [];
-    db.collection(collection)
+    await db.collection(collection)
         .get()
         .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
-                Data.push({
-                    id: doc.id,
-                    name: doc.data().name,
-                    email: doc.data().email,
-                });
-                console.log(doc.id, " => ", doc.data());
+                Data.push(doc.data());
             });
-            return Data
         })
         .catch((error) => {
             console.log("Error getting documents: ", error);
         });
+    return Data
 }
 
 export function deleteDocument(collection,ID){

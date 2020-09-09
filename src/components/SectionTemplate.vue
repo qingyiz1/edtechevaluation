@@ -85,7 +85,7 @@ export default {
         this.visible = !this.visible
     },
     onDeleteSection: function (sectionID) {
-        this.$parent.sections.splice(sectionID,1);
+        this.$parent.$parent.sections.splice(sectionID,1);
     }
   }
 }

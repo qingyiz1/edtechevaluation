@@ -1,8 +1,8 @@
 body {
-    background: #343a40;
-height: 100%;
-width: 100%;
-align-items: center;
+    background: #e8e8e8 !important;
+    height: 100%;
+    width: 100%;
+    align-items: center;
     margin: 0 auto;
 }
 
@@ -35,20 +35,20 @@ align-items: center;
     background-image: url("../../src/assets/Logo.png");
 }
 .form-signin {
-background-color: #f5f5f5;
-width: 100%;
-max-width: 330px;
-padding: 0px 15px 15px 15px;
+    background-color: #f5f5f5;
+    width: 100%;
+    max-width: 330px;
+    padding: 0px 15px 15px 15px;
     position: fixed;
     top: 50%;
     left: 50%;
     margin-top: -100px;
     margin-left: -165px;
+    border-radius: 10px 10px 10px 10px;
 }
-
 .form-signup {
     align-self: center;
-    background-color: #f5f5f5;
+    background-color: white;
     width: 100%;
     max-width: 330px;
     padding: 0px 15px 15px 15px;
@@ -56,7 +56,9 @@ padding: 0px 15px 15px 15px;
     left: 50%;
     margin-top: 20px;
     margin-left:-165px;
+    border-radius: 10px 10px 10px 10px;
 }
+
 
 .form-control {
 position: relative;
@@ -64,6 +66,7 @@ box-sizing: border-box;
 height: auto;
 padding: 10px;
 font-size: 16px;
+    margin-bottom: 2px;
 }
 #usertypeLabel{
 margin-bottom:0px !important;
@@ -82,12 +85,6 @@ border-top-left-radius: 0;
 border-top-right-radius: 0;
 }
 
-.btn{
-background-color: royalblue;
-}
-.btn:hover {
-background-color: #343a40;
-}
 .h3{
 background: #343a40;
 padding:10px;

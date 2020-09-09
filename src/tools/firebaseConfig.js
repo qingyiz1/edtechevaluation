@@ -13,6 +13,8 @@ var firebaseConfig ={
     measurementId: "G-HQX493R878"
 }
 
+const adminApp = firebase.initializeApp(firebaseConfig,"CreateUser.vue")
+
 export default firebase.initializeApp(firebaseConfig);
 
 // utils
@@ -21,8 +23,8 @@ const auth = firebase.auth()
 
 // collection references
 const usersCollection = db.collection('userInfo')
-const frameworkCollection = db.collection('comments')
-const evaluationCollection = db.collection('likes')
+const frameworkCollection = db.collection('framework')
+const evaluationCollection = db.collection('evaluation')
 
 // export utils/refs
 export {
@@ -30,5 +32,6 @@ export {
     auth,
     usersCollection,
     frameworkCollection,
-    evaluationCollection
+    evaluationCollection,
+    adminApp
 }

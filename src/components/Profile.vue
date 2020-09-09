@@ -99,6 +99,7 @@ export default {
   max-width: 330px;
   padding: 0px 15px 15px 15px;
   margin: auto;
+  border-radius: 10px 10px 10px 10px;
 }
 .form-profile .form-control {
   position: relative;
