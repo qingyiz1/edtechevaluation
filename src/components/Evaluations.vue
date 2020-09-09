@@ -58,7 +58,6 @@ export default {
     },
   },
   created: async function () {
-    //How can I use firebaseTool.js/getDocuments() ?????
     db.collection(evaluationPath)
       .get()
       .then((querySnapshot) => {
