@@ -51,14 +51,14 @@ const routes = [
         meta:{requiresAuth: true}
     },
     {
-        path:'/EditEva/:evaId',
-        name:'EditEva',
+        path:'/editEva/:evaId',
+        name:'editEva',
         component:EditEva,
         meta:{requiresAuth: true}
     },
     {
-        path:'/DisplayEva/:evaId',
-        name:'DisplayEva',
+        path:'/displayEva/:evaId',
+        name:'displayEva',
         component:DisplayEva,
         meta:{requiresAuth: true}
     },

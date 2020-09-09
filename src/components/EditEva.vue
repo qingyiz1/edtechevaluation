@@ -1,11 +1,17 @@
 <template>
-  <div class="wrapper">
-    <div v-for="(section, indexS) in questions" v-bind:key="'section'+indexS">
-      <b-button v-b-toggle="'collapse'+indexS" variant="primary">Section {{indexS+1}}</b-button>
-      <b-collapse visible v-bind:id="'collapse'+indexS" class="mt-2">
-        <b-card class="section">
-            <b-card v-bind:header="'Section '+(indexS+1)+' Question '+(indexQ+1)" :title="question.questionName"
-             v-for="(question, indexQ) in section" v-bind:key="indexQ">
+  <b-container>
+    <b-row align-h="center">
+      <b-col cols="8">
+        <div v-for="(section, indexS) in questions" v-bind:key="'section'+indexS">
+          <b-button v-b-toggle="'collapse'+indexS" variant="primary">Section {{indexS+1}}</b-button>
+          <b-collapse visible v-bind:id="'collapse'+indexS" class="mt-2">
+            <b-card
+              v-bind:header="'Section '+(indexS+1)+' Question '+(indexQ+1)"
+              :title="question.questionName"
+              v-for="(question, indexQ) in section"
+              v-bind:key="indexQ"
+              class="section"
+            >
               <b-card-text>
                 <b-list-group>
                   <b-list-group-item>
@@ -56,21 +62,21 @@
                 </b-list-group>
               </b-card-text>
             </b-card>
+          </b-collapse>
+        </div>
+        <b-button v-b-modal.modal-tall v-on:click="save">Save</b-button>
+        <div>
+          <b-button v-b-modal.modal-tall v-on:click="generateReport">Generate report</b-button>
 
-        </b-card>
-      </b-collapse>
-    </div>
-
-    <div>
-      <b-button v-b-modal.modal-tall v-on:click="generateReport">Generate report</b-button>
-
-      <b-modal id="modal-tall" title="Evaluation Outcome">
-        <p>
-          <span v-html="text"></span>
-        </p>
-      </b-modal>
-    </div>
-  </div>
+          <b-modal id="modal-tall" title="Evaluation Outcome">
+            <p>
+              <span v-html="report"></span>
+            </p>
+          </b-modal>
+        </div>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
@@ -82,40 +88,77 @@ export default {
     return {
       sections: [],
       questions: [],
-      text: "",
+      report: "",
     };
   },
   methods: {
+    save: async function () {
+      for (let sectionIndex in this.sections) {
+        await db
+          .doc(this.sections[sectionIndex].path)
+          .update({
+            question: this.questions[sectionIndex],
+          })
+          .then(function () {
+            console.log("Document successfully updated!");
+          })
+          .catch(function (error) {
+            console.error("Error updating document: ", error);
+          });
+      }
+    },
     generateReport: function () {
-      this.text = "";
+      this.report = "";
       for (let section of this.questions) {
         for (let question of section) {
-          this.text =
-            this.text +
+          this.report =
+            this.report +
             question.questionName +
             "<br>" +
             question.answer +
             "<br>";
         }
-        this.text = this.text + "<br><br>";
-        console.log(this.text);
+        this.report = this.report + "<br><br>";
+        console.log(this.report);
       }
+    },
+    delete: function () {
+      db.collection("evaluation")
+        .get()
+        .then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+            if (doc.id.substr(0, 2) != "ev") {
+              db.collection("evaluation")
+                .doc(doc.id)
+                .delete()
+                .catch(function (error) {
+                  console.error("Error removing document: ", error);
+                });
+            }
+          });
+        })
+        .catch(function (error) {
+          console.log("Error getting document:", error);
+        });
     },
   },
   created: async function () {
-    console.log("fefe");
+    //get sections of the framework
+    //e.g. this.sections = [sectionRef1, sectionRef2]
+    let _this = this;
     await db
       .collection("framework/")
-      .doc("framework93")
+      .doc(this.$route.params.evaId)
       .get()
       .then((doc) => {
         this.sections = doc.data().section;
-        console.log(this.sections);
       })
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
 
+    //generate questions list
+    // e.g. this.questions=[[{questionName: q1, answer: a}, {questionName: q2, answer: a}], [{questionName: q2, answer: a}]];
     for (let section of this.sections) {
       await db
         .doc(section.path)
@@ -132,7 +175,21 @@ export default {
         });
     }
 
-    console.log(this.questions);
+    //create a session duplication with same questions
+    //change this.session into the new sessions created just before
+    for (let sectionIndex in this.sections) {
+      await db
+        .collection("evaluation")
+        .add({
+          name: this.sections[sectionIndex].id + "Duplication",
+          question: this.questions[sectionIndex],
+        })
+        .then(function (docRef) {
+          _this.sections[sectionIndex] = docRef;
+        });
+    }
+
+    // this.delete();
   },
 };
 </script>
@@ -141,5 +198,11 @@ export default {
 
 <style scoped>
 @import "../css/general.css";
-@import "../css/editeva.css";
+.section {
+  margin-bottom: 30px;
+  text-align: left;
+}
 </style>
+
+
+
