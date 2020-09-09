@@ -32,7 +32,7 @@ export const store = new Vuex.Store({
     actions:{
         async login({ dispatch }, form) {
             // sign user in
-            if((await firebase.usersCollection.doc(form.email).get()).data() === undefined)
+            if((await firebase.usersCollection.doc(form.email).get()).data() === undefined || (await firebase.usersCollection.doc(form.email).get()).data()['isActive'] === false)
             {
                 window.alert("User not found or deactivated, please contact your senior consultant!")
             }else if((await firebase.usersCollection.doc(form.email).get()).data()['isActive'] === true){
