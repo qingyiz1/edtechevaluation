@@ -1,16 +1,16 @@
 <template>
-    <b-container class="bv-example-row">
+    <b-container>
       <b-row align-h="center">
         <b-col cols="7">
-          <div v-on:click="createEva" v-for="eva in evaluationList" v-bind:key="eva.id">
+          <div v-on:click="clickEvaluation" v-for="eva in evaluationList" v-bind:key="eva.path" class="evaluation">
             <b-card :header="eva.name" :footer="eva.frameworkId" :title="eva.name">
               <b-card-text>
                 Created by {{eva.author}} {{getTime(eva.dateCreated)}}
                 <br />
                 Edited {{getTime(eva.dateEdited)}}
               </b-card-text>
-              <b-button href="#" variant="primary">Edit</b-button>
-              <b-button href="#" variant="primary">Download Report</b-button>
+              <b-button variant="primary" :to="'/DisplayEva/'+eva.path">Edit</b-button>
+              <b-button variant="primary">Download Report</b-button>
             </b-card>
           </div>
         </b-col>
@@ -28,16 +28,11 @@ export default {
   name: "Evaluations",
   data() {
     return {
-      state: "loading",
-      firebaseData: null,
-      formData: {},
-      errorMessage: "",
-
       evaluationList: [],
     };
   },
   methods: {
-    createEva: async function () {
+    clickEvaluation: async function () {
       let evaData = {
         author: "Admin",
         dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
@@ -58,24 +53,20 @@ export default {
     },
   },
   created: async function () {
-
     db.collection(evaluationPath)
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           console.log(doc.data());
-          this.evaluationList.push(doc.data());
+          let tmp = doc.data();
+          tmp.path = doc.id;
+          this.evaluationList.push(tmp);
         });
       })
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
   },
-  firestore(){
-    return{
-      evaluationList:db.collection(evaluationPath)
-    }
-  }
 };
 </script>
 
@@ -83,5 +74,10 @@ export default {
 
 <style scoped>
 @import "../css/general.css";
-@import "../css/evas.css";
+.evaluation{
+  margin: 20px 0px;
+}
+.btn {
+  margin: 0px 40px;
+}
 </style>
