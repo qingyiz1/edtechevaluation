@@ -85,7 +85,7 @@
 import { db } from "@/tools/firebaseConfig";
 import * as firebase from "firebase";
 export default {
-  name: "EditEva",
+  name: "DisplayEva",
   data() {
     return {
       sections: [],
@@ -119,7 +119,8 @@ export default {
       };
       await db
         .collection("evaluation")
-        .add(evaData)
+        .doc(this.$route.params.evaId)
+        .set(evaData)
         .then(function (docRef) {
           console.log(docRef)
         });
@@ -165,7 +166,7 @@ export default {
     //e.g. this.sections = [sectionRef1, sectionRef2]
     let _this = this;
     await db
-      .collection("framework/")
+      .collection("evaluation/")
       .doc(this.$route.params.evaId)
       .get()
       .then((doc) => {

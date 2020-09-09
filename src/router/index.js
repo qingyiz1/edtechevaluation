@@ -7,6 +7,7 @@ import Profile from '@/components/Profile'
 import Framework from "@/components/Framework";
 import Evaluations from "@/components/Evaluations";
 import EditEva from "@/components/EditEva";
+import DisplayEva from "@/components/DisplayEva";
 import Framework_Template from "@/components/FrameworkTemplate";
 import Userlist from "@/components/UserList";
 import CreateUser from "@/components/CreateUser";
@@ -62,9 +63,15 @@ const routes = [
         meta:{requiresAuth: true}
     },
     {
-        path:'/EditEva',
-        name:'EditEva',
+        path:'/editEva/:evaId',
+        name:'editEva',
         component:EditEva,
+        meta:{requiresAuth: true}
+    },
+    {
+        path:'/displayEva/:evaId',
+        name:'displayEva',
+        component:DisplayEva,
         meta:{requiresAuth: true}
     },
     {

@@ -59,7 +59,7 @@
                 <b-button 
                 variant="primary" 
                 :disabled="!framework.isActive"
-                @click="onStartEvaluation(framework)">Start Evaluation</b-button>
+                :to="'/editEva/'+framework.id">Start Evaluation</b-button>
               </b-col>
             </b-row>
           </b-card>
@@ -119,8 +119,7 @@ export default {
       framework.isActive = !framework.isActive;
       updateDocument("framework",framework.id, framework);
   },
-  onStartEvaluation: function(framework) {
-    console.log(framework);
+  onStartEvaluation: function() {
   },
   deleteFramework(framework,index){
     this.$bvModal.msgBoxConfirm('This action will delete the framework permanently.', {

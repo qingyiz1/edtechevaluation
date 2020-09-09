@@ -1,46 +1,21 @@
 <template>
-  <div>
-    <div class="evaluation" v-on:click="createEva" v-for="eva in evaluationList" v-bind:key="eva.id">
-      <div class="evaluation-title">
-        <div class="evaluation-title1">{{eva.name}}</div>
-        <div class="evaluation-state" v-if="eva.isCompleted">completed</div>
-      </div>
-
-      <div class="evaluation-author">Created By: {{eva.author}}</div>
-
-      <div class="evaluation-footer">
-        <div class="evaluation-date">Start From: {{getDate(eva.dateCreated)}}</div>
-        <div class="evaluation-framework">{{eva.frameworkId}}</div>
-      </div>
-    </div>
-  </div>
-  <!-- <div id="app">
-
-    <div v-if="state === 'synced'">
-      Form is synced with Firestore
-    </div>
-    <div v-else-if="state === 'modified'">
-      From data changed, will sync with Firebase
-    </div>
-    <div v-else-if="state === 'revoked'">
-      From data and Firebase revoked to original data
-    </div>
-    <div v-else-if="state === 'error'">
-      Failed to save to Firestore. {{ errorMessage }}
-    </div>
-    <div v-else-if="state === 'loading'">Loading...</div>
-
-
-    <form @submit.prevent="updateFirebase" @input="fieldUpdate">
-
-      <input type="text" name="name" v-model="formData.name" />
-      <input type="text" name="section" v-model="formData.section" />
-      <input type="text" name="question" v-model="formData.question" />
-
-      <button type="submit" v-if="state === 'modified'">Save Changes</button>
-
-    </form>
-  </div>-->
+    <b-container>
+      <b-row align-h="center">
+        <b-col cols="7">
+          <div v-on:click="clickEvaluation" v-for="eva in evaluationList" v-bind:key="eva.path" class="evaluation">
+            <b-card :header="eva.name" :footer="eva.frameworkId" :title="eva.name">
+              <b-card-text>
+                Created by {{eva.author}} {{getTime(eva.dateCreated)}}
+                <br />
+                Edited {{getTime(eva.dateEdited)}}
+              </b-card-text>
+              <b-button variant="primary" :to="'/DisplayEva/'+eva.path">Edit</b-button>
+              <b-button variant="primary">Download Report</b-button>
+            </b-card>
+          </div>
+        </b-col>
+      </b-row>
+    </b-container>
 </template>
 
 <script>
@@ -53,16 +28,11 @@ export default {
   name: "Evaluations",
   data() {
     return {
-      state: "loading",
-      firebaseData: null,
-      formData: {},
-      errorMessage: "",
-
-      evaluationList: []
+      evaluationList: [],
     };
   },
   methods: {
-    createEva: async function () {
+    clickEvaluation: async function () {
       let evaData = {
         author: "Admin",
         dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
@@ -76,20 +46,27 @@ export default {
       };
       createDocument(evaluationPath, "evaluation2", evaData);
     },
-    getDate: function(rawDate){
-      let m = new Date(rawDate.seconds*1000)
+    getTime: function (rawDate) {
+      let m = new Date(rawDate.seconds * 1000);
 
-      return m.toDateString();
-    }
+      return m.toLocaleString();
+    },
   },
   created: async function () {
-    //this.evaluationList = await getDocuments(evaluationPath)
+    db.collection(evaluationPath)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          console.log(doc.data());
+          let tmp = doc.data();
+          tmp.path = doc.id;
+          this.evaluationList.push(tmp);
+        });
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
   },
-  firestore(){
-    return{
-      evaluationList:db.collection(evaluationPath)
-    }
-  }
 };
 </script>
 
@@ -97,5 +74,10 @@ export default {
 
 <style scoped>
 @import "../css/general.css";
-@import "../css/evas.css";
+.evaluation{
+  margin: 20px 0px;
+}
+.btn {
+  margin: 0px 40px;
+}
 </style>
