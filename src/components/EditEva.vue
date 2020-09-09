@@ -1,36 +1,82 @@
 <template>
-  <div>
-    <div class="section" v-for="(section, indexS) in questions" v-bind:key="indexS">
-      <h1>Section {{indexS+1}}</h1>
-      <div class="question" v-for="(question, indexQ) in section" v-bind:key="indexQ">
-        <div class="question-number">Section {{indexS+1}} Question {{indexQ+1}}</div>
-        <div class="question-body">{{question}}</div>
-        <div class="answers">
-          <div class="answer-item">
-            <input type="radio" name="rating" value="1" /> Poor
-            <br />
-          </div>
-          <div class="answer-item">
-            <input type="radio" name="rating" value="2" /> Not good
-            <br />
-          </div>
-          <div class="answer-item">
-            <input type="radio" name="rating" value="3" /> Normal
-            <br />
-          </div>
-          <div class="answer-item">
-            <input type="radio" name="rating" value="4" /> Good
-            <br />
-          </div>
-          <div class="answer-item">
-            <input type="radio" name="rating" value="5" /> Exceptional
-            <br />
-          </div>
+  <b-container>
+    <b-row align-h="center">
+      <b-col cols="8">
+        <div v-for="(section, indexS) in questions" v-bind:key="'section'+indexS">
+          <b-button v-b-toggle="'collapse'+indexS" variant="primary">Section {{indexS+1}}</b-button>
+          <b-collapse visible v-bind:id="'collapse'+indexS" class="mt-2">
+            <b-card
+              v-bind:header="'Section '+(indexS+1)+' Question '+(indexQ+1)"
+              :title="question.questionName"
+              v-for="(question, indexQ) in section"
+              v-bind:key="indexQ"
+              class="section"
+            >
+              <b-card-text>
+                <b-list-group>
+                  <b-list-group-item>
+                    <input
+                      type="radio"
+                      v-bind:id="'Poor_'+indexS+'_'+indexQ"
+                      value="Poor"
+                      v-model="question.answer"
+                    />
+                    <label v-bind:for="'Poor_'+indexS+'_'+indexQ">Poor</label>
+                  </b-list-group-item>
+                  <b-list-group-item>
+                    <input
+                      type="radio"
+                      v-bind:id="'NG_'+indexS+'_'+indexQ"
+                      value="Not Good"
+                      v-model="question.answer"
+                    />
+                    <label v-bind:for="'NG_'+indexS+'_'+indexQ" value="Not Good">Not Good</label>
+                  </b-list-group-item>
+                  <b-list-group-item>
+                    <input
+                      type="radio"
+                      v-bind:id="'Normal_'+indexS+'_'+indexQ"
+                      value="Normal"
+                      v-model="question.answer"
+                    />
+                    <label v-bind:for="'Normal_'+indexS+'_'+indexQ">Normal</label>
+                  </b-list-group-item>
+                  <b-list-group-item>
+                    <input
+                      type="radio"
+                      v-bind:id="'Good_'+indexS+'_'+indexQ"
+                      value="Good"
+                      v-model="question.answer"
+                    />
+                    <label v-bind:for="'Good_'+indexS+'_'+indexQ">Good</label>
+                  </b-list-group-item>
+                  <b-list-group-item>
+                    <input
+                      type="radio"
+                      v-bind:id="'Exceptional_'+indexS+'_'+indexQ"
+                      value="Exceptional"
+                      v-model="question.answer"
+                    />
+                    <label v-bind:for="'Exceptional_'+indexS+'_'+indexQ">Exceptional</label>
+                  </b-list-group-item>
+                </b-list-group>
+              </b-card-text>
+            </b-card>
+          </b-collapse>
         </div>
-      </div>
-    </div>
-    <b-button variant="outline-primary">Generate report</b-button>
-  </div>
+        <b-button v-b-modal.modal-tall v-on:click="save">Save</b-button>
+        <div>
+          <b-button v-b-modal.modal-tall v-on:click="generateReport">Generate report</b-button>
+
+          <b-modal id="modal-tall" title="Evaluation Outcome">
+            <p>
+              <span v-html="report"></span>
+            </p>
+          </b-modal>
+        </div>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
@@ -42,24 +88,77 @@ export default {
     return {
       sections: [],
       questions: [],
-      answers: []
+      report: "",
     };
   },
-  methods: {},
-
+  methods: {
+    save: async function () {
+      for (let sectionIndex in this.sections) {
+        await db
+          .doc(this.sections[sectionIndex].path)
+          .update({
+            question: this.questions[sectionIndex],
+          })
+          .then(function () {
+            console.log("Document successfully updated!");
+          })
+          .catch(function (error) {
+            console.error("Error updating document: ", error);
+          });
+      }
+    },
+    generateReport: function () {
+      this.report = "";
+      for (let section of this.questions) {
+        for (let question of section) {
+          this.report =
+            this.report +
+            question.questionName +
+            "<br>" +
+            question.answer +
+            "<br>";
+        }
+        this.report = this.report + "<br><br>";
+        console.log(this.report);
+      }
+    },
+    delete: function () {
+      db.collection("evaluation")
+        .get()
+        .then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+            if (doc.id.substr(0, 2) != "ev") {
+              db.collection("evaluation")
+                .doc(doc.id)
+                .delete()
+                .catch(function (error) {
+                  console.error("Error removing document: ", error);
+                });
+            }
+          });
+        })
+        .catch(function (error) {
+          console.log("Error getting document:", error);
+        });
+    },
+  },
   created: async function () {
+    //get sections of the framework
+    //e.g. this.sections = [sectionRef1, sectionRef2]
+    let _this = this;
     await db
       .collection("framework/")
-      .doc("framework93")
+      .doc(this.$route.params.evaId)
       .get()
       .then((doc) => {
         this.sections = doc.data().section;
-        console.log(this.sections);
       })
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
 
+    //generate questions list
+    // e.g. this.questions=[[{questionName: q1, answer: a}, {questionName: q2, answer: a}], [{questionName: q2, answer: a}]];
     for (let section of this.sections) {
       await db
         .doc(section.path)
@@ -67,13 +166,30 @@ export default {
         .then((doc) => {
           let section = [];
           for (let q of doc.data().question) {
-            section.push(q.questionName);
+            section.push({
+              questionName: q.questionName,
+              answer: "unselected",
+            });
           }
           this.questions.push(section);
         });
     }
 
-    console.log(this.questions);
+    //create a session duplication with same questions
+    //change this.session into the new sessions created just before
+    for (let sectionIndex in this.sections) {
+      await db
+        .collection("evaluation")
+        .add({
+          name: this.sections[sectionIndex].id + "Duplication",
+          question: this.questions[sectionIndex],
+        })
+        .then(function (docRef) {
+          _this.sections[sectionIndex] = docRef;
+        });
+    }
+
+    // this.delete();
   },
 };
 </script>
@@ -82,5 +198,11 @@ export default {
 
 <style scoped>
 @import "../css/general.css";
-@import "../css/editeva.css";
+.section {
+  margin-bottom: 30px;
+  text-align: left;
+}
 </style>
+
+
+
