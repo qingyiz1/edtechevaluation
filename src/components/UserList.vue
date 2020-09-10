@@ -106,7 +106,6 @@ export default {
     },
     async showEditDialog(id){
       const Data = await getDocument("userInfo",id)
-      console.log(Data)
       this.editDialogVisible = true;
       this.editForm = Data
     },

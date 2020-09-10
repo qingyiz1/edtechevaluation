@@ -1,6 +1,6 @@
 <template>
   <body style="margin-top: 20px">
-  <div style="font-size:50px;text-align: center" v-if="userdata === null">User not found!</div>
+  <div style="font-size:50px;text-align: center" v-if="userdata === null">Error getting user profile!</div>
   <form v-if="userdata !== null" class="form-profile">
     <h1 class="h3 mb-3 font-weight-normal">User Profile</h1>
     <div class="user-attribute">
@@ -81,7 +81,7 @@ export default {
   },
   firestore(){
     return{
-      userdata: db.collection("userInfo").doc(this.$route.params.nickname)
+      userdata: db.collection("userInfo").doc(this.$store.getters.userProfile.email)
     }
   },
 

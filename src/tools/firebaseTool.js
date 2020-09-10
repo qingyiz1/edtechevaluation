@@ -31,7 +31,6 @@ export async function getDocument(collection,ID) {
         .then(function(doc) {
             if (doc.exists) {
                 Data = doc.data()
-                console.log(doc.id, " => ", Data);
             }else {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");

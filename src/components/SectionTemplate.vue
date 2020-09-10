@@ -14,10 +14,10 @@
                 </b-row>
             <b-card v-if="visible" class="section-card">
                 <b-row align-h="between">
-                    <b-col cols="2" class="framework-label">
-                    <label for="sectionName">Name</label>
+                    <b-col cols="1">
+                    <label>Name</label>
                     </b-col>
-                    <b-col cols="8">
+                    <b-col cols="9">
                     <b-form-input id="sectionName" v-model="section.name"></b-form-input>
                     </b-col>
                     <b-col cols="2">
@@ -26,8 +26,8 @@
                 </b-row>
                 <b-card v-for="question in questions" :key="question.id" class="questionCard">
                     <b-row align-h="between">
-                    <b-col cols="3" class="framework-label">
-                        <label for="questionName">Question Name</label>
+                    <b-col cols="3">
+                      <label>Question Name</label>
                     </b-col>
                     <b-col cols="8">
                         <b-form-input id="questionName" v-model="question.questionName"></b-form-input>
@@ -37,6 +37,22 @@
                         <b-icon icon="trash"></b-icon>
                         </b-button>
                     </b-col>
+                    </b-row>
+                    <b-row>
+                      <b-col cols="3"></b-col>
+                      <b-col cols="9">
+                        <label>Description</label>
+                      </b-col>
+                      <b-col cols="3"><label>Not Applicable</label></b-col>
+                      <b-col cols="9"><b-form-input id="questionName" v-model="question.descriptions[0]"></b-form-input></b-col>
+                      <b-col cols="3"><label>Below Basic</label></b-col>
+                      <b-col cols="9"><b-form-input id="questionName" v-model="question.descriptions[1]"></b-form-input></b-col>
+                      <b-col cols="3"><label>Basic</label></b-col>
+                      <b-col cols="9"><b-form-input id="questionName" v-model="question.descriptions[2]"></b-form-input></b-col>
+                      <b-col cols="3"><label>Adequate</label></b-col>
+                      <b-col cols="9"><b-form-input id="questionName" v-model="question.descriptions[3]"></b-form-input></b-col>
+                      <b-col cols="3"><label>Exceptional</label></b-col>
+                      <b-col cols="9"><b-form-input id="questionName" v-model="question.descriptions[4]"></b-form-input></b-col>
                     </b-row>
                 </b-card>
             </b-card>
@@ -71,7 +87,9 @@ export default {
         let emptyQuestion = {
             id:id,
             questionName:"",
-            answer:""
+            descriptions:[],
+            answer:"",
+            selected:0
         };
         this.section.question.push(emptyQuestion);
         this.questions.push(emptyQuestion);

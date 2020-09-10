@@ -21,7 +21,7 @@
           <b-form>
               <b-row class="framework-row">
                 <b-col cols="2" class="framework-label">
-                  <label for="frameworkName">Name</label>
+                  <label>Name</label>
                 </b-col>
                 <b-col cols="8">
                   <b-form-input id="frameworkName" v-model="frameworkName"></b-form-input>
@@ -90,7 +90,7 @@ export default {
   methods:{
     updateFrameWork: async function (){
       this.showOverlay = true;
-      if (!this.frameworkName.length == 0) {
+      if (this.frameworkName.length !== 0) {
         this.framework = {
           name:this.frameworkName,
           section:"",
@@ -104,7 +104,7 @@ export default {
         let checkQuestion = true;
         if (this.sections.length > 0 ) {
           for (let i = 0; i < this.sections.length; i++) {
-            if (this.sections[i].name.length == 0) {
+            if (this.sections[i].name.length === 0) {
               this.showOverlay = false;
               this.showWarning = true;
               this.warningType = "section name";
@@ -112,7 +112,7 @@ export default {
               break;
             } else {
               for (let j = 0; j < this.sections[i].question.length; j++) {
-                if(this.sections[i].question[j].questionName.length == 0) {
+                if(this.sections[i].question[j].questionName.length === 0) {
                   this.showOverlay = false;
                   this.showWarning = true;
                   this.warningType = "question name";
@@ -126,9 +126,9 @@ export default {
         if (checkSection && checkQuestion) {
           let sectionArray = [];
           for (let i = 0; i < this.sections.length; i++ ) {
-          let sectionPath = "/section" + Math.ceil(Math.random()*100);
-            createDocument("Section",sectionPath,this.sections[i]);
-            sectionArray.push(db.doc('Section' + sectionPath));
+            let sectionRef = db.collection("Section").doc()
+            await sectionRef.set(this.sections[i])
+            sectionArray.push(db.doc('Section/' + sectionRef.id));
           }
           this.framework = {
           name:this.frameworkName,
@@ -162,10 +162,8 @@ export default {
   //   this.formData = data;
   //   this.state = 'synced'
   // },
-    onCreateNewSecion: function () {
-      let id = this.sections.length;
+    onCreateNewSecion() {
       let emptySection = {
-          id:id,
           name:"",
           question:[]
       }

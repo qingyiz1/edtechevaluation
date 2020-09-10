@@ -1,6 +1,18 @@
 <template>
   <div id="app" class="framework-list">
 
+    <el-dialog title="Enter Evaluation Name" :visible.sync="windowVisible" width="360px">
+      <el-form ref="form" :model="newEva" >
+        <el-form-item>
+          <el-input v-model="newEva.name"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="windowVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="startEvaluation(newEva)">Confirm</el-button>
+      </span>
+    </el-dialog>
+
     <b-alert
         id="frameworkDeleteAlert"
         :show="dismissCountDown"
@@ -59,7 +71,7 @@
                 <b-button 
                 variant="primary" 
                 :disabled="!framework.isActive"
-                :to="'/editEva/'+framework.id">Start Evaluation</b-button>
+                @click="openEvaWindow(framework)">Start Evaluation</b-button>
               </b-col>
             </b-row>
           </b-card>
@@ -70,8 +82,9 @@
 </template>
 
 <script>
-import {db} from "@/tools/firebaseConfig"
-import {updateDocument, deleteDocument} from "@/tools/firebaseTool"
+import {db, evaluationCollection} from "@/tools/firebaseConfig"
+import {updateDocument, deleteDocument, } from "@/tools/firebaseTool"
+import * as firebase from "firebase";
 // import {router} from "@/router/index.js"
 // import {debounce} from 'debounce'
 const frameworkPath = "framework/"
@@ -80,6 +93,11 @@ export default {
   name: "Framework",
   data(){
     return{
+      windowVisible:false,
+      newEva:{
+        name:'',
+        framework:null,
+      },
       state: 'loading',
       firebaseData:null,
       frameworks:[],
@@ -119,7 +137,40 @@ export default {
       framework.isActive = !framework.isActive;
       updateDocument("framework",framework.id, framework);
   },
-  onStartEvaluation: function() {
+    openEvaWindow(framework){
+      this.windowVisible = true;
+      this.newEva.framework = framework
+    },
+  async startEvaluation(inputData) {
+    let newSections = [];
+    let newSecData;
+    for (const section of inputData.framework['section']) {
+      await db.collection("Section").doc(section.id).get().then(function(doc) {
+        if (doc.exists) {
+          newSecData = doc.data()
+        }else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      }).catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      let newSecRef = await db.collection("Section").add(newSecData)
+      newSections.push("/Section/"+newSecRef.id)
+    }
+
+    let evaRef = await evaluationCollection.doc()
+    await evaRef.set({
+      author: this.$store.getters.userProfile.nickname,
+      dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
+      dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
+      frameworkId: inputData.framework.name,
+      isCompleted: false,
+      name: inputData.name,
+      section: newSections,
+      summary: "This is a summary",
+    })
+    await this.$router.push('editEva/' + evaRef.id)
   },
   deleteFramework(framework,index){
     this.$bvModal.msgBoxConfirm('This action will delete the framework permanently.', {
