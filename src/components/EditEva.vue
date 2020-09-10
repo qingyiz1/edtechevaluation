@@ -16,14 +16,14 @@
               </b-list-group>
               </b-col>
 
-                <b-card class="w-100" border-variant="secondary" header="Description">
-                <b-card-text>
-                  {{question.descriptions[question.selected]}}
-                </b-card-text>
-                <p style="font-weight: bold">Comment:</p>
-                <textarea cols="6" v-model="question.comment" type="text" rows="2" class="form-control input-lg" name="comment" placeholder="Comment"></textarea>
+              <b-card class="w-100" border-variant="secondary" header="Description">
+              <b-card-text>
+                {{question.descriptions[question.selected]}}
+              </b-card-text>
+              <p style="font-weight: bold">Comment:</p>
+              <textarea cols="6" v-model="question.comment" type="text" rows="2" class="form-control input-lg" name="comment" placeholder="Comment"></textarea>
 
-                </b-card>
+              </b-card>
               </b-row>
             </b-card>
           </b-card-group>
@@ -58,14 +58,11 @@ export default {
     };
   },
   methods: {
-
     select(indexS,indexQ,option){
       this.sections[indexS].question[indexQ].selected = option
     },
     async saveEvaluation() {
-
       for (let section of this.sections) {
-        console.log(section.id)
           await db.collection("Section").doc(section.id)
               .update({
                 question:section.question
@@ -92,8 +89,7 @@ export default {
     },
   },
   created: async function () {
-    //get sections of the framework
-    //e.g. this.sections = [sectionRef1, sectionRef2]
+    //Load sections of the framework from database
     let sectionsRef
     await evaluationCollection.doc(this.$route.params.evaId)
       .get()
