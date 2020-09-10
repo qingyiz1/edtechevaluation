@@ -4,7 +4,7 @@
 
     <b-overlay :show="show" rounded="lg" opacity="0.9">
     <b-card no-body>
-      <b-progress style="position: fixed;top:0;height: 10px;width: 100%;z-index: 1000" v-show="value < 90" :value="value" :max="max" animated></b-progress>
+<!--      <b-progress style="position: fixed;top:0;height: 10px;width: 100%;z-index: 1000" v-show="value < 90" :value="value" :max="max" animated></b-progress>-->
       <b-alert style="position: fixed;top:0;width: 100%;z-index: 1000"
           id="saveEvaAlert"
           :show="dismissCountDown"
@@ -46,6 +46,8 @@
             <textarea cols="12" v-model="summary" type="text" rows="5" class="form-control input-lg" name="summary" placeholder="Summary"></textarea>
           </b-card>
         </b-tab>
+        <b-tab v-if="this.value>80" title="Evaluation saved" disabled></b-tab>
+        <b-tab v-if="this.value<=80" title="Saving" disabled></b-tab>
       </b-tabs>
     </b-card>
 
@@ -109,17 +111,20 @@ export default {
       this.updateSummary()
     }, 1500),
     updateSummary(){
-      this.isTyping = true;
-      if (this.summaryInterval) clearTimeout(this.summaryInterval);
-      this.summaryInterval = setTimeout(()=>{
-        this.isTyping = false;
-        if(!this.isTyping){
-          this.getSomeVal()
-        }
-        console.log(this.isTyping)
-      },5000)
+      let increment;
+      this.value = 0
+      increment = setInterval(()=>{
+        if(this.value < this.max)this.value+=5
+      },400)
+      setTimeout(()=>{
+        clearInterval(increment)
+      },8000)
 
-
+      if (this.saveInterval) clearTimeout(this.saveInterval);
+      this.saveInterval = setTimeout(() => {
+        // your action
+        this.updateDatabase()
+      }, 8000);
     },
     getSomeVal(){
       let increment;
@@ -134,8 +139,7 @@ export default {
       if (this.saveInterval) clearTimeout(this.saveInterval);
       this.saveInterval = setTimeout(() => {
         // your action
-        this.saveEvaluation()
-
+        this.updateDatabase()
       }, 3000);
     },
     loadSummary(){
@@ -150,14 +154,18 @@ export default {
       this.sections[indexS].question[indexQ].selected = option
     },
     async saveEvaluation() {
+      await this.updateDatabase()
+      this.dismissCountDown = this.dismissSecs
+    },
+    async updateDatabase(){
       for (let section of this.sections) {
-          await db.collection("Section").doc(section.id)
-              .update({
-                question:section.question,
-              })
-              .catch(function (error) {
-                window.alert("Error updating evaluation: "+error);
-              });
+        await db.collection("Section").doc(section.id)
+            .update({
+              question:section.question,
+            })
+            .catch(function (error) {
+              window.alert("Error updating evaluation: "+error);
+            });
       }
       await evaluationCollection.doc(this.$route.params.evaId)
           .update({
@@ -168,7 +176,6 @@ export default {
           .catch(function (error) {
             window.alert("Error updating evaluation: "+error);
           });
-      this.dismissCountDown = this.dismissSecs
     },
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown

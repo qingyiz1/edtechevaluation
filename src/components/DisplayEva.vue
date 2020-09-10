@@ -23,8 +23,9 @@
     <!-- Control buttons-->
     <div class="text-center">
       <b-button-group class="mt-2">
-        <b-button @click="tabIndex--">Previous</b-button>
-        <b-button @click="tabIndex++">Next</b-button>
+        <b-button variant="info" @click="tabIndex--">Previous</b-button>
+        <b-button variant="info" @click="tabIndex++">Next</b-button>
+        <b-button variant="dark" to="/evaluation" >Back</b-button>
       </b-button-group>
     </div>
 
