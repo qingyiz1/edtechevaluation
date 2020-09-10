@@ -1,17 +1,18 @@
 <template>
     <b-container>
       <b-row align-h="center">
-        <b-col cols="7">
+        <b-col cols="8">
           <div v-for="eva in evaluationList" v-bind:key="eva.id" class="evaluation">
             <b-card :header="eva.frameworkId+' - '+eva.name" :title="eva.name">
               <b-card-text>
                 Created by {{eva.author}} on {{getTime(eva.dateCreated)}}
                 <br />
-                Edited on {{getTime(eva.dateEdited)}}
+                Edited by {{eva.editor}} on {{getTime(eva.dateEdited)}}
               </b-card-text>
+              <b-button variant="primary" :to="'/DisplayEva/'+eva.id">Preview</b-button>
               <b-button variant="primary" :to="'/EditEva/'+eva.id">Edit</b-button>
               <b-button variant="danger" @click="deleteEvaluation(eva.id)">Delete</b-button>
-              <b-button variant="primary">Download Report</b-button>
+              <b-button variant="info">Download Report</b-button>
             </b-card>
           </div>
         </b-col>
@@ -20,10 +21,9 @@
 </template>
 
 <script>
-import {createDocument, deleteDocument} from "@/tools/firebaseTool";
-import * as firebase from "firebase";
-import {db} from "@/tools/firebaseConfig";
-const evaluationPath = "evaluation/";
+import { deleteDocument} from "@/tools/firebaseTool";
+import {evaluationCollection} from "@/tools/firebaseConfig";
+
 
 export default {
   name: "Evaluations",
@@ -33,20 +33,6 @@ export default {
     };
   },
   methods: {
-    clickEvaluation: async function () {
-      let evaData = {
-        author: "Admin",
-        dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
-        dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
-        frameworkId: "framework1",
-        id: "evaluation2",
-        isCompleted: true,
-        name: "Edtech Evaluation2",
-        section: "",
-        summary: "This is a summary",
-      };
-      createDocument(evaluationPath, "evaluation2", evaData);
-    },
     deleteEvaluation(evaluationId){
       deleteDocument("evaluation",evaluationId)
     },
@@ -56,7 +42,7 @@ export default {
     },
   },
   firestore:{
-    evaluationList:db.collection(evaluationPath)
+    evaluationList:evaluationCollection
   }
 };
 </script>
@@ -69,6 +55,6 @@ export default {
   margin: 20px 0px;
 }
 .btn {
-  margin: 0px 40px;
+  margin: 0px 5px;
 }
 </style>

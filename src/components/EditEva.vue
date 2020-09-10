@@ -1,6 +1,18 @@
 <template>
   <div>
+
+
+    <b-overlay :show="show" rounded="lg" opacity="0.9">
     <b-card no-body>
+      <b-progress style="position: fixed;top:0;height: 10px;width: 100%;z-index: 1000" v-show="value < 90" :value="value" :max="max" animated></b-progress>
+      <b-alert style="position: fixed;top:0;width: 100%;z-index: 1000"
+          id="saveEvaAlert"
+          :show="dismissCountDown"
+          dismissible
+          fade
+          variant="success"
+          @dismiss-count-down="countDownChanged"
+      ><p>Evaluation Successfully Saved!</p></b-alert>
       <b-tabs v-model="tabIndex" card>
         <b-tab class="row" v-for="(section,indexS) in sections" :key="indexS" :title="section.name">
           <b-card-group style="margin-bottom: 20px" v-for="(question,indexQ) in section.question" :key="indexQ" deck>
@@ -28,36 +40,112 @@
             </b-card>
           </b-card-group>
         </b-tab>
+
+        <b-tab v-if="countdown === 0" title="Summary">
+          <b-card border-variant="dark" header="Summary">
+            <textarea cols="12" v-model="summary" type="text" rows="5" class="form-control input-lg" name="summary" placeholder="Summary"></textarea>
+          </b-card>
+        </b-tab>
       </b-tabs>
     </b-card>
 
-    <!-- Control buttons-->
+
+
+      <!-- Control buttons-->
     <div class="text-center">
       <b-button-group class="mt-2">
         <b-button variant="success" @click="saveEvaluation">Save</b-button>
-        <b-button @click="tabIndex--">Previous</b-button>
-        <b-button @click="tabIndex++">Next</b-button>
+        <b-button variant="info" @click="tabIndex--">Previous</b-button>
+        <b-button variant="info" @click="tabIndex++">Next</b-button>
+        <b-button variant="dark" to="/evaluation" >Back</b-button>
+
       </b-button-group>
+
     </div>
+
+    </b-overlay>
 
 
   </div>
 </template>
 
 <script>
-//import * as firebase from "firebase";
-import {db, evaluationCollection} from "@/tools/firebaseConfig";
+import{debounce} from 'debounce'
+import {db,evaluationCollection} from "@/tools/firebaseConfig";
+import * as firebase from "firebase";
 
 export default {
   name: "EditEva",
+  mounted() {
+    this.loadSummary()
+  },
   data() {
     return {
+      value: 0,
+      max: 100,
       tabIndex: 1,
       sections: [],
+      summary:"",
       report: "",
+      countdown:1,
+      show:true,
+      dismissSecs:2.5,
+      dismissCountDown:0,
+      sectionsRef:"",
+      isTyping: false,
     };
   },
+  watch:{
+    "summary":{
+      handler:'updateSummary'
+    },
+    "sections":{
+      handler: 'getSomeVal',
+      deep: true
+    }
+  },
   methods: {
+    debouncedUpdate: debounce(function() {
+      this.updateSummary()
+    }, 1500),
+    updateSummary(){
+      this.isTyping = true;
+      if (this.summaryInterval) clearTimeout(this.summaryInterval);
+      this.summaryInterval = setTimeout(()=>{
+        this.isTyping = false;
+        if(!this.isTyping){
+          this.getSomeVal()
+        }
+        console.log(this.isTyping)
+      },5000)
+
+
+    },
+    getSomeVal(){
+      let increment;
+      this.value = 0
+      increment = setInterval(()=>{
+        if(this.value < this.max)this.value+=15
+      },400)
+      setTimeout(()=>{
+        clearInterval(increment)
+      },3000)
+
+      if (this.saveInterval) clearTimeout(this.saveInterval);
+      this.saveInterval = setTimeout(() => {
+        // your action
+        this.saveEvaluation()
+
+      }, 3000);
+    },
+    loadSummary(){
+      if (this.timeout) clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        // your action
+        this.countdown = 0;
+        this.show = false
+      }, 1000);
+    },
     select(indexS,indexQ,option){
       this.sections[indexS].question[indexQ].selected = option
     },
@@ -65,12 +153,25 @@ export default {
       for (let section of this.sections) {
           await db.collection("Section").doc(section.id)
               .update({
-                question:section.question
+                question:section.question,
               })
               .catch(function (error) {
-                console.error("Error updating document: ", error);
+                window.alert("Error updating evaluation: "+error);
               });
       }
+      await evaluationCollection.doc(this.$route.params.evaId)
+          .update({
+            summary:this.summary,
+            editor:this.$store.getters.userProfile.nickname,
+            dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
+          })
+          .catch(function (error) {
+            window.alert("Error updating evaluation: "+error);
+          });
+      this.dismissCountDown = this.dismissSecs
+    },
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown
     },
     generateReport: function () {
       this.report = "";
@@ -90,22 +191,23 @@ export default {
   },
   created: async function () {
     //Load sections of the framework from database
-    let sectionsRef
     await evaluationCollection.doc(this.$route.params.evaId)
       .get()
       .then((doc) => {
-        sectionsRef = doc.data().section;
+        this.sectionsRef = doc.data().section;
+        this.summary = doc.data().summary;
       })
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
 
-    for(const sectionRef of sectionsRef){
+    for(const sectionRef of this.sectionsRef){
       db.doc(sectionRef).get().then((docRef)=>{
         this.sections.push(docRef.data())
       })
     }
   },
+
 };
 </script>
 
