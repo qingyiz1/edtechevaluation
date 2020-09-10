@@ -156,6 +156,7 @@ export default {
             console.log("Error getting documents: ", error);
           });
       let newSecRef = await db.collection("Section").add(newSecData)
+      await newSecRef.update({id: newSecRef.id})
       newSections.push("/Section/"+newSecRef.id)
     }
 

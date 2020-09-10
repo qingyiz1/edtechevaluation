@@ -34,18 +34,19 @@
     <!-- Control buttons-->
     <div class="text-center">
       <b-button-group class="mt-2">
+        <b-button variant="success" @click="saveEvaluation">Save</b-button>
         <b-button @click="tabIndex--">Previous</b-button>
         <b-button @click="tabIndex++">Next</b-button>
       </b-button-group>
     </div>
+
+
   </div>
 </template>
 
 <script>
-// import * as firebase from "firebase";
+//import * as firebase from "firebase";
 import {db, evaluationCollection} from "@/tools/firebaseConfig";
-import * as firebase from "firebase";
-import $ from 'jquery'
 
 export default {
   name: "EditEva",
@@ -53,13 +54,6 @@ export default {
     return {
       tabIndex: 1,
       sections: [],
-      questions: {
-        selected:0,
-        name:"",
-        description:"",
-        answer:"",
-        comment:"",
-      },
       report: "",
     };
   },
@@ -67,39 +61,19 @@ export default {
 
     select(indexS,indexQ,option){
       this.sections[indexS].question[indexQ].selected = option
-
     },
-    save: async function () {
-      for (let section in this.sections) {
-        await db.collection("Section")
-          .doc(section)
-          .set({
-            question: this.questions[section],
+    async saveEvaluation() {
 
-          })
-          .then(function () {})
-          .catch(function (error) {
-            console.error("Error updating document: ", error);
-          });
+      for (let section of this.sections) {
+        console.log(section.id)
+          await db.collection("Section").doc(section.id)
+              .update({
+                question:section.question
+              })
+              .catch(function (error) {
+                console.error("Error updating document: ", error);
+              });
       }
-      let evaData = {
-        author: "Admin",
-        dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
-        dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
-        frameworkId: "framework1",
-        id: "evaluation2",
-        isCompleted: true,
-        name: "Edtech Evaluation",
-        section: this.sections,
-        summary: "This is a summary",
-      };
-      await db
-        .collection("evaluation")
-        .add(evaData)
-        .then(function (docRef) {
-          console.log(docRef)
-        });
-      window.alert("Evaluation successfully updated!");
     },
     generateReport: function () {
       this.report = "";
@@ -135,13 +109,6 @@ export default {
         this.sections.push(docRef.data())
       })
     }
-
-    $('.list-group-item').on('click', function() {
-      $('.active').removeClass('active');
-      $(this).addClass('active');
-
-      // Pass clicked link element to another function
-    })
   },
 };
 </script>
