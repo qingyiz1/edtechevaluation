@@ -9,9 +9,19 @@
                    <b-col md="2">
                    <p style="margin:revert">Question {{indexQ+1}}</p>
                    </b-col>
-                   <b-col md="10">
+                   <b-col md="4">
                     <b-list-group-item>{{ question.questionName }}</b-list-group-item>
                    </b-col>
+                     <b-col md="2">
+                       <p style="margin:revert">Answer {{indexQ+1}}</p>
+                     </b-col>
+                     <b-col md="4">
+                       <b-list-group-item v-if="question.selected === 0">Not Applicable</b-list-group-item>
+                       <b-list-group-item v-if="question.selected === 1">Below Basic</b-list-group-item>
+                       <b-list-group-item v-if="question.selected === 2">Basic</b-list-group-item>
+                       <b-list-group-item v-if="question.selected === 3">Adequate</b-list-group-item>
+                       <b-list-group-item v-if="question.selected === 4">Exceptional</b-list-group-item>
+                     </b-col>
                    </b-row>
                   </b-list-group>
 

@@ -99,7 +99,7 @@ export default {
   },
   watch:{
     "summary":{
-      handler:'updateSummary'
+      handler:'debouncedUpdate'
     },
     "sections":{
       handler: 'getSomeVal',
@@ -109,22 +109,9 @@ export default {
   methods: {
     debouncedUpdate: debounce(function() {
       this.updateSummary()
-    }, 1500),
+    }, 3000),
     updateSummary(){
-      let increment;
-      this.value = 0
-      increment = setInterval(()=>{
-        if(this.value < this.max)this.value+=5
-      },400)
-      setTimeout(()=>{
-        clearInterval(increment)
-      },8000)
-
-      if (this.saveInterval) clearTimeout(this.saveInterval);
-      this.saveInterval = setTimeout(() => {
-        // your action
-        this.updateDatabase()
-      }, 8000);
+      this.getSomeVal()
     },
     getSomeVal(){
       let increment;
