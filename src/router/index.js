@@ -8,6 +8,7 @@ import Framework from "@/components/Framework";
 import Evaluations from "@/components/Evaluations";
 import EditEva from "@/components/EditEva";
 import DisplayEva from "@/components/DisplayEva";
+import Reports from "@/components/report/Reports";
 import Framework_Template from "@/components/FrameworkTemplate";
 import Userlist from "@/components/UserList";
 import CreateUser from "@/components/CreateUser";
@@ -78,6 +79,12 @@ const routes = [
         path:'/userlist',
         name:'Userlist',
         component: Userlist,
+        meta:{requiresAuth: true}
+    },
+    {
+        path:'/reports',
+        name:'reports',
+        component: Reports,
         meta:{requiresAuth: true}
     },
 ]
