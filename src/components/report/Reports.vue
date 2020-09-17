@@ -15,10 +15,10 @@
         >
           <b-card-text>
             <b-icon icon="calendar2-event"></b-icon>
-            Created Time: {{getTime(report.dateCreated)}}
+            Created on {{getTime(report.dateCreated)}}
             <br />
             <b-icon icon="calendar-check"></b-icon>
-            Edited Time: {{getTime(report.dateEdited)}}
+            Edited on {{getTime(report.dateEdited)}}
           </b-card-text>
           <b-card-text>
             <h4>Recommendation</h4>
@@ -28,22 +28,38 @@
               <em>{{report.recommendationAuthor}}</em>
             </p>
           </b-card-text>
-          <b-link class="card-link" @click="deleteReport(report.id)">Delete</b-link>
-          <b-link class="card-link" @click="ddd">Download</b-link>
-          <b-link class="card-link" @click="xxx">Send</b-link>
+
+          <b-container>
+            <b-row>
+              <b-col cols="9">
+                <b-link class="card-link" @click="deleteReport(report.id)">Delete</b-link>
+                <b-link
+                  class="card-link"
+                  href="https://firebasestorage.googleapis.com/v0/b/ee---echidna---2020.appspot.com/o/image%2F1111.docx?alt=media&token=85460805-33d1-4f1f-9bea-3f0f7471cdff"
+                  download="filename"
+                >Download</b-link>
+                <b-link class="card-link">Send</b-link>
+              </b-col>
+              <b-col cols="3">
+                <b-form-checkbox
+                  v-model="report.isCompleted"
+                  name="check-button"
+                  switch
+                  @change="toggleIsComplete(report.id, report.isCompleted)"
+                >{{report.isCompleted?'completed':'uncompleted'}}</b-form-checkbox>
+              </b-col>
+            </b-row>
+          </b-container>
         </b-card>
-        <b-form-group label="Test upload:" label-for="file-default" label-cols-sm="2">
-          <b-form-file id="file-default" v-model="file1"></b-form-file>
-        </b-form-group>
       </b-col>
     </b-row>
   </b-container>
 </template>
 
 <script>
-import { deleteDocument } from "@/tools/firebaseTool";
+import { deleteDocument, updateDocument } from "@/tools/firebaseTool";
 import { reportCollection } from "@/tools/firebaseConfig";
-import * as firebase from "firebase";
+// import * as firebase from "firebase";
 export default {
   name: "Reports",
   data() {
@@ -60,38 +76,13 @@ export default {
       let m = new Date(rawDate.seconds * 1000);
       return m.toLocaleString();
     },
-    xxx: function () {
-      var storageRef = firebase.storage().ref();
-      console.log(this.file1);
-      var mountainImagesRef = storageRef.child("image/mountains.jpg");
-      mountainImagesRef.put(this.file1).then(function (snapshot) {
-        console.log("Uploaded a blob or file!", snapshot);
+    toggleIsComplete: function (id, isCompleted) {
+      console.log(id, isCompleted);
+      updateDocument("report", id, {
+        isCompleted: !isCompleted,
       });
     },
-    ddd: function () {
-      var storageRef = firebase.storage().ref();
-      storageRef
-        .child("image/mountains.jpg")
-        .getDownloadURL()
-        .then(function (url) {
-          var xhr = new XMLHttpRequest();
-          xhr.responseType = "blob";
-          xhr.onload = function (event) {event;
-            var blob = xhr.response;blob;
-          };
-          xhr.open("GET", url);
-          xhr.send();
-
-          // Or inserted into an <img> element:
-          var img = document.getElementById("myimg");
-          img.src = url;
-        })
-        .catch(function (error) {
-          // Handle any errors
-          console.log(error)
-        });
-    },
-  },
+ },
   firestore: {
     reportList: reportCollection,
   },
