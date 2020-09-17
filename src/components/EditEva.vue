@@ -13,6 +13,15 @@
           variant="success"
           @dismiss-count-down="countDownChanged"
       ><p>Evaluation Successfully Saved!</p></b-alert>
+
+      <b-alert style="position: fixed;top:0;width: 100%;z-index: 1000"
+               id="completeEvaAlert"
+               :show="dismissCountDown2"
+               dismissible
+               fade
+               variant="warning"
+               @dismiss-count-down="countDownChanged2"
+      ><p>Evaluation Marked as Completed!</p></b-alert>
       <b-tabs v-model="tabIndex" card>
         <b-tab class="row" v-for="(section,indexS) in sections" :key="indexS" :title="section.name">
           <b-card-group style="margin-bottom: 20px" v-for="(question,indexQ) in section.question" :key="indexQ" deck>
@@ -57,6 +66,7 @@
     <div class="text-center">
       <b-button-group class="mt-2">
         <b-button variant="success" @click="saveEvaluation">Save</b-button>
+        <b-button variant="warning" @click="completeEvaluation" >Complete</b-button>
         <b-button variant="info" @click="tabIndex--">Previous</b-button>
         <b-button variant="info" @click="tabIndex++">Next</b-button>
         <b-button variant="dark" to="/evaluation" >Back</b-button>
@@ -75,6 +85,7 @@
 import{debounce} from 'debounce'
 import {db,evaluationCollection} from "@/tools/firebaseConfig";
 import * as firebase from "firebase";
+import {updateDocument} from "@/tools/firebaseTool";
 
 export default {
   name: "EditEva",
@@ -93,6 +104,7 @@ export default {
       show:true,
       dismissSecs:2.5,
       dismissCountDown:0,
+      dismissCountDown2:0,
       sectionsRef:"",
       isTyping: false,
     };
@@ -167,6 +179,13 @@ export default {
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown
     },
+    countDownChanged2(dismissCountDown){
+      this.dismissCountDown2 = dismissCountDown
+    },
+    completeEvaluation(){
+      this.dismissCountDown2 = this.dismissSecs
+      updateDocument("evaluation",this.$route.params.evaId, {isCompleted:true});
+    },
     generateReport: function () {
       this.report = "";
       for (let section of this.questions) {
@@ -184,7 +203,7 @@ export default {
     },
   },
   created: async function () {
-    //Load sections of the framework from database
+    //Load evaluation data from database
     await evaluationCollection.doc(this.$route.params.evaId)
       .get()
       .then((doc) => {
