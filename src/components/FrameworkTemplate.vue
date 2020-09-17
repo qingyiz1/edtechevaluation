@@ -42,32 +42,41 @@
             <b-col cols="3">
               <b-button class="btn-reset" v-b-modal="'reset'" variant="danger">Reset</b-button>
             </b-col>
+            <b-col cols="3">
+              <b-button class="btn-reset" v-b-modal="'cancel'">Cancel</b-button>
+            </b-col>
           </b-row>
       </b-card>
       <b-modal 
       id="submit" 
       size="sm" 
       button-size="sm"
-      modal-header="Alert"
+      title="Alert"
       @ok="updateFrameWork">Submit framework?</b-modal>
       <b-modal 
       id="reset" 
       size="sm" 
       button-size="sm"
-      modal-header="Alert"
+      title="Alert"
       @ok="onReset">Reset all?</b-modal>
+      <b-modal 
+      id="cancel" 
+      size="sm" 
+      button-size="sm"
+      title="Alert"
+      @ok="onCancel">Discard changes?</b-modal>
     </b-container>
   </b-overlay>
 </div>
 
 </template>
 <script>
-import { createDocument} from "@/tools/firebaseTool";
+import { createDocument, getDocument } from "@/tools/firebaseTool";
 import "firebase/auth";
 import {db} from "@/tools/firebaseConfig";
 import * as firebase from "firebase";
 import SectionTemplate from "@/components/SectionTemplate";
-const frameworkPath = "/framework" + Math.ceil(Math.random()*100);
+var frameworkPath = "/framework" + Math.ceil(Math.random()*100);
 export default {
   name: "Framework_Template",
   data(){
@@ -75,13 +84,13 @@ export default {
       frameworkName:"",
       framework:{},
       sections:[],
-      questions:[],
       key:0,
       version:1,
       showOverlay:false,
       showWarning:false,
       warningType:"",
       author:"",
+      isEdit:false,
     }
   },
   components: {
@@ -165,7 +174,7 @@ export default {
     onCreateNewSecion() {
       let emptySection = {
           name:"",
-          question:[]
+          question:[],
       }
       this.sections.push(emptySection);
     },
@@ -177,12 +186,32 @@ export default {
       this.framework = {};
       this.sections = [];
     },
+    onCancel:function () {
+      this.$router.push("/framework")
+    }
   },
   created: async function () {
     this.showOverlay = true;
     let usrInfo = await db.collection("userInfo").doc(firebase.auth().currentUser.email).get();
-    this.showOverlay = false;
     this.author = usrInfo.data()['nickname'];
+    if (this.$route.params.id) {
+      this.isEdit = true;
+      frameworkPath = "/" + this.$route.params.id;
+      let framework = await getDocument("framework",this.$route.params.id);
+      this.framework = framework;
+      this.frameworkName = framework.name;
+      if (framework.section.length > 0) {
+        framework.section.forEach(element => {
+          element.get().then(data => {
+            this.sections.push(data.data())
+            this.showOverlay = false;
+          })
+        })
+      }
+      // this.showOverlay = false;
+    } 
+    this.showOverlay = false;
+    
   //   let data = (await docRef.get() ).data();
 
   //   if (!data) {
@@ -199,10 +228,10 @@ export default {
 <style scoped>
 @import "../css/general.css";
 .framework-container {
-  margin-top: 10px;
+  margin-top: 0.625rem;
 }
 .framework-row {
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }
 .framework-label {
   text-align: left;

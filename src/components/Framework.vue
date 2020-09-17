@@ -29,14 +29,23 @@
     variant="transparent"
     @hidden="onHidden">
       <b-button variant="success" @click="createNewFrameowrk">Create a New Framework</b-button>
-      <b-row v-for="(framework,index) in frameworks" :key=framework.id>
+      <b-row  v-for="(framework,index) in frameworks" :key=framework.id>
         <b-col>
           <b-card
-          :header="framework.name"
           header-tag="header"
           class="framework-card">
-            <b-row no-gutters>
-              <b-col md="10">
+            <template v-slot:header>
+              <b-row align-h="between" align-v="center">
+                <b-col cols="11"><h6 class="mb-0">{{framework.name}}</h6></b-col>
+                <b-col cols="1">
+                  <b-button  size="sm" variant="link" @click="onPreview(framework)" v-b-modal.preview>
+                    <b-icon icon="eye"></b-icon>
+                  </b-button>
+                </b-col>
+              </b-row>
+            </template>
+            <b-row no-gutters align-h="between"  align-v="center">
+              <b-col cols="10">
                 <b-card-text>
                   <b-icon
                   icon="person-circle"
@@ -50,7 +59,7 @@
                   style="margin-right:10px"></b-icon>{{framework.dateEdited}}
                 </b-card-text>
               </b-col>
-              <b-col md="2">
+              <b-col cols="2">
                 <!-- <b-button-group size="small">
                   <b-button 
                   @click="onActive(framework)"
@@ -65,9 +74,20 @@
                   name="check-button"
                   size="lg"
                   @change="onActive(framework)"
-                  style="margin-bottom: 10px"
+                  style="margin-bottom: 0.625rem"
                   switch>
-                <b-button v-if="framework.isActive === false&&$store.getters.userProfile['role']==='Senior Consultant'" variant="danger" size="sm" @click="deleteFramework(framework,index)">Delete</b-button></b-form-checkbox>
+                <b-button 
+                v-if="$store.getters.userProfile['role']==='Senior Consultant'" 
+                variant="primary" 
+                size="sm" 
+                style="margin-right: 1rem;margin-left:0.5rem"
+                @click="editFramework(framework)"><b-icon icon="pencil"></b-icon></b-button>
+                <b-button  
+                v-if="$store.getters.userProfile['role']==='Senior Consultant'" 
+                variant="danger" 
+                size="sm" 
+                @click="deleteFramework(framework,index)"><b-icon icon="trash"></b-icon></b-button>
+                </b-form-checkbox>
                 <b-button 
                 variant="primary" 
                 :disabled="!framework.isActive"
@@ -78,12 +98,31 @@
         </b-col>
       </b-row>
     </b-overlay>
+
+      <b-modal 
+      id="preview" 
+      size="lg" 
+      :title="frameworkPreview.name" 
+      ok-only 
+      no-stacking>
+        <b-overlay
+        :show="showPreview"
+        opacity="0.9">
+          <b-card no-body>
+            <b-tabs pills card vertical lazy>
+              <b-tab v-for="section in frameworkPreview.section" :key="section.id" :title="section.name" @click="onPreviewTabChanged" active>
+                <b-card-text v-for="question in section.question" :key="question.id">{{question.questionName}}</b-card-text>
+              </b-tab>
+            </b-tabs>
+          </b-card>
+        </b-overlay>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import {db, evaluationCollection} from "@/tools/firebaseConfig"
-import {updateDocument, deleteDocument, } from "@/tools/firebaseTool"
+import {updateDocument, deleteDocument, getDocument } from "@/tools/firebaseTool"
 import * as firebase from "firebase";
 // import {router} from "@/router/index.js"
 // import {debounce} from 'debounce'
@@ -106,6 +145,8 @@ export default {
       isActive:"",
       dismissSecs: 1.5,
       dismissCountDown: 0,
+      showPreview:false,
+      frameworkPreview:{},
     }
   },
   // computed:{
@@ -173,6 +214,11 @@ export default {
     })
     await this.$router.push('editEva/' + evaRef.id)
   },
+
+  onPreviewTabChanged: function (currentTabs) {
+    console.log(currentTabs)
+  },
+
   deleteFramework(framework,index){
     this.$bvModal.msgBoxConfirm('This action will delete the framework permanently.', {
       title: 'Warning!',
@@ -207,6 +253,29 @@ export default {
     })
 
   },
+
+  editFramework:function (framework) {
+    this.$router.push("/framework/"+framework.id)
+  },
+
+  onPreview: async function (framework) {
+    // console.log(framework)
+    let sections = [];
+    this.showPreview = true;
+    this.frameworkPreview = await getDocument("framework",framework.id);
+    if (framework.section.length > 0) {
+      framework.section.forEach(element => {
+        element.get().then(data => {
+          sections.push(data.data())
+        }).then(() => {
+          this.frameworkPreview.section = sections.concat()
+          console.log(this.frameworkPreview)
+          this.showPreview = false;
+        })
+      })
+      }
+  },
+
   timeConverter: function (timestamp) {
   let tempDate = new Date(timestamp);
   let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];

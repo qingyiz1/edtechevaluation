@@ -58,6 +58,12 @@ const routes = [
         meta:{requiresAuth: true}
     },
     {
+        path:'/framework/:id',
+        name:'Framework_Template',
+        component: Framework_Template,
+        meta:{requiresAuth: true}
+    },
+    {
         path:'/evaluation',
         name:'Evaluation',
         component:Evaluations,
