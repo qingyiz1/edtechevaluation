@@ -42,10 +42,13 @@
     "@vue/test-utils": "^1.0.4",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.3.0",
+    "css-loader": "^4.3.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "jest": "^26.4.0",
     "jsdom-global": "^3.0.2",
+    "style-loader": "^1.2.1",
+    "stylus-loader": "^3.0.2",
     "vue-router": "^3.4.3",
     "vue-template-compiler": "^2.6.11"
   },
