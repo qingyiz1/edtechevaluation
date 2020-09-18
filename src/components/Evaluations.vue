@@ -12,7 +12,7 @@
               <b-button variant="primary" :to="'/DisplayEva/'+eva.id">Preview</b-button>
               <b-button variant="primary" :to="'/EditEva/'+eva.id">Edit</b-button>
               <b-button variant="danger" @click="deleteEvaluation(eva.id)">Delete</b-button>
-              <b-button variant="info">Download Report</b-button>
+              <b-button variant="info" :to="'/Reports/'" @click="generateReport(eva.id)">Generate Report</b-button>
             </b-card>
           </div>
         </b-col>
@@ -23,6 +23,9 @@
 <script>
 import { deleteDocument} from "@/tools/firebaseTool";
 import {evaluationCollection} from "@/tools/firebaseConfig";
+import {reportCollection} from "@/tools/firebaseConfig";
+import * as firebase from "firebase";
+import {getDocument} from "@/tools/firebaseTool"
 
 
 export default {
@@ -30,6 +33,8 @@ export default {
   data() {
     return {
       evaluationList: [],
+      evaluationInfo: {},
+     
     };
   },
   methods: {
@@ -40,7 +45,32 @@ export default {
       let m = new Date(rawDate.seconds * 1000);
       return m.toLocaleString();
     },
+
+    async generateReport(evaluationId){
+
+      const Data = await getDocument("evaluation",evaluationId)
+      this.evaluationInfo = Data
+      let repRef = await reportCollection.doc()
+      await repRef.set({
+        reportauthor: this.evaluationInfo.author,
+        dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
+        dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
+        evaluationId: this.evaluationInfo.name,
+        isCompleted: false,
+        name: this.evaluationInfo.name,
+        content: this.evaluationInfo.section,
+        recommendation:"test",
+        recommendationAuthor:this.$store.getters.userProfile.nickname,
+      })
+    
+    },
+
+   
+
   },
+
+   
+  
   firestore:{
     evaluationList:evaluationCollection
   }
