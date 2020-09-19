@@ -19,7 +19,7 @@
               <b-button variant="primary" :to="'/DisplayEva/'+eva.id">Preview</b-button>
               <b-button variant="primary" :to="'/EditEva/'+eva.id">Edit</b-button>
               <b-button variant="danger" @click="deleteEvaluation(eva.id)">Delete</b-button>
-              <b-button variant="info">Download Report</b-button>
+              <b-button variant="info" :to="'/Reports/'" @click="generateReport(eva.id)">Generate Report</b-button>
 
             </b-card>
           </div>
