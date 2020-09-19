@@ -61,7 +61,7 @@ export default {
 
 
 <style scoped>
-@import "../css/general.css";
+@import "../../css/general.css";
 .evaluation{
   margin: 20px 0px;
 }

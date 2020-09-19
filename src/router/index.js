@@ -5,9 +5,9 @@ import Login from '@/components/Login.vue'
 import Registration from '@/components/Registration.vue'
 import Profile from '@/components/Profile'
 import Framework from "@/components/Framework";
-import Evaluations from "@/components/Evaluations";
-import EditEva from "@/components/EditEva";
-import DisplayEva from "@/components/DisplayEva";
+import Evaluations from "@/components/Evaluation/Evaluations";
+import EditEva from "@/components/Evaluation/EditEva";
+import DisplayEva from "@/components/Evaluation/DisplayEva";
 import Framework_Template from "@/components/FrameworkTemplate";
 import Userlist from "@/components/UserList";
 import CreateUser from "@/components/CreateUser";

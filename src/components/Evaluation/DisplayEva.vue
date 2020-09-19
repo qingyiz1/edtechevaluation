@@ -107,7 +107,7 @@ export default {
 
 
 <style scoped>
-@import "../css/general.css";
+@import "../../css/general.css";
 .section {
   margin-bottom: 30px;
   text-align: left;
