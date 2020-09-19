@@ -1,13 +1,20 @@
 <template>
     <b-container>
       <b-row align-h="center">
-        <b-col cols="8">
+        <b-col cols="10">
           <div v-for="eva in evaluationList" v-bind:key="eva.id" class="evaluation">
             <b-card :header="eva.frameworkId+' - '+eva.name" :title="eva.name">
+              <b-form-checkbox
+                  v-model="eva.isCompleted"
+                  @change="changeCompleted(eva)"
+              >
+                <b-card-text v-if="eva.isCompleted === true">Completed</b-card-text>
+                <b-card-text v-if="eva.isCompleted !== true">Not Completed</b-card-text>
+              </b-form-checkbox>
               <b-card-text>
                 Created by {{eva.author}} on {{getTime(eva.dateCreated)}}
                 <br />
-                Edited by {{eva.editor}} on {{getTime(eva.dateEdited)}}
+                Last Edited by {{eva.editor}} on {{getTime(eva.dateEdited)}}
               </b-card-text>
               <b-button variant="primary" :to="'/DisplayEva/'+eva.id">Preview</b-button>
               <b-button variant="primary" :to="'/EditEva/'+eva.id">Edit</b-button>
@@ -21,7 +28,7 @@
 </template>
 
 <script>
-import { deleteDocument} from "@/tools/firebaseTool";
+import {deleteDocument, updateDocument} from "@/tools/firebaseTool";
 import {evaluationCollection} from "@/tools/firebaseConfig";
 import {reportCollection} from "@/tools/firebaseConfig";
 import * as firebase from "firebase";
@@ -38,6 +45,10 @@ export default {
     };
   },
   methods: {
+    changeCompleted(eva){
+      eva.isCompleted = !eva.isCompleted
+      updateDocument("evaluation",eva.id, {isCompleted:eva.isCompleted});
+    },
     deleteEvaluation(evaluationId){
       deleteDocument("evaluation",evaluationId)
     },

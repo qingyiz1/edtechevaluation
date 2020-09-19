@@ -1,5 +1,6 @@
 <template>
    <div class="">
+     <b-overlay :show="show" rounded="lg" opacity="0.9">
     <el-table :data="users">
       <el-table-column type="index" label="#" width="30px" align="center" />
       <el-table-column label="Email" align="center" prop="email" min-width="120px"/>
@@ -79,7 +80,7 @@
         <el-button type="primary" @click="addDialogVisible = false">Confirm</el-button>
         </span>
     </el-dialog>
-
+     </b-overlay>
    </div>
 </template>
       
@@ -97,12 +98,14 @@ import $ from 'jquery'
 
 export default {
   name:"Userlist",
-  components: {
-    
+  mounted() {
+    this.toggleOverlay()
   },
   methods: {
-    redirect(){
-
+    toggleOverlay(){
+      setTimeout(()=>{
+        this.show = false
+      },800)
     },
     async showEditDialog(id){
       const Data = await getDocument("userInfo",id)
@@ -140,7 +143,7 @@ export default {
 
   data(){
     return {
-     
+      show: true,
       users:'',
       editDialogVisible: false,
       addDialogVisible: false,

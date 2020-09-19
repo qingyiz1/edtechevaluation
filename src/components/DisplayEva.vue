@@ -9,14 +9,28 @@
                    <b-col md="2">
                    <p style="margin:revert">Question {{indexQ+1}}</p>
                    </b-col>
-                   <b-col md="10">
+                   <b-col md="4">
                     <b-list-group-item>{{ question.questionName }}</b-list-group-item>
                    </b-col>
+                     <b-col md="2">
+                       <p style="margin:revert">Answer {{indexQ+1}}</p>
+                     </b-col>
+                     <b-col md="4">
+                       <b-list-group-item v-if="question.selected === 0">Not Applicable</b-list-group-item>
+                       <b-list-group-item v-if="question.selected === 1">Below Basic</b-list-group-item>
+                       <b-list-group-item v-if="question.selected === 2">Basic</b-list-group-item>
+                       <b-list-group-item v-if="question.selected === 3">Adequate</b-list-group-item>
+                       <b-list-group-item v-if="question.selected === 4">Exceptional</b-list-group-item>
+                     </b-col>
                    </b-row>
                   </b-list-group>
 
         </b-tab>
-
+        <b-tab v-if="countdown === 0" title="Summary">
+          <b-card border-variant="dark" header="Summary">
+            <p>{{summary}}</p>
+          </b-card>
+        </b-tab>
       </b-tabs>
     </b-card>
 
@@ -45,9 +59,19 @@ export default {
       tabIndex: 1,
       sections: [],
       report: "",
+      summary:"",
+      countdown:1,
     };
   },
   methods: {
+    loadSummary(){
+      if (this.timeout) clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        // your action
+        this.countdown = 0;
+        this.show = false
+      }, 1000);
+    },
     toggleOverlay(){
       if (this.timeout) clearTimeout(this.timeout);
       this.timeout = setTimeout(() => {
@@ -63,6 +87,7 @@ export default {
         .get()
         .then((doc) => {
           sectionsRef = doc.data().section;
+          this.summary = doc.data().summary;
         })
         .catch((error) => {
           console.log("Error getting documents: ", error);
@@ -74,6 +99,7 @@ export default {
       })
     }
     this.toggleOverlay()
+    this.loadSummary()
   },
 };
 </script>
