@@ -196,9 +196,10 @@ export default {
       }).catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      let newSecRef = await db.collection("Section").add(newSecData)
+      let newSecRef = await db.collection("Section").doc()
+      await newSecRef.set(newSecData)
       await newSecRef.update({id: newSecRef.id})
-      newSections.push("/Section/"+newSecRef.id)
+      newSections.push(db.doc('Section/' + newSecRef.id))
     }
 
     let evaRef = await evaluationCollection.doc()

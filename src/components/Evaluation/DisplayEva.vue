@@ -94,7 +94,7 @@ export default {
         });
 
     for(const sectionRef of sectionsRef){
-      db.doc(sectionRef).get().then((docRef)=>{
+      db.doc(sectionRef.path).get().then((docRef)=>{
         this.sections.push(docRef.data())
       })
     }
