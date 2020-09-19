@@ -25,6 +25,7 @@ const auth = firebase.auth()
 const usersCollection = db.collection('userInfo')
 const frameworkCollection = db.collection('framework')
 const evaluationCollection = db.collection('evaluation')
+const reportCollection = db.collection('report')
 
 // export utils/refs
 export {
@@ -33,5 +34,6 @@ export {
     usersCollection,
     frameworkCollection,
     evaluationCollection,
-    adminApp
+    adminApp,
+    reportCollection
 }

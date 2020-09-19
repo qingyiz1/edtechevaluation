@@ -5,9 +5,16 @@ import Login from '@/components/Login.vue'
 import Registration from '@/components/Registration.vue'
 import Profile from '@/components/Profile'
 import Framework from "@/components/Framework";
+<<<<<<< HEAD
 import Evaluations from "@/components/Evaluation/Evaluations";
 import EditEva from "@/components/Evaluation/EditEva";
 import DisplayEva from "@/components/Evaluation/DisplayEva";
+=======
+import Evaluations from "@/components/Evaluations";
+import EditEva from "@/components/EditEva";
+import DisplayEva from "@/components/DisplayEva";
+import Reports from "@/components/report/Reports";
+>>>>>>> ea729019c2341af6495ec4829e7bc8959c9b5f74
 import Framework_Template from "@/components/FrameworkTemplate";
 import Userlist from "@/components/UserList";
 import CreateUser from "@/components/CreateUser";
@@ -57,6 +64,12 @@ const routes = [
         meta:{requiresAuth: true}
     },
     {
+        path:'/framework/:id',
+        name:'Framework_Template',
+        component: Framework_Template,
+        meta:{requiresAuth: true}
+    },
+    {
         path:'/evaluation',
         name:'Evaluation',
         component:Evaluations,
@@ -78,6 +91,12 @@ const routes = [
         path:'/userlist',
         name:'Userlist',
         component: Userlist,
+        meta:{requiresAuth: true}
+    },
+    {
+        path:'/reports',
+        name:'reports',
+        component: Reports,
         meta:{requiresAuth: true}
     },
 ]
