@@ -9,6 +9,7 @@ import Evaluations from "@/components/Evaluations";
 import EditEva from "@/components/EditEva";
 import DisplayEva from "@/components/DisplayEva";
 import Reports from "@/components/report/Reports";
+import Report_preview from "@/components/report_lin/report_preview";
 import Framework_Template from "@/components/FrameworkTemplate";
 import Userlist from "@/components/UserList";
 import CreateUser from "@/components/CreateUser";
@@ -91,6 +92,12 @@ const routes = [
         path:'/reports',
         name:'reports',
         component: Reports,
+        meta:{requiresAuth: true}
+    },
+    {
+        path:'/report_preview',
+        name:'report_preview',
+        component: Report_preview,
         meta:{requiresAuth: true}
     },
 ]
