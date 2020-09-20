@@ -1,19 +1,66 @@
 <template>
     <b-container>
-      <b-row align-h="center">
-        <b-col cols="8">
-          <div v-for="rep in reportList" v-bind:key="rep.id" class="report">
-            <b-card :header="rep.evaluationID+' - '+rep.name" :title="rep.name">
+      <b-row>
+        <b-col>
+          <div v-for="rep in reportList" v-bind:key="rep.id" class="report" >
+            
+            <b-card
+            :header="rep.name" 
+            class="text-left mt-3">
+            <template v-slot:header>
+              <b-row align-h="between" align-v="center">
+                <b-col cols="11"><h6 class="mb-0">{{rep.name}}</h6></b-col>
+                <b-col cols="1">
+                  <b-button  size="sm" variant="link" @click="Edit(rep.id)" >
+                    <b-icon icon="pencil"></b-icon>
+                  </b-button>
+                </b-col>
+              </b-row>
+            </template>
+            <b-row b-row no-gutters align-h="between"  align-v="center">
+            <b-col cols="8">
               <b-card-text>
-                Created by {{rep.reportAuthor}} on {{getTime(rep.dateCreated)}}
-                <br/>
-                Edited by {{rep.recommendationAuthor}} on {{getTime(rep.dateEdited)}}
+                 <b-icon
+                  icon="person-circle"
+                  style="margin-right:10px">
+                  </b-icon>
+                 {{rep.recommendationAuthor}}
               </b-card-text>
-              <b-button variant="primary" :to="'/DisplayRep/'+rep.id">Preview</b-button>  
-              <b-button variant="danger" @click="deleteReport(rep.id)">Delete</b-button>
-              <b-button variant="info" @click="downloadReport(rep.id)">Download</b-button>
-              <b-button variant="info" @click.prevent="openSendWindow(rep.id)">Send Email</b-button>
-              </b-card>
+              <b-card-text>
+                  <b-icon 
+                  icon="calendar-date"
+                  style="margin-right:10px"></b-icon>
+                  {{getTime(rep.dateEdited)}}
+              </b-card-text>
+              </b-col>
+            <b-col cols="3">
+              <b-button 
+                variant="primary"
+                size="sm" 
+                style="margin-right: 1rem;margin-left:0.5rem"
+                @click="viewReport(rep.id)"><b-icon icon="eye"></b-icon></b-button>
+             
+              <b-button 
+                variant="danger"
+                size="sm" 
+                style="margin-right: 1rem;margin-left:0.5rem"
+                @click="deleteReport(rep.id)"><b-icon icon="trash"></b-icon></b-button>
+              
+              <b-button 
+                variant="info"
+                size="sm" 
+                style="margin-right: 1rem;margin-left:0.5rem"
+                @click="downloadReport(rep.id)"><b-icon icon="download"></b-icon></b-button>
+
+                <b-button 
+                variant="info"
+                size="sm" 
+                style="margin-right: 1rem;margin-left:0.5rem"
+                @click="openSendWindow(rep.id)"><b-icon icon="envelope"></b-icon></b-button>
+
+            </b-col>
+             </b-row>
+            </b-card>
           </div>
         </b-col>
       </b-row>
@@ -67,6 +114,10 @@ export default {
     };
   },
   methods: {
+
+    viewRport(repId){
+      return repId
+    },
     deleteReport(repId){
       deleteDocument("report",repId)
     },
@@ -185,5 +236,6 @@ export default {
 
 
 <style scoped>
+
 
 </style>
