@@ -9,12 +9,21 @@
             class="text-left mt-3">
             <template v-slot:header>
               <b-row align-h="between" align-v="center">
-                <b-col cols="11"><h6 class="mb-0">{{rep.name}}</h6></b-col>
-                <b-col cols="1">
+                <b-col cols="9"><h6 class="mb-0">{{rep.name}}</h6></b-col>
+                 <b-col cols="1">
                   <b-button  size="sm" variant="link" @click="Edit(rep.id)" >
                     <b-icon icon="pencil"></b-icon>
                   </b-button>
                 </b-col>
+                <b-col cols="2">
+                <b-form-checkbox
+                  v-model="rep.isCompleted"
+                  name="check-button"
+                  size="sm"
+                  @change="toggleIsComplete(rep)"
+                  style="margin-bottom: 0.625rem"
+                  switch>{{rep.isCompleted?'completed':'uncompleted'}}</b-form-checkbox>
+              </b-col>
               </b-row>
             </template>
             <b-row b-row no-gutters align-h="between"  align-v="center">
@@ -82,7 +91,7 @@
 </template>
 
 <script>
-import {deleteDocument} from "@/tools/firebaseTool";
+import {deleteDocument, updateDocument} from "@/tools/firebaseTool";
 import {reportCollection} from "@/tools/firebaseConfig";
 import {getDocument} from "@/tools/firebaseTool";
 import * as firebase from 'firebase/app'
@@ -128,7 +137,9 @@ export default {
       return finalDate;
     },
 
-
+     toggleIsComplete(rep) {
+      updateDocument("report", rep.id, {"isCompleted": rep.isCompleted})
+    },
     async downloadReport(repId){
       const repInfo = await getDocument("report",repId)
       JSZipUtils.getBinaryContent('/Template.docx', function(error, content) {
