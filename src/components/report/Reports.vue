@@ -39,7 +39,7 @@
                   <b-icon 
                   icon="calendar-date"
                   style="margin-right:10px"></b-icon>
-                  {{getTime(rep.dateEdited)}}
+                  {{getTime(rep.dateCreated)}}
               </b-card-text>
               </b-col>
             <b-col cols="3">
