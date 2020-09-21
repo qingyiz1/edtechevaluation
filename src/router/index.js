@@ -8,11 +8,20 @@ import Framework from "@/components/Framework/Framework";
 import Evaluations from "@/components/Evaluation/Evaluations";
 import EditEva from "@/components/Evaluation/EditEva";
 import DisplayEva from "@/components/Evaluation/DisplayEva";
+<<<<<<< HEAD
 import Reports from "@/components/Report/Reports";
 import Framework_Template from "@/components/Framework/FrameworkTemplate";
 import Userlist from "@/components/UserManagement/UserList";
 import CreateUser from "@/components/UserManagement/CreateUser";
 import Dashboard from "@/components/User/Dashboard";
+=======
+import Reports from "@/components/report/Reports";
+import Report_preview from "@/components/report_lin/report_preview";
+import Framework_Template from "@/components/FrameworkTemplate";
+import Userlist from "@/components/UserList";
+import CreateUser from "@/components/CreateUser";
+import Dashboard from "@/components/Dashboard";
+>>>>>>> 1f3c69921e766f6e8311083bbd199e48f0905ead
 
 Vue.use(VueRouter)
 
@@ -91,6 +100,12 @@ const routes = [
         path:'/reports',
         name:'reports',
         component: Reports,
+        meta:{requiresAuth: true}
+    },
+    {
+        path:'/report_preview/:reportId',
+        name:'report_preview',
+        component: Report_preview,
         meta:{requiresAuth: true}
     },
 ]
