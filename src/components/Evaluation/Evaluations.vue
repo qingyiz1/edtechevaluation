@@ -2,13 +2,13 @@
     <b-container>
       <b-modal
           id="delete"
-          ok-title="Confirm"
-          header-bg-variant="warning"
-          size="md"
           button-size="md"
-          title="Are you sure?"
           centered
+          header-bg-variant="warning"
+          ok-title="Confirm"
           ok-variant="danger"
+          size="md"
+          title="Are you sure?"
           @ok="deleteEvaluation(evaId)">
          <div class="d-block text-center">
            <h4 style="color: red">This action will delete the evaluation permanently!</h4>
@@ -31,10 +31,10 @@
                 <br />
                 Last Edited by {{eva.editor}} on {{getTime(eva.dateEdited)}}
               </b-card-text>
-              <b-button variant="primary" :to="'/DisplayEva/'+eva.id">View</b-button>
-              <b-button v-if="eva.isCompleted!==true" variant="primary" :to="'/EditEva/'+eva.id">Edit</b-button>
-              <b-button variant="danger" v-b-modal.delete @click="setEvaId(eva.id)">Delete</b-button>
-              <b-button v-if="eva.isCompleted===true" variant="info" :to="'/Reports/'" @click="generateReport(eva.id)">Generate Report</b-button>
+              <b-button :to="'/DisplayEva/'+eva.id" variant="primary">View</b-button>
+              <b-button v-if="eva.isCompleted!==true" :to="'/EditEva/'+eva.id" variant="primary">Edit</b-button>
+              <b-button v-b-modal.delete variant="danger" @click="setEvaId(eva.id)">Delete</b-button>
+              <b-button v-if="eva.isCompleted===true" :to="'/Reports/'" variant="info" @click="generateReport(eva.id)">Generate Report</b-button>
 
             </b-card>
           </div>
@@ -78,12 +78,11 @@ export default {
       this.evaId = id;
     },
     async generateReport(evaluationId){
-
       const Data = await getDocument("evaluation",evaluationId)
       this.evaluationInfo = Data
       let repRef = await reportCollection.doc()
       await repRef.set({
-        reportauthor: this.evaluationInfo.author,
+        author: this.evaluationInfo.author,
         dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
         dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
         evaluationId: this.evaluationInfo.name,
@@ -93,15 +92,8 @@ export default {
         recommendation:"test",
         recommendationAuthor:this.$store.getters.userProfile.nickname,
       })
-    
     },
-
-   
-
   },
-
-   
-  
   firestore:{
     evaluationList:evaluationCollection
   }

@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="framework-list">
 
-    <el-dialog title="Enter Evaluation Name" :visible.sync="windowVisible" width="360px">
+    <el-dialog :visible.sync="windowVisible" title="Enter Evaluation Name" width="360px">
       <el-form ref="form" :model="newEva" >
         <el-form-item>
           <el-input v-model="newEva.name"></el-input>
@@ -32,19 +32,19 @@
       <b-row  v-for="(framework,index) in frameworks" :key=framework.id>
         <b-col>
           <b-card
-          header-tag="header"
-          class="framework-card">
+          class="framework-card"
+          header-tag="header">
             <template v-slot:header>
               <b-row align-h="between" align-v="center">
                 <b-col cols="11"><h6 class="mb-0">{{framework.name}}</h6></b-col>
                 <b-col cols="1">
-                  <b-button  size="sm" variant="link" @click="onPreview(framework)" v-b-modal.preview>
+                  <b-button  v-b-modal.preview size="sm" variant="link" @click="onPreview(framework)">
                     <b-icon icon="eye"></b-icon>
                   </b-button>
                 </b-col>
               </b-row>
             </template>
-            <b-row no-gutters align-h="between"  align-v="center">
+            <b-row align-h="between" align-v="center"  no-gutters>
               <b-col cols="10">
                 <b-card-text>
                   <b-icon
@@ -73,24 +73,24 @@
                   v-model="framework.isActive"
                   name="check-button"
                   size="lg"
-                  @change="onActive(framework)"
                   style="margin-bottom: 0.625rem"
-                  switch>
+                  switch
+                  @change="onActive(framework)">
                 <b-button 
                 v-if="$store.getters.userProfile['role']==='Senior Consultant'" 
-                variant="primary" 
-                size="sm" 
+                size="sm"
                 style="margin-right: 1rem;margin-left:0.5rem"
+                variant="primary"
                 @click="editFramework(framework)"><b-icon icon="pencil"></b-icon></b-button>
                 <b-button  
                 v-if="$store.getters.userProfile['role']==='Senior Consultant'" 
-                variant="danger" 
-                size="sm" 
+                size="sm"
+                variant="danger"
                 @click="deleteFramework(framework,index)"><b-icon icon="trash"></b-icon></b-button>
                 </b-form-checkbox>
                 <b-button 
-                variant="primary" 
                 :disabled="!framework.isActive"
+                variant="primary"
                 @click="openEvaWindow(framework)">Start Evaluation</b-button>
               </b-col>
             </b-row>
@@ -101,16 +101,16 @@
 
       <b-modal 
       id="preview" 
-      size="lg" 
-      :title="frameworkPreview.name" 
+      :title="frameworkPreview.name"
+      no-stacking
       ok-only 
-      no-stacking>
+      size="lg">
         <b-overlay
         :show="showPreview"
         opacity="0.9">
           <b-card no-body>
-            <b-tabs pills card vertical lazy>
-              <b-tab v-for="section in frameworkPreview.section" :key="section.id" :title="section.name" @click="onPreviewTabChanged" active>
+            <b-tabs card lazy pills vertical>
+              <b-tab v-for="section in frameworkPreview.section" :key="section.id" :title="section.name" active @click="onPreviewTabChanged">
                 <b-card-text v-for="question in section.question" :key="question.id">{{question.questionName}}</b-card-text>
               </b-tab>
             </b-tabs>

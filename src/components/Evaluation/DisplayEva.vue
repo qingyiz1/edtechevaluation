@@ -108,13 +108,6 @@ export default {
 
 <style scoped>
 @import "../../css/general.css";
-.section {
-  margin-bottom: 30px;
-  text-align: left;
-}
-.btn {
-  margin: 0px 40px;
-}
 </style>
 
 
