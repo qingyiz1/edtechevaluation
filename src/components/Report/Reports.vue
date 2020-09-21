@@ -9,13 +9,13 @@
             class="text-left mt-3">
             <template v-slot:header>
               <b-row align-h="between" align-v="center">
-                <b-col cols="8"><h6 class="mb-0">{{rep.name}}</h6></b-col>
+                <b-col cols="9"><h6 class="mb-0">{{rep.name}}</h6></b-col>
                  <b-col cols="1">
                   <b-button  size="sm" variant="link" @click="Edit(rep.id)" >
                     <b-icon icon="pencil"></b-icon>
                   </b-button>
                 </b-col>
-                <b-col cols="3">
+                <b-col cols="2">
                 <b-form-checkbox
                   v-model="rep.isCompleted"
                   name="check-button"
@@ -42,7 +42,7 @@
                   {{getTime(rep.dateCreated)}}
               </b-card-text>
               </b-col>
-            <b-col cols="4">
+            <b-col cols="3">
               <b-button 
                 variant="primary"
                 size="sm" 
@@ -118,6 +118,7 @@ export default {
         email:"",
         message:"",
       },
+      Id:"",
      
 
     };
@@ -184,9 +185,8 @@ export default {
 
 
       var storageRef = firebase.storage().ref()
-      let repName = repInfo.name.toString()
-      var repRef = storageRef.child(repName+ '.docx')
-      console.log(repRef.fullPath)
+      var repRef = storageRef.child('Report/'+repId+ '.docx')
+     
       var file = downloadReport
       repRef.put(file).then(function() {
           console.log('Uploaded a blob or file!');
@@ -197,6 +197,7 @@ export default {
   async openSendWindow(repId){
       this.sendWindowVisible = true;
       global.repInfoSend = await getDocument("report",repId)
+      global.Id = repId
     
     },
 
@@ -206,7 +207,7 @@ export default {
 
 
       var storageRef = firebase.storage().ref()
-      const url = await storageRef.child(global.repInfoSend.name + '.docx').getDownloadURL()
+      const url = await storageRef.child('Report/'+global.Id+ '.docx').getDownloadURL()
 
   
       Email.send({
@@ -227,7 +228,8 @@ export default {
         window.alert("Report has been sent to "+ this.sendReport.email),
         this.sendReport.email="",
         this.sendReport.message="",
-        global.repInfoSend = {}
+        global.repInfoSend = {},
+        global.Id = "",
     )
     }
       
