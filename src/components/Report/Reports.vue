@@ -9,13 +9,13 @@
             class="text-left mt-3">
             <template v-slot:header>
               <b-row align-h="between" align-v="center">
-                <b-col cols="9"><h6 class="mb-0">{{rep.name}}</h6></b-col>
+                <b-col cols="8"><h6 class="mb-0">{{rep.name}}</h6></b-col>
                  <b-col cols="1">
                   <b-button  size="sm" variant="link" @click="Edit(rep.id)" >
                     <b-icon icon="pencil"></b-icon>
                   </b-button>
                 </b-col>
-                <b-col cols="2">
+                <b-col cols="3">
                 <b-form-checkbox
                   v-model="rep.isCompleted"
                   name="check-button"
@@ -42,7 +42,7 @@
                   {{getTime(rep.dateCreated)}}
               </b-card-text>
               </b-col>
-            <b-col cols="3">
+            <b-col cols="4">
               <b-button 
                 variant="primary"
                 size="sm" 

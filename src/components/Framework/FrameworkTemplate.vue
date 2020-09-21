@@ -75,7 +75,7 @@ import { createDocument, getDocument } from "@/tools/firebaseTool";
 import "firebase/auth";
 import {db} from "@/tools/firebaseConfig";
 import * as firebase from "firebase";
-import SectionTemplate from "@/components/SectionTemplate";
+import SectionTemplate from "@/components/Framework/SectionTemplate";
 var frameworkPath = "/framework" + Math.ceil(Math.random()*100);
 export default {
   name: "Framework_Template",
@@ -226,7 +226,7 @@ export default {
 </script>
 
 <style scoped>
-@import "../css/general.css";
+@import "../../css/general.css";
 .framework-container {
   margin-top: 0.625rem;
 }

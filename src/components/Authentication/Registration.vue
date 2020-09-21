@@ -99,5 +99,5 @@ export default {
 </script>
 
 <style scoped>
-@import "../css/general.css";
+@import "../../css/general.css";
 </style>

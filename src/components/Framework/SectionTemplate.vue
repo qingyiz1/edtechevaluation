@@ -120,7 +120,7 @@ export default {
 
 
 <style scoped>
-@import "../css/general.css";
+@import "../../css/general.css";
 .section-template{
     width: 100%;
     margin: 0 1.25rem;

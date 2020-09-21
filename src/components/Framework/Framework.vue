@@ -313,7 +313,7 @@ export default {
 
 
 <style scoped>
-@import "../css/general.css";
+@import "../../css/general.css";
 .framework-card{
   margin: 10px 50px;
   text-align: left;
