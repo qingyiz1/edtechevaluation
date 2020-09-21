@@ -83,10 +83,10 @@ export default {
       this.evaluationInfo = Data
       let repRef = await reportCollection.doc()
       await repRef.set({
-        reportauthor: this.evaluationInfo.author,
+        author: this.evaluationInfo.author,
         dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
         dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
-        evaluationId: this.evaluationInfo.name,
+        evaluationId: evaluationId,
         isCompleted: false,
         name: this.evaluationInfo.name,
         content: this.evaluationInfo.section,

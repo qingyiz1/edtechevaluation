@@ -153,8 +153,8 @@ export default {
       
       doc.setData({
           repName: repInfo.name,
-          dateCreated: repInfo.dateCreated,
-          dateEdited: repInfo.dateEdited,
+          dateCreated: repInfo.dateCreated.toDate().toLocaleString('en-US'),
+          dateEdited: repInfo.dateEdited.toDate().toLocaleString('en-US'),
           repAuthor: repInfo.reportAuthor,
           isCompleted: repInfo.isCompleted,
           content: repInfo.content,
@@ -179,11 +179,7 @@ export default {
           mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         })
       saveAs(downloadReport, repInfo.name + '.docx')
-
-      
-
-
-      var storageRef = firebase.storage().ref()
+        var storageRef = firebase.storage().ref()
       let repName = repInfo.name.toString()
       var repRef = storageRef.child(repName+ '.docx')
       console.log(repRef.fullPath)
