@@ -42,7 +42,7 @@
                   {{getTime(rep.dateCreated)}}
               </b-card-text>
               </b-col>
-            <b-col cols="3">
+            <b-col cols="4">
               <b-button 
                 variant="primary"
                 size="sm" 
