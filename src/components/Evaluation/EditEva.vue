@@ -186,21 +186,6 @@ export default {
       this.dismissCountDown2 = this.dismissSecs
       updateDocument("evaluation",this.$route.params.evaId, {isCompleted:true});
     },
-    generateReport: function () {
-      this.report = "";
-      for (let section of this.questions) {
-        for (let question of section) {
-          this.report =
-            this.report +
-            question.questionName +
-            "<br>" +
-            question.answer +
-            "<br>";
-        }
-        this.report = this.report + "<br><br>";
-        console.log(this.report);
-      }
-    },
   },
   created: async function () {
     //Load evaluation data from database
@@ -228,13 +213,6 @@ export default {
 
 <style scoped>
 @import "../../css/general.css";
-.section {
-  margin-bottom: 30px;
-  text-align: left;
-}
-.btn {
-  margin: 0px 40px;
-}
 </style>
 
 

@@ -1,19 +1,19 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import {auth} from "@/tools/firebaseConfig"
-import Login from '@/components/Login.vue'
-import Registration from '@/components/Registration.vue'
-import Profile from '@/components/Profile'
-import Framework from "@/components/Framework";
+import Login from '@/components/Authentication/Login.vue'
+import Registration from '@/components/Authentication/Registration.vue'
+import Profile from '@/components/User/Profile'
+import Framework from "@/components/Framework/Framework";
 import Evaluations from "@/components/Evaluation/Evaluations";
 import EditEva from "@/components/Evaluation/EditEva";
 import DisplayEva from "@/components/Evaluation/DisplayEva";
-import Reports from "@/components/report/Reports";
-import Report_preview from "@/components/report_lin/report_preview";
-import Framework_Template from "@/components/FrameworkTemplate";
-import Userlist from "@/components/UserList";
-import CreateUser from "@/components/CreateUser";
-import Dashboard from "@/components/Dashboard";
+import Reports from "@/components/Report/Reports";
+import Framework_Template from "@/components/Framework/FrameworkTemplate";
+import Userlist from "@/components/UserManagement/UserList";
+import CreateUser from "@/components/UserManagement/CreateUser";
+import Dashboard from "@/components/User/Dashboard";
+import Report_preview from "@/components/Report/report_preview";
 
 Vue.use(VueRouter)
 

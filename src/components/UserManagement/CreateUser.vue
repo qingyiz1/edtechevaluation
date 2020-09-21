@@ -1,5 +1,5 @@
 <template>
-  <body class="align-content-center">
+  <div class="align-content-center">
     <form id="form-signup" class="form-signup" @submit.prevent="createUser">
       <h1 class="h3 mb-3 font-weight-normal">Create User</h1>
       <label for="inputEmail" class="sr-only">Email address</label>
@@ -29,7 +29,7 @@
         <el-button type="primary" @click="sendEmail">Confirm</el-button>
       </span>
     </el-dialog>
-  </body>
+  </div>
 </template>
 
 <script>
@@ -109,7 +109,7 @@ export default {
 </script>
 
 <style scoped>
-@import "../css/general.css";
+@import "../../css/general.css";
 
 #roleselect{
   margin-bottom: 10px;

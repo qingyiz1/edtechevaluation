@@ -92,7 +92,7 @@ export default {
 
 
 <style scoped>
-@import "../css/general.css";
+@import "../../css/general.css";
 .form-profile {
   background-color: #f5f5f5;
   width: 100%;

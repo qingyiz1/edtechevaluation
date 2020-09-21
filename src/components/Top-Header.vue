@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 100%">
     <div>
       <b-navbar style="color:white" toggleable="lg" type="dark" variant="dark">
         <b-navbar-brand to="/">EdTech</b-navbar-brand>

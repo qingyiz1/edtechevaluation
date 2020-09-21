@@ -32,23 +32,27 @@ export const store = new Vuex.Store({
     actions:{
         async login({ dispatch }, form) {
             // sign user in
-            if((await firebase.usersCollection.doc(form.email).get()).data() === undefined || (await firebase.usersCollection.doc(form.email).get()).data()['isActive'] === false)
-            {
-                window.alert("User not found or deactivated, please contact your senior consultant!")
-            }else if((await firebase.usersCollection.doc(form.email).get()).data()['isActive'] === true){
-                await firebase.auth.signInWithEmailAndPassword(form.email, form.password)
-                    .then(async (user) => {
-                        if(user != null){
+            await firebase.auth.signInWithEmailAndPassword(form.email, form.password)
+                .then(async (user) => {
+                    if(user != null){
+                        if((await firebase.usersCollection.doc(form.email).get()).data() === undefined || (await firebase.usersCollection.doc(form.email).get()).data()['isActive'] === false)
+                        {
+                            window.alert("User not found or deactivated, please contact your senior consultant!")
+                            return
+                        } else if((await firebase.usersCollection.doc(form.email).get()).data()['isActive'] === true) {
                             // fetch user profile and set in state
                             dispatch('fetchUserProfile', user)
                             // change route to user profile
                             await router.push({path: "/profile/" + form.email})
                             window.alert("Welcome Back!")
                         }
-                    }).catch((_error) => {
-                        window.alert("Login Failed!"+_error);
-                    })
-            }
+                    }else{
+                        window.alert("User not found or deactivated, please contact your senior consultant!")
+                    }
+                }).catch((_error) => {
+                    window.alert("Login Failed!"+_error);
+                })
+
 
         },
         async fetchUserProfile({ commit }, user) {
