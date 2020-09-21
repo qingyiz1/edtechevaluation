@@ -47,7 +47,7 @@
                 variant="primary"
                 size="sm" 
                 style="margin-right: 1rem;margin-left:0.5rem"
-                @click="viewReport(rep.id)"><b-icon icon="eye"></b-icon></b-button>
+                :to="'/report_preview/'+rep.id"><b-icon icon="eye"></b-icon></b-button>
              
               <b-button 
                 variant="danger"
@@ -124,9 +124,6 @@ export default {
   },
   methods: {
 
-    viewRport(repId){
-      return repId
-    },
     deleteReport(repId){
       deleteDocument("report",repId)
     },
