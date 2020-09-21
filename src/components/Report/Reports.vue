@@ -154,8 +154,8 @@ export default {
       
       doc.setData({
           repName: repInfo.name,
-          dateCreated: repInfo.dateCreated,
-          dateEdited: repInfo.dateEdited,
+          dateCreated: repInfo.dateCreated.toDate().toLocaleString('en-US'),
+          dateEdited: repInfo.dateEdited.toDate().toLocaleString('en-US'),
           repAuthor: repInfo.reportAuthor,
           isCompleted: repInfo.isCompleted,
           content: repInfo.content,
@@ -181,12 +181,10 @@ export default {
         })
       saveAs(downloadReport, repInfo.name + '.docx')
 
-      
-
-
       var storageRef = firebase.storage().ref()
       var repRef = storageRef.child('Report/'+repId+ '.docx')
      
+
       var file = downloadReport
       repRef.put(file).then(function() {
           console.log('Uploaded a blob or file!');
