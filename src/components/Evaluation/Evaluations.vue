@@ -1,5 +1,20 @@
 <template>
     <b-container>
+      <b-modal
+          id="delete"
+          ok-title="Confirm"
+          header-bg-variant="warning"
+          size="md"
+          button-size="md"
+          title="Are you sure?"
+          centered
+          ok-variant="danger"
+          @ok="deleteEvaluation(evaId)">
+         <div class="d-block text-center">
+           <h4 style="color: red">This action will delete the evaluation permanently!</h4>
+         </div>
+      </b-modal>
+
       <b-row align-h="center">
         <b-col cols="10">
           <div v-for="eva in evaluationList" v-bind:key="eva.id" class="evaluation">
@@ -16,14 +31,17 @@
                 <br />
                 Last Edited by {{eva.editor}} on {{getTime(eva.dateEdited)}}
               </b-card-text>
-              <b-button variant="primary" :to="'/DisplayEva/'+eva.id">Preview</b-button>
-              <b-button variant="primary" :to="'/EditEva/'+eva.id">Edit</b-button>
-              <b-button variant="danger" @click="deleteEvaluation(eva.id)">Delete</b-button>
-              <b-button variant="info" :to="'/Reports/'" @click="generateReport(eva.id)">Generate Report</b-button>
+              <b-button variant="primary" :to="'/DisplayEva/'+eva.id">View</b-button>
+              <b-button v-if="eva.isCompleted!==true" variant="primary" :to="'/EditEva/'+eva.id">Edit</b-button>
+              <b-button variant="danger" v-b-modal.delete @click="setEvaId(eva.id)">Delete</b-button>
+              <b-button v-if="eva.isCompleted===true" variant="info" :to="'/Reports/'" @click="generateReport(eva.id)">Generate Report</b-button>
+
             </b-card>
           </div>
         </b-col>
       </b-row>
+
+
     </b-container>
 </template>
 
@@ -41,7 +59,7 @@ export default {
     return {
       evaluationList: [],
       evaluationInfo: {},
-     
+      evaId:"",
     };
   },
   methods: {
@@ -56,7 +74,9 @@ export default {
       let m = new Date(rawDate.seconds * 1000);
       return m.toLocaleString();
     },
-
+    setEvaId(id){
+      this.evaId = id;
+    },
     async generateReport(evaluationId){
 
       const Data = await getDocument("evaluation",evaluationId)
@@ -91,7 +111,7 @@ export default {
 
 
 <style scoped>
-@import "../css/general.css";
+@import "../../css/general.css";
 .evaluation{
   margin: 20px 0px;
 }
