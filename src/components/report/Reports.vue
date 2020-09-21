@@ -9,7 +9,7 @@
                 <br/>
                 Edited by {{rep.editor}} on {{getTime(rep.dateEdited)}}
               </b-card-text>
-              <b-button variant="primary" :to="'/DisplayRep/'+rep.id">Preview</b-button>  
+              <b-button variant="primary" :to="'/report_preview/'+rep.id">Preview</b-button>  
               <b-button variant="danger" @click="deleteReport(rep.id)">Delete</b-button>
               <b-button variant="info"
                   class="card-link"

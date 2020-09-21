@@ -95,7 +95,7 @@ const routes = [
         meta:{requiresAuth: true}
     },
     {
-        path:'/report_preview',
+        path:'/report_preview/:reportId',
         name:'report_preview',
         component: Report_preview,
         meta:{requiresAuth: true}
