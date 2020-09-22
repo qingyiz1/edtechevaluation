@@ -77,7 +77,8 @@ export default {
         window.alert("Please choose user role!")
       }else{
         adminApp.auth().createUserWithEmailAndPassword(this.userInfo['email'],this.userInfo['password'])
-          .then(async () => {
+          .then(async (newUser) => {
+            this.userInfo.uid  = newUser.user.uid
             createDocument("userInfo",this.userInfo['email'],this.userInfo)
             window.alert(this.userInfo['email']+" created")
             document.getElementById('form-signup').reset();

@@ -67,7 +67,8 @@ export default {
           });
       if(codeValid){
         auth.createUserWithEmailAndPassword(this.userInfo['email'],this.userInfo['password'])
-            .then(async () => {
+            .then(async (newUser) => {
+              this.userInfo.uid  = newUser.user.uid
               createDocument("userInfo",this.userInfo['email'],this.userInfo)
               window.alert(this.userInfo['email']+" created")
               this.$store.commit("loggedIn")

@@ -1,6 +1,5 @@
 <template>
-  <div id="app" class="framework-list">
-
+  <div class="framework-list">
     <el-dialog :visible.sync="windowVisible" title="Enter Evaluation Name" width="360px">
       <el-form ref="form" :model="newEva" >
         <el-form-item>
@@ -23,12 +22,12 @@
     >
       <p>Framework Successfully Deleted!</p>
     </b-alert>
+
     <b-overlay
     :show="show"
-    opacity="0.6"
-    variant="transparent"
+    opacity="0.9"
     @hidden="onHidden">
-      <b-button variant="success" @click="createNewFrameowrk">Create a New Framework</b-button>
+      <b-button variant="success" @click="createNewFramework">Create a New Framework</b-button>
       <b-row  v-for="(framework,index) in frameworks" :key=framework.id>
         <b-col>
           <b-card
@@ -56,18 +55,10 @@
                 <b-card-text>
                   <b-icon 
                   icon="calendar-date"
-                  style="margin-right:10px"></b-icon>{{framework.dateEdited}}
+                  style="margin-right:10px"></b-icon>{{framework.dateEdited.toDate().toLocaleString('en-US')}}
                 </b-card-text>
               </b-col>
               <b-col cols="2">
-                <!-- <b-button-group size="small">
-                  <b-button 
-                  @click="onActive(framework)"
-                  :style="{'background-color':framework.isActive ? '#28a745 !important':'' }">Active</b-button>
-                  <b-button 
-                  @click="onInactive(framework)"
-                  :style="{'background-color':framework.isActive ? '#6c757d !important':'' }">Inactive</b-button>
-                </b-button-group> -->
                 <b-form-checkbox
                   v-if="$store.getters.userProfile['role']==='Senior Consultant'"
                   v-model="framework.isActive"
@@ -124,9 +115,6 @@
 import {db, evaluationCollection} from "@/tools/firebaseConfig"
 import {updateDocument, deleteDocument, getDocument } from "@/tools/firebaseTool"
 import * as firebase from "firebase";
-// import {router} from "@/router/index.js"
-// import {debounce} from 'debounce'
-const frameworkPath = "framework/"
 
 export default {
   name: "Framework",
@@ -159,152 +147,120 @@ export default {
 
   //   }
   // },
-  // firestore(){
-  //   return{
-  //     firebaseData: db.doc(frameworkPath),
-  //   }
-  // },
+  firestore(){
+    return{
+      frameworks: db.collection("framework")
+    }
+  },
   methods:{
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown
     },
-  createNewFrameowrk: function () {
-   this.$router.push('/framework/new_framework')
-  },
-  onHidden: function () {
-    this.show = false;
-  },
-  onActive: function (framework) {
-      framework.isActive = !framework.isActive;
-      updateDocument("framework",framework.id, framework);
-  },
-    openEvaWindow(framework){
-      this.windowVisible = true;
-      this.newEva.framework = framework
+    createNewFramework: function () {
+     this.$router.push('/framework/new_framework')
     },
-  async startEvaluation(inputData) {
-    let newSections = [];
-    let newSecData;
-    for (const section of inputData.framework['section']) {
-      await db.collection("Section").doc(section.id).get().then(function(doc) {
-        if (doc.exists) {
-          newSecData = doc.data()
-        }else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-        }
-      }).catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      let newSecRef = await db.collection("Section").doc()
-      await newSecRef.set(newSecData)
-      await newSecRef.update({id: newSecRef.id})
-      newSections.push(db.doc('Section/' + newSecRef.id))
-    }
-
-    let evaRef = await evaluationCollection.doc()
-    await evaRef.set({
-      author: this.$store.getters.userProfile.nickname,
-      dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
-      dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
-      frameworkId: inputData.framework.name,
-      isCompleted: false,
-      name: inputData.name,
-      section: newSections,
-      summary: "This is a summary",
-    })
-    await this.$router.push('editEva/' + evaRef.id)
-  },
-
-  onPreviewTabChanged: function (currentTabs) {
-    console.log(currentTabs)
-  },
-
-  deleteFramework(framework,index){
-    this.$bvModal.msgBoxConfirm('This action will delete the framework permanently.', {
-      title: 'Warning!',
-      size: 'sm',
-      buttonSize: 'sm',
-      headerBgVariant:'warning',
-      okVariant: 'danger',
-      okTitle: 'Confirm',
-      cancelTitle: 'Cancel',
-      footerClass: 'p-2',
-      hideHeaderClose: false,
-      centered: true
-    })
-    .then(value => {
-      if(value === true){
-        this.dismissCountDown = this.dismissSecs
-        deleteDocument('framework',framework.id)
-        if(this.frameworks[index] === framework) {
-          // The template passes index as the second parameter to avoid indexOf,
-          // it will be better for the performance especially for one large array
-          // (because indexOf actually loop the array to do the match)
-          this.frameworks.splice(index, 1)
-        } else {
-          let found = this.frameworks.indexOf(framework)
-          this.frameworks.splice(found, 1)
-        }
+    onHidden(){
+      setTimeout(()=>{
+        this.show = false
+      },600)
+    },
+    onActive: function (framework) {
+        framework.isActive = !framework.isActive;
+        updateDocument("framework",framework.id, framework);
+    },
+      openEvaWindow(framework){
+        this.windowVisible = true;
+        this.newEva.framework = framework
+      },
+    async startEvaluation(inputData) {
+      let newSections = [];
+      let newSecData;
+      for (const section of inputData.framework['section']) {
+        await db.collection("section").doc(section.id).get().then(function(doc) {
+          if (doc.exists) {
+            newSecData = doc.data()
+          }else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+          }
+        }).catch((error) => {
+              console.log("Error getting documents: ", error);
+            });
+        let newSecRef = await db.collection("section").doc()
+        await newSecRef.set(newSecData)
+        await newSecRef.update({id: newSecRef.id})
+        newSections.push(db.doc('section/' + newSecRef.id))
       }
-    })
-    .catch(err => {
-      // An error occurred
-      window.alert(err)
-    })
 
-  },
+      let evaRef = await evaluationCollection.doc()
+      await evaRef.set({
+        author: this.$store.getters.userProfile.nickname,
+        authorUid: this.$store.getters.userProfile.uid,
+        dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
+        dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
+        frameworkId: inputData.framework.name,
+        isCompleted: false,
+        name: inputData.name,
+        section: newSections,
+        summary: "This is a summary",
+      })
+      await this.$router.push('editEva/' + evaRef.id)
+    },
+    onPreviewTabChanged: function (currentTabs) {
+      console.log(currentTabs)
+    },
+    deleteFramework(framework){
+      const h = this.$createElement
+      const messageVNode = h('div', { class: ['d-block','text-center'] }, [
+        h('h4', [
+          'This action will delete the evaluation permanently!'
+        ]),
+      ])
+      this.$bvModal.msgBoxConfirm([messageVNode], {
+        bodyTextVariant: "danger",
+        title: "Are you sure?",
+        size: 'md',
+        buttonSize: 'md',
+        headerBgVariant:'warning',
+        okVariant: 'danger',
+        okTitle: 'Confirm',
+        cancelTitle: 'Cancel',
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+        centered: true
+      })
+      .then(value => {
+        if(value === true){
+          this.dismissCountDown = this.dismissSecs
+          deleteDocument('framework',framework.id)
+        }
+      })
+      .catch(err => {
+        // An error occurred
+        window.alert(err)
+      })
 
-  editFramework:function (framework) {
-    this.$router.push("/framework/"+framework.id)
-  },
-
-  onPreview: async function (framework) {
-    // console.log(framework)
-    let sections = [];
-    this.showPreview = true;
-    this.frameworkPreview = await getDocument("framework",framework.id);
-    if (framework.section.length > 0) {
-      framework.section.forEach(element => {
-        element.get().then(data => {
-          sections.push(data.data())
-        }).then(() => {
+    },
+    editFramework:function (framework) {
+      this.$router.push("/framework/"+framework.id)
+    },
+    onPreview: async function (framework) {
+      //console.log(framework)
+      let sections = [];
+      this.showPreview = true;
+      this.frameworkPreview = await getDocument("framework",framework.id);
+      if (framework.section.length > 0) {
+        framework.section.forEach(element => {
+          sections.push(element)
           this.frameworkPreview.section = sections.concat()
           console.log(this.frameworkPreview)
           this.showPreview = false;
         })
-      })
-      }
-  },
-
-  timeConverter: function (timestamp) {
-  let tempDate = new Date(timestamp);
-  let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  let year = tempDate.getFullYear();
-  let month = months[tempDate.getMonth()];
-  let date = tempDate.getDate();
-  let hour = tempDate.getHours();
-  let min = tempDate.getMinutes();
-  let sec = tempDate.getSeconds();
-  let time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
-  return time;
-}
+        }
+    },
   },
   created: async function () {
     this.show = true;
-    const docRef = db.collection(frameworkPath);
-
-    let data = await docRef.get();
-    data.forEach(element => {
-      let frameworkData = element.data();
-      let id = element.id;
-      frameworkData.id = id;
-      let date = frameworkData.dateEdited;
-      if(date) {
-        frameworkData.dateEdited = this.timeConverter(date);
-      }
-      this.frameworks.push(frameworkData)
-    })
     this.onHidden();
   },
 }

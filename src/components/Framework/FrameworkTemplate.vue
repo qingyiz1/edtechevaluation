@@ -73,10 +73,11 @@
 <script>
 import { createDocument, getDocument } from "@/tools/firebaseTool";
 import "firebase/auth";
-import {db} from "@/tools/firebaseConfig";
+import {db, frameworkCollection} from "@/tools/firebaseConfig";
 import * as firebase from "firebase";
 import SectionTemplate from "@/components/Framework/SectionTemplate";
-var frameworkPath = "/framework" + Math.ceil(Math.random()*100);
+let frameworkPath;
+
 export default {
   name: "Framework_Template",
   data(){
@@ -89,7 +90,6 @@ export default {
       showOverlay:false,
       showWarning:false,
       warningType:"",
-      author:"",
       isEdit:false,
     }
   },
@@ -100,15 +100,6 @@ export default {
     updateFrameWork: async function (){
       this.showOverlay = true;
       if (this.frameworkName.length !== 0) {
-        this.framework = {
-          name:this.frameworkName,
-          section:"",
-          dateCreated: Date.parse(new Date()),
-          dateEdited: Date.parse(new Date()),
-          author:this.author,
-          version:this.version,
-          isActive:true
-        }
         let checkSection = true;
         let checkQuestion = true;
         if (this.sections.length > 0 ) {
@@ -135,18 +126,20 @@ export default {
         if (checkSection && checkQuestion) {
           let sectionArray = [];
           for (let i = 0; i < this.sections.length; i++ ) {
-            let sectionRef = db.collection("Section").doc()
+            let sectionRef = db.collection("section").doc()
             await sectionRef.set(this.sections[i])
-            sectionArray.push(db.doc('Section/' + sectionRef.id));
+            sectionArray.push(db.doc('section/' + sectionRef.id));
           }
           this.framework = {
-          name:this.frameworkName,
-          section:sectionArray,
-          dateCreated: Date.parse(new Date()),
-          dateEdited: Date.parse(new Date()),
-          author:this.author,
-          version:this.version,
-          isActive:true
+            id:frameworkPath,
+            name:this.frameworkName,
+            section:sectionArray,
+            dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
+            dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
+            author:this.$store.getters.userProfile.nickname,
+            authorUid:this.$store.getters.userProfile.uid,
+            version:this.version,
+            isActive:true
         }
           createDocument("framework",frameworkPath,this.framework);
           this.showOverlay = false;
@@ -158,19 +151,6 @@ export default {
         this.warningType = "framework name";
       }
     },
-  // created: async function () {
-  //   const docRef = db.doc(frameworkPath);
-
-  //   let data = (await docRef.get() ).data();
-
-  //   if (!data) {
-  //     data = { name: '', section: '', question: '' }
-  //     await docRef.set(data)
-  //   }
-
-  //   this.formData = data;
-  //   this.state = 'synced'
-  // },
     onCreateNewSecion() {
       let emptySection = {
           name:"",
@@ -192,9 +172,8 @@ export default {
   },
   created: async function () {
     this.showOverlay = true;
-    let usrInfo = await db.collection("userInfo").doc(firebase.auth().currentUser.email).get();
-    this.author = usrInfo.data()['nickname'];
     if (this.$route.params.id) {
+      console.log(this.$route.params.id)
       this.isEdit = true;
       frameworkPath = "/" + this.$route.params.id;
       let framework = await getDocument("framework",this.$route.params.id);
@@ -209,18 +188,11 @@ export default {
         })
       }
       // this.showOverlay = false;
-    } 
+    } else{
+      frameworkPath = frameworkCollection.doc().id
+    }
     this.showOverlay = false;
-    
-  //   let data = (await docRef.get() ).data();
-
-  //   if (!data) {
-  //     data = { name: '', section: '', question: '' }
-  //     await docRef.set(data)
-  //   }
-
-  //   this.formData = data;
-  //   this.state = 'synced'
+    console.log(frameworkPath)
   }
 }
 </script>
