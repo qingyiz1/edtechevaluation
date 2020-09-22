@@ -19,7 +19,7 @@
       <b-row align-h="center">
         <b-col cols="10">
           <div v-for="eva in evaluationList" v-bind:key="eva.id" class="evaluation">
-            <b-card v-if="eva.authorUid === $store.getters.userProfile.uid" :header="eva.frameworkId+' - '+eva.name" :title="eva.name">
+            <b-card v-if="eva.authorUid === $store.getters.userProfile.uid || $store.getters.userProfile.role === 'Senior Consultant'" :header="eva.frameworkId+' - '+eva.name" :title="eva.name">
               <b-form-checkbox
                   v-model="eva.isCompleted"
                   @change="changeCompleted(eva)"
