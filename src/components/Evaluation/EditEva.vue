@@ -1,7 +1,5 @@
 <template>
   <div>
-
-
     <b-overlay :show="show" rounded="lg" opacity="0.9">
     <b-card no-body>
 <!--      <b-progress style="position: fixed;top:0;height: 10px;width: 100%;z-index: 1000" v-show="value < 90" :value="value" :max="max" animated></b-progress>-->

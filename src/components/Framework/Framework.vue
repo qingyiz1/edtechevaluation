@@ -205,6 +205,7 @@ export default {
     let evaRef = await evaluationCollection.doc()
     await evaRef.set({
       author: this.$store.getters.userProfile.nickname,
+      authorUid: this.$store.getters.userProfile.uid,
       dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
       dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
       frameworkId: inputData.framework.name,
