@@ -1,0 +1,75 @@
+.list-container {
+    margin: 1.5rem 2rem;
+  }
+  
+  .list-container .row {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .list-container .funtional-container {
+    /* margin: 0; */
+    justify-content: flex-end;
+    
+  }
+  
+  .list-container .list-search {
+    height: 3rem;
+    width: 12rem;
+    margin-right: 1rem;
+  }
+  .list-search input {
+    height: 3rem !important;
+    border: none;
+    background-color: #ECF0FB;
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    font-weight: bold;
+    padding-left: 1.5rem;
+  }
+  .list-search .input-group-text {
+    background-color: #ECF0FB;
+    border: none;
+    border-top-right-radius: 1rem !important;
+    border-bottom-right-radius: 1rem !important;
+    color: #6c757d;
+  }
+  .list-header div {
+    padding: 0;
+  }
+  .list-container .list-create-btn {
+    margin-bottom: 1.5rem;
+    background-color: #004C9D;
+    border: none;
+    height: 3rem;
+    width: 7.8rem;
+    border-radius: 1rem;
+  }
+  
+  .list-container .list {
+    width: 100%;
+    border-radius: 1rem;
+    padding: 0 1.5rem;
+  }
+  
+  .list-container .list-header{
+    height: 4.5rem;
+    background-color: #C6E5FD;
+    
+  }
+  
+  .list-container .list-content {
+    height: 4rem;
+    background-color: #ffffff;
+    margin-top: 1rem;
+  }
+  .list-container .list-content .list-inline-btn {
+    background-color: #004C9D;
+    border: none;
+    height: 2.5rem;
+    width: 6rem;
+    border-radius: 1rem;
+  }
+  .list-container .list-content div {
+    padding: 0;
+  }
