@@ -4,26 +4,24 @@
     <b-card no-body>
       <b-tabs v-model="tabIndex" card>
         <b-tab class="row" v-for="(section,indexS) in sections" :key="indexS" :title="section.name">
-                 <b-list-group v-for="(question,indexQ) in section.question" :key="indexQ">
-                   <b-row no-gutters>
-                   <b-col md="2">
-                   <p style="margin:revert">Question {{indexQ+1}}</p>
-                   </b-col>
-                   <b-col md="4">
-                    <b-list-group-item>{{ question.questionName }}</b-list-group-item>
-                   </b-col>
-                     <b-col md="2">
-                       <p style="margin:revert">Answer {{indexQ+1}}</p>
-                     </b-col>
+                 <b-card-group style="margin-bottom: 20px" v-for="(question,indexQ) in section.question" :key="indexQ">
+                   <b-card border-variant="secondary" :header="question.questionName">
+                   <b-row>
                      <b-col md="4">
+                       <p style="font-weight: bold">Answer:</p>
                        <b-list-group-item v-if="question.selected === 0">Not Applicable</b-list-group-item>
                        <b-list-group-item v-if="question.selected === 1">Below Basic</b-list-group-item>
                        <b-list-group-item v-if="question.selected === 2">Basic</b-list-group-item>
                        <b-list-group-item v-if="question.selected === 3">Adequate</b-list-group-item>
                        <b-list-group-item v-if="question.selected === 4">Exceptional</b-list-group-item>
                      </b-col>
+                     <b-col md="8">
+                     <p style="font-weight: bold">Comment:</p>
+                     <textarea cols="6" v-model="question.comment" type="text" rows="2" class="form-control input-lg" name="comment" placeholder="Comment" disabled></textarea>
+                     </b-col>
                    </b-row>
-                  </b-list-group>
+                   </b-card>
+                  </b-card-group>
 
         </b-tab>
         <b-tab v-if="countdown === 0" title="Summary">

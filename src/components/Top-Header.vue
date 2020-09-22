@@ -1,10 +1,9 @@
 <template>
   <div style="width: 100%">
-    <div>
+    <div id="navContainer">
       <b-navbar toggleable="lg" class="header" >
-        <b-navbar-brand to="/"><img src="../assets/EdTech.png" height="30px" width="100px"></b-navbar-brand>
-        <b-avatar class="avatar" variant="info" :text="Role"></b-avatar>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+        <b-navbar-brand style="margin: auto;" to="/"><img src="../assets/EdTech.png" height="30px" width="100px"></b-navbar-brand>
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav class="navbar">
             <b-nav-item v-if="!$store.getters.loggedIn" to="/login">Login</b-nav-item>
@@ -18,7 +17,7 @@
             <b-nav-text v-if="$store.getters.loggedIn"></b-nav-text>
           </b-navbar-nav>
         </b-collapse>
-
+        <b-avatar class="avatar" variant="info" :text="Role"></b-avatar>
 
         <!-- Right aligned nav items -->
         <!--            <b-navbar-nav class="ml-auto">-->
@@ -80,11 +79,24 @@ export default {
   font-weight: 500;
   font-size: 1.25rem;
   box-shadow: 0 8px 10px 0 #C3C2C2;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+  min-height: 60px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+#navContainer{
+  height: 66px;
 }
 
 .avatar {
   margin-right: 2rem;
-  background: #0059a7;
+  position: absolute;
+  top: 6px;
+  right: 0;
+  //background: #086ec7;
 }
 
 .navbar-light .navbar-nav .nav-link {
