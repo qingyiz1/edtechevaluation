@@ -130,7 +130,6 @@ export default {
 
 <style lang="scss" scoped>
 .header {
-  height: 3.75rem;
   background-image: linear-gradient(45deg,#37B6EE,#2187F0);
   font-weight: 500;
   font-size: 1.25rem;
