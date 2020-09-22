@@ -58,7 +58,6 @@ export default {
       show:true,
       tabIndex: 1,
       sections: [],
-      report: "",
       summary:"",
       countdown:1,
     };
@@ -80,7 +79,7 @@ export default {
       }, 600);
     },
   },
-  created: async function () {
+  mounted: async function () {
     //Load sections of the framework from database
     let sectionsRef
     await evaluationCollection.doc(this.$route.params.evaId)
@@ -96,7 +95,9 @@ export default {
     for(const sectionRef of sectionsRef){
       db.doc(sectionRef.path).get().then((docRef)=>{
         this.sections.push(docRef.data())
-      })
+      }).catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
     }
     this.toggleOverlay()
     this.loadSummary()
