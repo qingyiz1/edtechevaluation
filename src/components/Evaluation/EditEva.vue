@@ -156,7 +156,7 @@ export default {
     },
     async updateDatabase(){
       for (let section of this.sections) {
-        await db.collection("Section").doc(section.id)
+        await db.collection("section").doc(section.id)
             .update({
               question:section.question,
             })

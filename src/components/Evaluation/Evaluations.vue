@@ -9,16 +9,17 @@
           ok-variant="danger"
           size="md"
           title="Are you sure?"
+          body-text-variant="danger"
           @ok="deleteEvaluation(evaId)">
          <div class="d-block text-center">
-           <h4 style="color: red">This action will delete the evaluation permanently!</h4>
+           <h4>This action will delete the evaluation permanently!</h4>
          </div>
       </b-modal>
 
       <b-row align-h="center">
         <b-col cols="10">
           <div v-for="eva in evaluationList" v-bind:key="eva.id" class="evaluation">
-            <b-card :header="eva.frameworkId+' - '+eva.name" :title="eva.name">
+            <b-card v-if="eva.authorUid === $store.getters.userProfile.uid" :header="eva.frameworkId+' - '+eva.name" :title="eva.name">
               <b-form-checkbox
                   v-model="eva.isCompleted"
                   @change="changeCompleted(eva)"
@@ -47,7 +48,7 @@
 
 <script>
 import {deleteDocument, updateDocument} from "@/tools/firebaseTool";
-import {evaluationCollection} from "@/tools/firebaseConfig";
+import {db, evaluationCollection} from "@/tools/firebaseConfig";
 import {reportCollection} from "@/tools/firebaseConfig";
 import * as firebase from "firebase";
 import {getDocument} from "@/tools/firebaseTool"
@@ -67,7 +68,21 @@ export default {
       eva.isCompleted = !eva.isCompleted
       updateDocument("evaluation",eva.id, {isCompleted:eva.isCompleted});
     },
-    deleteEvaluation(evaluationId){
+    async deleteEvaluation(evaluationId){
+      let sectionsRef;
+      await evaluationCollection.doc(evaluationId)
+          .get()
+          .then((doc) => {
+            sectionsRef = doc.data().section;
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+
+      for(const sectionRef of sectionsRef){
+        await db.doc(sectionRef.path).delete()
+        console.log(sectionRef)
+      }
       deleteDocument("evaluation",evaluationId)
     },
     getTime: function (rawDate) {

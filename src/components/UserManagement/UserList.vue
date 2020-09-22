@@ -105,7 +105,7 @@ export default {
     toggleOverlay(){
       setTimeout(()=>{
         this.show = false
-      },800)
+      },600)
     },
     async showEditDialog(id){
       const Data = await getDocument("userInfo",id)
