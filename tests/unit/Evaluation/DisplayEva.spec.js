@@ -1,4 +1,4 @@
-import { mount, createLocalVue} from '@vue/test-utils'
+import {mount, createLocalVue} from '@vue/test-utils'
 import DisplayEva from '@/components/Evaluation/DisplayEva'
 import {BootstrapVue} from "bootstrap-vue";
 
@@ -25,7 +25,14 @@ describe('DisplayEva.vue', () => {
     })
   })
 
-  it("renders",()=>{
-    expect(wrapper.exists()).toBe(true);
+  it("should show overlay then hide",async ()=>{
+    expect(wrapper.find('.b-overlay').exists()).toBe(true)
+    await wrapper.setData({show: false})
+    expect(wrapper.find('.b-overlay').exists()).toBe(false)
+  })
+
+  it("Summary Tab exists",async ()=>{
+    await wrapper.setData({countdown: 0})
+    expect(wrapper.text()).toMatch(/Summary/)
   })
 })
