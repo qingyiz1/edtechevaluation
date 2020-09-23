@@ -62,11 +62,13 @@
             </b-col>
             <b-col cols="1">
               <b-button 
-                variant="link" 
-                v-b-modal.delete 
-                :to="'/EditEva/'+eva.id"><b-avatar variant="success" icon="pencil" size="2rem"></b-avatar></b-button>
-              <b-button 
+              variant="link" 
               :disabled="eva.isCompleted!==true" 
+              :to="'/EditEva/'+eva.id"><b-avatar 
+              variant="success" 
+              icon="pencil" size="2rem"></b-avatar></b-button>
+              <b-button 
+              v-b-modal.delete 
               variant="link" 
               style="padding:0"
               @click="setEvaId(eva.id)"><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
