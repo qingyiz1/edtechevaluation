@@ -27,12 +27,13 @@
           </b-row>
           <b-row no-gutters class="list list-header" align-content="center">
             <b-col cols="1">Author</b-col>
-            <b-col cols="2">Evaluation Name</b-col>
-            <b-col cols="2">Framework</b-col>
+            <b-col cols="3">Evaluation Name</b-col>
+            <b-col cols="1">Framework</b-col>
             <b-col cols="2">Created Time</b-col>
             <b-col cols="2">Edited Time</b-col>
-            <b-col cols="1">Complete</b-col>
-            <b-col cols="2">Action</b-col>
+            <b-col cols="1">Finish</b-col>
+            <b-col cols="1">Generate</b-col>
+            <b-col cols="1">Action</b-col>
           </b-row>
           <b-row 
           no-gutters
@@ -41,11 +42,11 @@
           align-content="center" 
           align-v="center">
             <b-col cols="1">{{eva.author}}</b-col>
-            <b-col cols="2" @click="displayEva(eva.id)" class="list-content-display">{{eva.name}}</b-col>
-            <b-col cols="2">{{eva.frameworkId}}</b-col>
+            <b-col cols="3" @click="displayEva(eva.id)" class="list-content-display">{{eva.name}}</b-col>
+            <b-col cols="1">{{eva.frameworkId}}</b-col>
             <b-col cols="2">{{getTime(eva.dateCreated)}}</b-col>
             <b-col cols="2">{{getTime(eva.dateEdited)}}</b-col>
-            <b-col cols="1" >
+            <b-col cols="1" style="padding-left:3.5rem">
               <b-form-checkbox
               v-model="eva.isCompleted"
               name="check-button"
@@ -55,18 +56,18 @@
               </b-form-checkbox>
             </b-col>
             
-            <b-col cols="2">
+            <b-col cols="1">
               <b-button 
               :to="'/Reports/'" variant="info" 
               @click="generateReport(eva.id)"
               class="list-inline-btn-sm"
-              size="sm"
               :disabled="eva.isCompleted != true">Generate</b-button>
-              <b-button
-              variant="link"
-              style="padding:0"
+            </b-col>
+            <b-col cols="1">
+              <b-button 
+              variant="link" 
               :to="'/EditEva/'+eva.id"><b-avatar 
-              variant="success"
+              variant="success" 
               icon="pencil" size="2rem"></b-avatar></b-button>
               <b-button 
               v-b-modal.delete 

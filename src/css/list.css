@@ -57,7 +57,7 @@
   }
   
   .list-container .list-content {
-    min-height: 4rem;
+    height: 4rem;
     background-color: #ffffff;
     margin-top: 1rem;
     justify-content: center;
@@ -85,5 +85,5 @@
   }
 
   .list-container .list-content div {
-    font-size: 0.92rem;
+    padding: 0;
   }
