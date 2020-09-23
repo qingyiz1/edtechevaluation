@@ -14,7 +14,7 @@ import Userlist from "@/components/UserManagement/UserList";
 import CreateUser from "@/components/UserManagement/CreateUser";
 import Dashboard from "@/components/User/Dashboard";
 import Report_preview from "@/components/Report/report_preview";
-
+import Report_view_online from "@/components/Report/report_view_online";
 Vue.use(VueRouter)
 
 const routes = [
@@ -98,6 +98,12 @@ const routes = [
         path:'/report_preview/:reportId',
         name:'report_preview',
         component: Report_preview,
+        meta:{requiresAuth: true}
+    },
+    {
+        path:'/report_view_online/:reportId',
+        name:'report_view_online',
+        component: Report_view_online,
         meta:{requiresAuth: true}
     },
 ]
