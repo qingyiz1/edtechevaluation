@@ -17,15 +17,16 @@
     height: 3rem;
     width: 12rem;
     margin-right: 1rem;
+    margin-bottom: 1.5rem;
   }
   .list-search input {
     height: 3rem !important;
     border: none;
     background-color: #ECF0FB;
-    border-top-left-radius: 1rem;
-    border-bottom-left-radius: 1rem;
+    border-top-left-radius: 1rem !important;
+    border-bottom-left-radius: 1rem !important;
     font-weight: bold;
-    padding-left: 1.5rem;
+    padding-left: 1.5rem !important;
   }
   .list-search .input-group-text {
     background-color: #ECF0FB;
@@ -55,7 +56,8 @@
   .list-container .list-header{
     height: 4.5rem;
     background-color: #C6E5FD;
-    
+    font-weight: bold;
+    color: #004C9D;
   }
   
   .list-container .list-content {
@@ -63,6 +65,15 @@
     background-color: #ffffff;
     margin-top: 1rem;
   }
+
+  .list-content:hover {
+    opacity: 0.8;
+  }
+  .list-content .list-content-display:hover {
+    cursor: pointer;
+    color: #7DB4EF;
+  }
+
   .list-container .list-content .list-inline-btn {
     background-color: #004C9D;
     border: none;
@@ -70,6 +81,12 @@
     width: 6rem;
     border-radius: 1rem;
   }
+  .list-container .list-content .list-inline-btn-sm {
+    background-color: #004C9D;
+    border: none;
+    border-radius: 1rem;
+  }
+
   .list-container .list-content div {
     padding: 0;
   }
