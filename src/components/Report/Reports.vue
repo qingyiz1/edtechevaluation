@@ -57,12 +57,20 @@
               v-if="rep.isCompleted"
               @click="openSendWindow(rep.id)"
               size="sm"
-              class="list-inline-btn-sm action_btn">Send</b-button>
+              variant="link"
+              style="padding:0"
+              class="action_btn"><b-avatar
+              variant="primary"
+              icon="share" size="2rem"></b-avatar></b-button>
           <b-button
               v-if="rep.isCompleted"
               @click="downloadReport(rep.id)"
               size="sm"
-              class="list-inline-btn-sm action_btn">Download</b-button>
+              variant="link"
+              style="padding:0"
+              class="action_btn"><b-avatar
+              variant="dark"
+              icon="file-earmark-arrow-down" size="2rem"></b-avatar></b-button>
           <b-button
               variant="link"
               @click="displayRep(rep.id)"
@@ -262,7 +270,8 @@ export default {
         let storageRef = firebase.storage().ref()
         let repRef = storageRef.child('Report/'+repId+ '.docx')
 
-        repRef.put(downloadReport)
+        let file = downloadReport
+        repRef.put(file)
       });
     },
     async openSendWindow(repId){
