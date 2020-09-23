@@ -168,10 +168,12 @@ export default {
         evaluationId: this.evaluationInfo.name,
         isCompleted: false,
         name: this.evaluationInfo.name,
-        content: this.evaluationInfo.section,
-        recommendation:"test",
+        content: this.evaluationInfo.section.path,
+        recommendation:"",
         recommendationAuthor:this.$store.getters.userProfile.nickname,
       })
+
+     
     },
   },
   firestore:{
