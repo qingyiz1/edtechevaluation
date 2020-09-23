@@ -80,6 +80,7 @@ export default {
     },
   },
   created: async function () {
+    console.log(this.$route.params.reportId)
     let report_ref = db.collection("report").doc(this.$route.params.reportId);
     this.reportRef = await report_ref.get();
     this.reportData = this.reportRef.data();

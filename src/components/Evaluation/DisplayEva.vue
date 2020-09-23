@@ -33,10 +33,10 @@
     </b-card>
 
     <!-- Control buttons-->
-    <div class="text-center">
+    <div class="text-center" style="margin-bottom: 2rem">
       <b-button-group class="mt-2">
-        <b-button variant="info" @click="tabIndex--">Previous</b-button>
-        <b-button variant="info" @click="tabIndex++">Next</b-button>
+        <b-button variant="info" @click="previousPage">Previous</b-button>
+        <b-button variant="info" @click="nextPage">Next</b-button>
         <b-button variant="dark" to="/evaluation" >Back</b-button>
       </b-button-group>
     </div>
@@ -61,6 +61,14 @@ export default {
     };
   },
   methods: {
+    nextPage(){
+      this.tabIndex++;
+      window.scrollTo(0,0)
+    },
+    previousPage(){
+      this.tabIndex--;
+      window.scrollTo(0,0)
+    },
     loadSummary(){
       if (this.timeout) clearTimeout(this.timeout);
       this.timeout = setTimeout(() => {
