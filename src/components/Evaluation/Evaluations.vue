@@ -48,6 +48,7 @@
             <b-col cols="1" >
               <b-form-checkbox
               v-model="eva.isCompleted"
+              class="action_btn"
               name="check-button"
               size="lg"
               switch
@@ -56,19 +57,21 @@
             </b-col>
             
             <b-col cols="2">
-              <b-button 
+              <b-button
               :to="'/Reports/'" variant="info" 
               @click="generateReport(eva.id)"
-              class="list-inline-btn-sm"
+              class="list-inline-btn-sm action_btn"
               size="sm"
-              :disabled="eva.isCompleted != true">Generate</b-button>
+              v-if="eva.isCompleted === true">Generate</b-button>
               <b-button
+                  class="action_btn"
               variant="link"
               style="padding:0"
               :to="'/EditEva/'+eva.id"><b-avatar 
               variant="success"
               icon="pencil" size="2rem"></b-avatar></b-button>
-              <b-button 
+              <b-button
+                  class="action_btn"
               v-b-modal.delete 
               variant="link" 
               style="padding:0"

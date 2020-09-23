@@ -61,6 +61,7 @@
         <b-col cols="3">{{framework.name}}</b-col>
         <b-col cols="1">
           <b-form-checkbox
+              class="action_btn"
             v-if="$store.getters.userProfile['role']==='Senior Consultant'"
             v-model="framework.isActive"
             name="check-button"
@@ -74,20 +75,22 @@
         <b-col cols="1">{{framework.version}}</b-col>
         <b-col cols="2">
           <b-button 
-            class="list-inline-btn-sm"
-            :disabled="!framework.isActive"
+            class="list-inline-btn-sm action_btn"
+            v-if="framework.isActive"
             size="sm"
             @click="openEvaWindow(framework)">Start</b-button>
-          <b-button 
+          <b-button
+              class="action_btn"
             variant="link" 
             style="padding:0"
             v-if="$store.getters.userProfile['role']==='Senior Consultant'" 
             @click="editFramework(framework)"><b-avatar variant="success" icon="pencil" size="2rem"></b-avatar></b-button>
-          <b-button 
-          variant="link" 
-          style="padding:0"
-          v-if="$store.getters.userProfile['role']==='Senior Consultant'" 
-          @click="deleteFramework(framework,index)"><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
+          <b-button
+            class="action_btn"
+            variant="link"
+            style="padding:0"
+            v-if="$store.getters.userProfile['role']==='Senior Consultant'"
+            @click="deleteFramework(framework,index)"><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
         </b-col>
 
       </b-row>

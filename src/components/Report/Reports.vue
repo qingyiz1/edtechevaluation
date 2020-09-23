@@ -26,13 +26,11 @@
       </b-row>
       <b-row no-gutters class="list list-header" align-content="center">
         <b-col cols="1">Author</b-col>
-        <b-col cols="2">Report Name</b-col>
+        <b-col cols="3">Report Name</b-col>
         <b-col cols="2">Created Time</b-col>
         <b-col cols="2">Edited Time</b-col>
         <b-col cols="1">Complete</b-col>
-        <b-col cols="1">Send</b-col>
-        <b-col cols="1">Download</b-col>
-        <b-col cols="2">Action</b-col>
+        <b-col cols="3">Action</b-col>
       </b-row>
       <b-row
           no-gutters
@@ -41,37 +39,37 @@
           align-content="center"
           align-v="center">
         <b-col cols="1">{{rep.author}}</b-col>
-        <b-col cols="2" @click="displayRep(rep.id)" class="list-content-display">{{rep.name}}</b-col>
+        <b-col cols="3" @click="displayRep(rep.id)" class="list-content-display">{{rep.name}}</b-col>
         <b-col cols="2">{{rep.dateCreated.toDate().toLocaleString('en-US')}}</b-col>
         <b-col cols="2">{{rep.dateEdited.toDate().toLocaleString('en-US')}}</b-col>
         <b-col cols="1">
           <b-form-checkbox
               v-model="rep.isCompleted"
               name="check-button"
+              class="action_btn"
               size="lg"
               switch
               @change="toggleIsComplete(rep)">
           </b-form-checkbox>
         </b-col>
-        <b-col cols="1">
+        <b-col cols="3">
           <b-button
-              :disabled="!rep.isCompleted"
+              v-if="rep.isCompleted"
               @click="openSendWindow(rep.id)"
               size="sm"
-              class="list-inline-btn-sm">Send</b-button>
-        </b-col>
-
-        <b-col cols="1">
+              class="list-inline-btn-sm action_btn">Send</b-button>
           <b-button
-              :disabled="!rep.isCompleted"
+              v-if="rep.isCompleted"
               @click="downloadReport(rep.id)"
               size="sm"
-              class="list-inline-btn-sm">Download</b-button>
-        </b-col>
-        <b-col cols="2">
+              class="list-inline-btn-sm action_btn">Download</b-button>
           <b-button
               variant="link"
-              @click="displayRep(rep.id)">
+              @click="displayRep(rep.id)"
+              class="action_btn"
+              size="sm"
+              style="padding:0"
+              >
             <b-avatar
                 variant="success"
                 icon="pencil" size="2rem"></b-avatar>
@@ -80,7 +78,10 @@
               variant="link"
               v-b-modal.delete
               @click="setRepId(rep.id)"
-              style="padding:0"><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
+              class="action_btn"
+              size="sm"
+              style="padding:0"
+              ><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
         </b-col>
       </b-row>
     </div>
@@ -207,6 +208,7 @@ export default {
       firebase.storage().ref().child('Report/'+repId+ '.docx').delete()
     },
     toggleIsComplete(rep) {
+      rep.isCompleted = !rep.isCompleted
       updateDocument("report", rep.id, {"isCompleted": rep.isCompleted})
     },
     displayRep: function (repID) {

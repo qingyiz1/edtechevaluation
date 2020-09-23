@@ -93,18 +93,18 @@ export default {
         .then((doc) => {
           sectionsRef = doc.data().section;
           this.summary = doc.data().summary;
+          for(const sectionRef of sectionsRef){
+            db.doc(sectionRef.path).get().then((docRef)=>{
+              this.sections.push(docRef.data())
+            }).catch((error) => {
+              console.log("Error getting documents: ", error);
+            });
+          }
         })
         .catch((error) => {
           console.log("Error getting documents: ", error);
         });
 
-    for(const sectionRef of sectionsRef){
-      db.doc(sectionRef.path).get().then((docRef)=>{
-        this.sections.push(docRef.data())
-      }).catch((error) => {
-        console.log("Error getting documents: ", error);
-      });
-    }
     this.toggleOverlay()
     this.loadSummary()
   },
