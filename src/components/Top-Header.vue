@@ -93,10 +93,7 @@ export default {
 
 .avatar {
   margin-right: 2rem;
-  position: absolute;
-  top: 6px;
-  right: 0;
-  //background: #086ec7;
+  background: #427EC7;
 }
 
 .navbar-light .navbar-nav .nav-link {
