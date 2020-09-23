@@ -28,7 +28,7 @@
     opacity="0.9"
     @hidden="onHidden">
     <div class="list-container">
-      <b-row no-gutters class="funtional-container">
+      <b-row no-gutters class="functional-container">
         <b-input-group size="sm" class="list-search">
           <b-form-input type="search" placeholder="Search"></b-form-input>
           <b-input-group-append is-text>
