@@ -124,6 +124,22 @@ export default {
           }
         }
         if (checkSection && checkQuestion) {
+          // Delete old section reference
+          console.log(frameworkPath)
+          let sectionsRef;
+          await frameworkCollection.doc(frameworkPath)
+              .get()
+              .then((doc) => {
+                sectionsRef = doc.data().section;
+                for(const sectionRef of sectionsRef){
+                  db.doc(sectionRef.path).delete()
+                }
+              })
+              .catch((error) => {
+                console.log("Error getting documents: ", error);
+              });
+
+          // update section reference
           let sectionArray = [];
           for (let i = 0; i < this.sections.length; i++ ) {
             let sectionRef = db.collection("section").doc()
@@ -173,9 +189,8 @@ export default {
   created: async function () {
     this.showOverlay = true;
     if (this.$route.params.id) {
-      console.log(this.$route.params.id)
       this.isEdit = true;
-      frameworkPath = "/" + this.$route.params.id;
+      frameworkPath = this.$route.params.id;
       let framework = await getDocument("framework",this.$route.params.id);
       this.framework = framework;
       this.frameworkName = framework.name;
@@ -187,12 +202,10 @@ export default {
           })
         })
       }
-      // this.showOverlay = false;
     } else{
       frameworkPath = frameworkCollection.doc().id
     }
     this.showOverlay = false;
-    console.log(frameworkPath)
   }
 }
 </script>
