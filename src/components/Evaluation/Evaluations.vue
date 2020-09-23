@@ -1,6 +1,7 @@
 <template>
-    <b-container>
-      <b-modal
+    <!-- <b-container> -->
+      <div>
+        <b-modal
           id="delete"
           button-size="md"
           centered
@@ -15,8 +16,68 @@
            <h4>This action will delete the evaluation permanently!</h4>
          </div>
       </b-modal>
+        <div class="list-container">
+          <b-row class="funtional-container">
+            <b-input-group size="sm" class="list-search">
+              <b-form-input type="search" placeholder="Search"></b-form-input>
+              <b-input-group-append is-text>
+                <b-icon icon="search"></b-icon>
+              </b-input-group-append>
+            </b-input-group>
+          </b-row>
+          <b-row class="list list-header" align-content="center">
+            <b-col cols="1">Author</b-col>
+            <b-col cols="3">Evaluation Name</b-col>
+            <b-col cols="1">Framework</b-col>
+            <b-col cols="2">Created Time</b-col>
+            <b-col cols="2">Edited Time</b-col>
+            <b-col cols="1">Finish</b-col>
+            <b-col cols="1">Generate</b-col>
+            <b-col cols="1">Action</b-col>
+          </b-row>
+          <b-row 
+          v-for="eva in evaluationList" v-bind:key="eva.id"
+          class="list list-content" 
+          align-content="center" 
+          align-v="center">
+            <b-col cols="1">{{eva.author}}</b-col>
+            <b-col cols="3" @click="displayEva(eva.id)" class="list-content-display">{{eva.name}}</b-col>
+            <b-col cols="1">{{eva.frameworkId}}</b-col>
+            <b-col cols="2">{{getTime(eva.dateCreated)}}</b-col>
+            <b-col cols="2">{{getTime(eva.dateEdited)}}</b-col>
+            <b-col cols="1">
+              <b-icon 
+            v-if="eva.isCompleted === true"
+            variant="success" 
+            icon="check-circle-fill" 
+            size="2.5rem"></b-icon>
+            </b-col>
+            
+            <b-col cols="1">
+              <b-button 
+              :to="'/Reports/'" variant="info" 
+              @click="generateReport(eva.id)"
+              class="list-inline-btn-sm"
+              :disabled="eva.isCompleted != true">Generate</b-button>
+            </b-col>
+            <b-col cols="1">
+              <b-button 
+              variant="link" 
+              :disabled="eva.isCompleted!==true" 
+              :to="'/EditEva/'+eva.id"><b-avatar 
+              variant="success" 
+              icon="pencil" size="2rem"></b-avatar></b-button>
+              <b-button 
+              v-b-modal.delete 
+              variant="link" 
+              style="padding:0"
+              @click="setEvaId(eva.id)"><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
+            </b-col>
+          </b-row>
+        </div>
+      </div>
 
-      <b-row align-h="center">
+      <!-- <b-row align-h="center">
         <b-col cols="10">
           <div v-for="eva in evaluationList" v-bind:key="eva.id" class="evaluation">
             <b-card v-if="eva.authorUid === $store.getters.userProfile.uid || $store.getters.userProfile.role === 'Senior Consultant'" :header="eva.frameworkId+' - '+eva.name" :title="eva.name">
@@ -40,10 +101,10 @@
             </b-card>
           </div>
         </b-col>
-      </b-row>
+      </b-row> -->
 
 
-    </b-container>
+    <!-- </b-container> -->
 </template>
 
 <script>
@@ -61,6 +122,7 @@ export default {
       evaluationList: [],
       evaluationInfo: {},
       evaId:"",
+      show:"",
     };
   },
   methods: {
@@ -87,10 +149,13 @@ export default {
     },
     getTime: function (rawDate) {
       let m = new Date(rawDate.seconds * 1000);
-      return m.toLocaleString();
+      return m.toLocaleString('en-US');
     },
     setEvaId(id){
       this.evaId = id;
+    },
+    displayEva: function (evaID) {
+      this.$router.push("/DisplayEva/" + evaID)
     },
     async generateReport(evaluationId){
       const Data = await getDocument("evaluation",evaluationId)
@@ -119,10 +184,12 @@ export default {
 
 <style scoped>
 @import "../../css/general.css";
-.evaluation{
+@import "../../css/list.css";
+
+/* .evaluation{
   margin: 20px 0px;
-}
-.btn {
+} */
+/* .btn {
   margin: 0px 5px;
-}
+} */
 </style>
