@@ -2,6 +2,12 @@
   <div>
     <b-container>
       <b-row align-h="center">
+        <b-row>
+          <b-col cols="2">
+            <b-img :src="logo" fluid alt="Edtech Logo"></b-img>
+          </b-col>
+          <b-col cols="10"></b-col>
+        </b-row>
         <b-col cols="8">
           <h1 class="my-2">{{this.reportData.name}}Report</h1>
           <p>
@@ -56,6 +62,7 @@
 </template>
 
 <script>
+import logo from "@/assets/Logo.png";
 import { updateDocument } from "@/tools/firebaseTool";
 import * as firebase from "firebase";
 import { db } from "@/tools/firebaseConfig";
@@ -64,6 +71,7 @@ export default {
   name: "Report_preview",
   data() {
     return {
+      logo: logo,
       report: {},
       reportData: {},
       sections: [],
@@ -81,7 +89,7 @@ export default {
       window.alert("Successfully uploaded");
     },
     getTime: function (rawDate) {
-      if(rawDate){
+      if (rawDate) {
         let m = new Date(rawDate.seconds * 1000);
         return m.toLocaleString();
       }
