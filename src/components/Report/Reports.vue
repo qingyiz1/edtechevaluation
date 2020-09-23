@@ -1,93 +1,174 @@
 <template>
-    <b-container>
-      <b-row>
-        <b-col>
-          <div v-for="rep in reportList" v-bind:key="rep.id" class="report" >
-            
-            <b-card
-            :header="rep.name" 
-            class="text-left mt-3">
-            <template v-slot:header>
-              <b-row align-h="between" align-v="center">
-                <b-col cols="9"><h6 class="mb-0">{{rep.name}}</h6></b-col>
-                 <b-col cols="1">
-                  <b-button  size="sm" variant="link" @click="Edit(rep.id)" >
-                    <b-icon icon="pencil"></b-icon>
-                  </b-button>
-                </b-col>
-                <b-col cols="2">
-                <b-form-checkbox
-                  v-model="rep.isCompleted"
-                  name="check-button"
-                  size="sm"
-                  style="margin-bottom: 0.625rem"
-                  switch
-                  @change="toggleIsComplete(rep)">{{rep.isCompleted?'completed':'uncompleted'}}</b-form-checkbox>
-              </b-col>
-              </b-row>
-            </template>
-            <b-row align-h="between" align-v="center" b-row  no-gutters>
-            <b-col cols="8">
-              <b-card-text>
-                 <b-icon
-                  icon="person-circle"
-                  style="margin-right:10px">
-                  </b-icon>
-                 {{rep.recommendationAuthor}}
-              </b-card-text>
-              <b-card-text>
-                  <b-icon 
-                  icon="calendar-date"
-                  style="margin-right:10px"></b-icon>
-                  {{rep.dateCreated.toDate().toLocaleString('en-US')}}
-              </b-card-text>
-              </b-col>
-            <b-col cols="4">
-              <b-button 
-                :to="'/report_preview/'+rep.id"
-                size="sm" 
-                style="margin-right: 1rem;margin-left:0.5rem"
-                variant="primary"><b-icon icon="eye"></b-icon></b-button>
-             
-              <b-button 
-                size="sm"
-                style="margin-right: 1rem;margin-left:0.5rem"
-                variant="danger"
-                @click="deleteReport(rep.id)"><b-icon icon="trash"></b-icon></b-button>
-              
-              <b-button 
-                size="sm"
-                style="margin-right: 1rem;margin-left:0.5rem"
-                variant="info"
-                @click="downloadReport(rep.id)"><b-icon icon="download"></b-icon></b-button>
-
-                <b-button 
-                size="sm"
-                style="margin-right: 1rem;margin-left:0.5rem"
-                variant="info"
-                @click="openSendWindow(rep.id)"><b-icon icon="envelope"></b-icon></b-button>
-
-            </b-col>
-             </b-row>
-            </b-card>
-          </div>
+  <div>
+    <b-modal
+          id="delete"
+          button-size="md"
+          centered
+          header-bg-variant="warning"
+          ok-title="Confirm"
+          ok-variant="danger"
+          size="md"
+          title="Are you sure?"
+          body-text-variant="danger"
+          @ok="deleteReport(repID)">
+         <div class="d-block text-center">
+           <h4>This action will delete the evaluation permanently!</h4>
+         </div>
+      </b-modal>
+    <div class="list-container">
+      <b-row no-gutters class="funtional-container">
+        <b-input-group size="sm" class="list-search">
+          <b-form-input type="search" placeholder="Search"></b-form-input>
+          <b-input-group-append is-text>
+            <b-icon icon="search"></b-icon>
+          </b-input-group-append>
+        </b-input-group>
+      </b-row>
+      <b-row no-gutters class="list list-header" align-content="center">
+        <b-col cols="1">Author</b-col>
+        <b-col cols="2">Report Name</b-col>
+        <b-col cols="2">Created Time</b-col>
+        <b-col cols="2">Edited Time</b-col>
+        <b-col cols="1">Finish</b-col>
+        <b-col cols="1">Send</b-col>
+        <b-col cols="2">Download</b-col>
+        <b-col cols="1">Action</b-col>
+      </b-row>
+      <b-row 
+      no-gutters
+      v-for="rep in reportList" v-bind:key="rep.id" 
+      class="list list-content" 
+      align-content="center" 
+      align-v="center">
+        <b-col cols="1">{{rep.recommendationAuthor}}</b-col>
+        <b-col cols="2" @click="displayRep(rep.id)" class="list-content-display">{{rep.name}}</b-col>
+        <b-col cols="2">{{rep.dateCreated.toDate().toLocaleString('en-US')}}</b-col>
+        <b-col cols="2">{{rep.dateEdited.toDate().toLocaleString('en-US')}}</b-col>
+        <b-col cols="1" style="padding-left:3.5rem">
+          <b-form-checkbox
+          v-model="rep.isCompleted"
+          name="check-button"
+          size="lg"
+          switch
+          @change="toggleIsComplete(rep)">
+          </b-form-checkbox>
+        </b-col>
+        <b-col cols="1">
+          <b-button 
+          :disabled="!rep.isCompleted"
+          @click="openSendWindow(rep.id)"
+          class="list-inline-btn-sm">Send</b-button>
+        </b-col>
+        
+        <b-col cols="2">
+          <b-button 
+          :disabled="!rep.isCompleted"
+          @click="downloadReport(rep.id)"
+          class="list-inline-btn-sm">Download</b-button>
+        </b-col>
+        <b-col cols="1">
+          <b-button 
+          variant="link"
+          @click="displayRep(rep.id)">
+            <b-avatar 
+            variant="success" 
+            icon="pencil" size="2rem"></b-avatar>
+          </b-button>
+          <b-button 
+          variant="link"
+          v-b-modal.delete 
+          @click="setRepId(rep.id)"
+          style="padding:0"><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
         </b-col>
       </b-row>
-      <el-dialog :visible.sync="sendWindowVisible" title="Send Report" width="360px">
-      <el-form ref="form" :model="sendReport" label-width="80px">
-        <el-form-item label="Email">
-          <el-input v-model="sendReport.email"></el-input>
-        </el-form-item>
-        <el-form-item label="Note">
-          <el-input v-model="sendReport.message" :rows="5" type="textarea"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="sendWindowVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="sendEmail()">Confirm</el-button>
-      </span>
+    </div>
+    <!-- <b-row>
+      <b-col>
+        <div v-for="rep in reportList" v-bind:key="rep.id" class="report" >
+          <b-card
+          :header="rep.name" 
+          class="text-left mt-3">
+          <template v-slot:header>
+            <b-row align-h="between" align-v="center">
+              <b-col cols="9"><h6 class="mb-0">{{rep.name}}</h6></b-col>
+                <b-col cols="1">
+                <b-button  size="sm" variant="link" @click="Edit(rep.id)" >
+                  <b-icon icon="pencil"></b-icon>
+                </b-button>
+              </b-col>
+              <b-col cols="2">
+              <b-form-checkbox
+                v-model="rep.isCompleted"
+                name="check-button"
+                size="sm"
+                style="margin-bottom: 0.625rem"
+                switch
+                @change="toggleIsComplete(rep)">{{rep.isCompleted?'completed':'uncompleted'}}</b-form-checkbox>
+            </b-col>
+            </b-row>
+          </template>
+          <b-row align-h="between" align-v="center" b-row  no-gutters>
+          <b-col cols="8">
+            <b-card-text>
+                <b-icon
+                icon="person-circle"
+                style="margin-right:10px">
+                </b-icon>
+                {{rep.recommendationAuthor}}
+            </b-card-text>
+            <b-card-text>
+                <b-icon 
+                icon="calendar-date"
+                style="margin-right:10px"></b-icon>
+                {{rep.dateCreated.toDate().toLocaleString('en-US')}}
+            </b-card-text>
+            </b-col>
+          <b-col cols="4">
+            <b-button 
+              :to="'/report_preview/'+rep.id"
+              size="sm" 
+              style="margin-right: 1rem;margin-left:0.5rem"
+              variant="primary"><b-icon icon="eye"></b-icon></b-button>
+            
+            <b-button 
+              size="sm"
+              style="margin-right: 1rem;margin-left:0.5rem"
+              variant="danger"
+              @click="deleteReport(rep.id)"><b-icon icon="trash"></b-icon></b-button>
+            
+            <b-button 
+              size="sm"
+              style="margin-right: 1rem;margin-left:0.5rem"
+              variant="info"
+              @click="downloadReport(rep.id)"><b-icon icon="download"></b-icon></b-button>
+
+              <b-button 
+              size="sm"
+              style="margin-right: 1rem;margin-left:0.5rem"
+              variant="info"
+              @click="openSendWindow(rep.id)"><b-icon icon="envelope"></b-icon></b-button>
+
+          </b-col>
+            </b-row>
+          </b-card>
+        </div>
+      </b-col>
+    </b-row> -->
+    <el-dialog :visible.sync="sendWindowVisible" title="Send Report" width="360px">
+    <el-form ref="form" :model="sendReport" label-width="80px">
+      <el-form-item label="Email">
+        <el-input v-model="sendReport.email"></el-input>
+      </el-form-item>
+      <el-form-item label="Note">
+        <el-input v-model="sendReport.message" :rows="5" type="textarea"></el-input>
+      </el-form-item>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="sendWindowVisible = false">Cancel</el-button>
+      <el-button type="primary" @click="sendEmail()">Confirm</el-button>
+    </span>
     </el-dialog>
-    </b-container>
+  </div>
 </template>
 
 <script>
@@ -115,6 +196,7 @@ export default {
         message:"",
       },
       Id:"",
+      repID:""
     };
   },
   methods: {
@@ -125,6 +207,14 @@ export default {
     toggleIsComplete(rep) {
       updateDocument("report", rep.id, {"isCompleted": rep.isCompleted})
     },
+    displayRep: function (repID) {
+      this.$router.push("/report_preview/" + repID)
+    },
+
+   setRepId(id){
+      this.repID = id;
+    },
+
     async downloadReport(repId){
       const repInfo = await getDocument("report",repId)
       JSZipUtils.getBinaryContent('/Template.docx', function(error, content) {
@@ -214,6 +304,7 @@ export default {
 
 
 <style scoped>
-
+@import "../../css/general.css";
+@import "../../css/list.css";
 
 </style>

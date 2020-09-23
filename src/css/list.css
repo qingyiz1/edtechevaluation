@@ -2,11 +2,7 @@
     margin: 1.5rem 2rem;
   }
   
-  .list-container .row {
-    margin: 0;
-    padding: 0;
-  }
-  
+
   .list-container .funtional-container {
     /* margin: 0; */
     justify-content: flex-end;
@@ -16,7 +12,6 @@
   .list-container .list-search {
     height: 3rem;
     width: 12rem;
-    margin-right: 1rem;
     margin-bottom: 1.5rem;
   }
   .list-search input {
@@ -45,6 +40,7 @@
     height: 3rem;
     width: 7.8rem;
     border-radius: 1rem;
+    margin-left: 1rem;
   }
   
   .list-container .list {
@@ -64,6 +60,7 @@
     height: 4rem;
     background-color: #ffffff;
     margin-top: 1rem;
+    justify-content: center;
   }
 
   .list-content:hover {

@@ -17,7 +17,7 @@
          </div>
       </b-modal>
         <div class="list-container">
-          <b-row class="funtional-container">
+          <b-row no-gutters class="funtional-container">
             <b-input-group size="sm" class="list-search">
               <b-form-input type="search" placeholder="Search"></b-form-input>
               <b-input-group-append is-text>
@@ -25,7 +25,7 @@
               </b-input-group-append>
             </b-input-group>
           </b-row>
-          <b-row class="list list-header" align-content="center">
+          <b-row no-gutters class="list list-header" align-content="center">
             <b-col cols="1">Author</b-col>
             <b-col cols="3">Evaluation Name</b-col>
             <b-col cols="1">Framework</b-col>
@@ -36,6 +36,7 @@
             <b-col cols="1">Action</b-col>
           </b-row>
           <b-row 
+          no-gutters
           v-for="eva in evaluationList" v-bind:key="eva.id"
           class="list list-content" 
           align-content="center" 
@@ -45,12 +46,14 @@
             <b-col cols="1">{{eva.frameworkId}}</b-col>
             <b-col cols="2">{{getTime(eva.dateCreated)}}</b-col>
             <b-col cols="2">{{getTime(eva.dateEdited)}}</b-col>
-            <b-col cols="1">
-              <b-icon 
-            v-if="eva.isCompleted === true"
-            variant="success" 
-            icon="check-circle-fill" 
-            size="2.5rem"></b-icon>
+            <b-col cols="1" style="padding-left:3.5rem">
+              <b-form-checkbox
+              v-model="eva.isCompleted"
+              name="check-button"
+              size="lg"
+              switch
+              @change="changeCompleted(eva)">
+              </b-form-checkbox>
             </b-col>
             
             <b-col cols="1">
@@ -63,7 +66,6 @@
             <b-col cols="1">
               <b-button 
               variant="link" 
-              :disabled="eva.isCompleted!==true" 
               :to="'/EditEva/'+eva.id"><b-avatar 
               variant="success" 
               icon="pencil" size="2rem"></b-avatar></b-button>
