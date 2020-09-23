@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import {db, evaluationCollection} from "@/tools/firebaseConfig"
+import {db, evaluationCollection, frameworkCollection} from "@/tools/firebaseConfig"
 import {updateDocument, deleteDocument, getDocument } from "@/tools/firebaseTool"
 import * as firebase from "firebase";
 
@@ -168,7 +168,7 @@ export default {
     },
     onActive: function (framework) {
         framework.isActive = !framework.isActive;
-        updateDocument("framework",framework.id, framework);
+        updateDocument("framework",framework.id, {isActive:framework.isActive});
     },
       openEvaWindow(framework){
         this.windowVisible = true;
@@ -234,7 +234,19 @@ export default {
       .then(value => {
         if(value === true){
           this.dismissCountDown = this.dismissSecs
-          deleteDocument('framework',framework.id)
+          let sectionsRef;
+          frameworkCollection.doc(framework.id)
+              .get()
+              .then((doc) => {
+                sectionsRef = doc.data().section;
+                for(const sectionRef of sectionsRef){
+                  db.doc(sectionRef.path).delete()
+                }
+                deleteDocument('framework',framework.id)
+              })
+              .catch((error) => {
+                console.log("Error getting documents: ", error);
+              });
         }
       })
       .catch(err => {

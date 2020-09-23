@@ -138,16 +138,14 @@ export default {
           .get()
           .then((doc) => {
             sectionsRef = doc.data().section;
+            for(const sectionRef of sectionsRef){
+              db.doc(sectionRef.path).delete()
+            }
+            deleteDocument("evaluation",evaluationId)
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-
-      for(const sectionRef of sectionsRef){
-        await db.doc(sectionRef.path).delete()
-        console.log(sectionRef)
-      }
-      deleteDocument("evaluation",evaluationId)
     },
     getTime: function (rawDate) {
       let m = new Date(rawDate.seconds * 1000);
