@@ -168,6 +168,7 @@ export default {
           .update({
             summary:this.summary,
             editor:this.$store.getters.userProfile.nickname,
+            editorUid:this.$store.getters.userProfile.uid,
             dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
           })
           .catch(function (error) {
