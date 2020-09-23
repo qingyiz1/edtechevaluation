@@ -74,23 +74,27 @@
         <b-col cols="2">{{framework.dateEdited.toDate().toLocaleString('en-US')}}</b-col>
         <b-col cols="1">{{framework.version}}</b-col>
         <b-col cols="2">
-          <b-button 
-            class="list-inline-btn-sm action_btn"
-            v-if="framework.isActive"
-            size="sm"
-            @click="openEvaWindow(framework)">Start</b-button>
+          <b-button
+              class="action_btn"
+              v-if="framework.isActive"
+              variant="link"
+              style="padding:0"
+              @click="openEvaWindow(framework)"
+              v-b-tooltip.hover title="Start Evaluation"><b-avatar style="background:#006eb6;color: white" icon="file-earmark-plus" size="2rem"></b-avatar></b-button>
           <b-button
               class="action_btn"
             variant="link" 
             style="padding:0"
             v-if="$store.getters.userProfile['role']==='Senior Consultant'" 
-            @click="editFramework(framework)"><b-avatar variant="success" icon="pencil" size="2rem"></b-avatar></b-button>
+            @click="editFramework(framework)"
+              v-b-tooltip.hover title="Edit Framework"><b-avatar variant="success" icon="pencil" size="2rem"></b-avatar></b-button>
           <b-button
             class="action_btn"
             variant="link"
             style="padding:0"
             v-if="$store.getters.userProfile['role']==='Senior Consultant'"
-            @click="deleteFramework(framework,index)"><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
+            @click="deleteFramework(framework,index)"
+            v-b-tooltip.hover title="Delete Framework"><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
         </b-col>
 
       </b-row>
@@ -201,11 +205,13 @@ export default {
 
       let evaRef = await evaluationCollection.doc()
       await evaRef.set({
+        id: evaRef.id,
         author: this.$store.getters.userProfile.nickname,
         authorUid: this.$store.getters.userProfile.uid,
         dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
         dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
-        frameworkId: inputData.framework.name,
+        frameworkId: inputData.framework.id,
+        frameworkName: inputData.framework.name,
         isCompleted: false,
         name: inputData.name,
         section: newSections,

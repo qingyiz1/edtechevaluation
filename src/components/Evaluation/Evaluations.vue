@@ -1,5 +1,9 @@
 <template>
     <!-- <b-container> -->
+  <b-overlay
+      :show="show"
+      opacity="0.9"
+      @hidden="onHidden">
       <div>
         <b-modal
           id="delete"
@@ -36,13 +40,13 @@
           </b-row>
           <b-row 
           no-gutters
-          v-for="eva in evaluationList" v-bind:key="eva.id"
+          v-for="eva in ownEvaluations" v-bind:key="eva.id"
           class="list list-content" 
           align-content="center" 
           align-v="center">
             <b-col cols="1">{{eva.author}}</b-col>
-            <b-col cols="2" @click="displayEva(eva.id)" class="list-content-display">{{eva.name}}</b-col>
-            <b-col cols="2">{{eva.frameworkId}}</b-col>
+            <b-col cols="2" @click="displayEva(eva.id)" class="list-content-display" v-b-tooltip.hover title="View Evaluation">{{eva.name}}</b-col>
+            <b-col cols="2">{{eva.frameworkName}}</b-col>
             <b-col cols="2">{{getTime(eva.dateCreated)}}</b-col>
             <b-col cols="2">{{getTime(eva.dateEdited)}}</b-col>
             <b-col cols="1" >
@@ -58,16 +62,22 @@
             
             <b-col cols="2">
               <b-button
-              :to="'/Reports/'" variant="info" 
+              :to="'/Reports/'" variant="link"
               @click="generateReport(eva.id)"
-              class="list-inline-btn-sm action_btn"
+              class="action_btn"
+              style="padding:0"
               size="sm"
-              v-if="eva.isCompleted === true">Generate</b-button>
+              v-if="eva.isCompleted === true"
+              v-b-tooltip.hover title="Generate Report"><b-avatar
+                  style="background:#006eb6;color: white"
+                  icon="clipboard-data" size="2rem"></b-avatar></b-button>
               <b-button
                   class="action_btn"
               variant="link"
               style="padding:0"
-              :to="'/EditEva/'+eva.id"><b-avatar 
+              :to="'/EditEva/'+eva.id"
+                  v-b-tooltip.hover title="Edit Evaluation">
+                <b-avatar
               variant="success"
               icon="pencil" size="2rem"></b-avatar></b-button>
               <b-button
@@ -75,12 +85,13 @@
               v-b-modal.delete 
               variant="link" 
               style="padding:0"
-              @click="setEvaId(eva.id)"><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
+              @click="setEvaId(eva.id)"
+                  v-b-tooltip.hover title="Delete Evaluation"><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
             </b-col>
           </b-row>
         </div>
       </div>
-
+  </b-overlay>
       <!-- <b-row align-h="center">
         <b-col cols="10">
           <div v-for="eva in evaluationList" v-bind:key="eva.id" class="evaluation">
@@ -129,7 +140,21 @@ export default {
       show:"",
     };
   },
+  computed:{
+    ownEvaluations(){
+      if(this.$store.getters.userProfile.role === "Senior Consultant"){
+        return this.evaluationList;
+      }else{
+        return this.evaluationList.filter(eva=> eva.authorUid === this.$store.getters.userProfile.uid)
+      }
+    }
+  },
   methods: {
+    onHidden(){
+      setTimeout(()=>{
+        this.show = false
+      },600)
+    },
     changeCompleted(eva){
       eva.isCompleted = !eva.isCompleted
       updateDocument("evaluation",eva.id, {isCompleted:eva.isCompleted});
@@ -165,21 +190,25 @@ export default {
       let repRef = await reportCollection.doc()
       await repRef.set({
         author: this.evaluationInfo.author,
+        authorUid: this.$store.getters.userProfile.uid,
         dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
         dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
-        evaluationId: this.evaluationInfo.name,
+        evaluationId: this.evaluationInfo.id,
+        evaluationName: this.evaluationInfo.name,
         isCompleted: false,
         name: this.evaluationInfo.name,
-        content: this.evaluationInfo.section.path,
+        content: this.evaluationInfo.section,
         recommendation:"",
         recommendationAuthor:this.$store.getters.userProfile.nickname,
       })
-
-     
+      console.log(repRef)
     },
   },
   firestore:{
     evaluationList:evaluationCollection
+  },
+  mounted() {
+    this.onHidden()
   }
 };
 </script>

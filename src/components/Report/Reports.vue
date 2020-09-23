@@ -1,5 +1,9 @@
 <template>
-  <div>
+  <b-overlay
+      :show="show"
+      opacity="0.9"
+      @hidden="onHidden">
+    <div>
     <b-modal
         id="delete"
         button-size="md"
@@ -12,34 +16,39 @@
         body-text-variant="danger"
         @ok="deleteReport(repID)">
       <div class="d-block text-center">
-        <h4>This action will delete the evaluation permanently!</h4>
+        <h4>This action will delete the report permanently!</h4>
       </div>
     </b-modal>
-    <div class="list-container">
-      <b-row no-gutters class="functional-container">
-        <b-input-group size="sm" class="list-search">
-          <b-form-input type="search" placeholder="Search"></b-form-input>
-          <b-input-group-append is-text>
-            <b-icon icon="search"></b-icon>
-          </b-input-group-append>
-        </b-input-group>
-      </b-row>
-      <b-row no-gutters class="list list-header" align-content="center">
+
+
+      <div class="list-container">
+        <b-row no-gutters class="functional-container">
+          <b-input-group size="sm" class="list-search">
+            <b-form-input type="search" placeholder="Search"></b-form-input>
+            <b-input-group-append is-text>
+              <b-icon icon="search"></b-icon>
+            </b-input-group-append>
+          </b-input-group>
+        </b-row>
+        <b-row no-gutters class="list list-header" align-content="center">
         <b-col cols="1">Author</b-col>
-        <b-col cols="3">Report Name</b-col>
+        <b-col cols="2">Report Name</b-col>
+        <b-col cols="2">Evaluation Name</b-col>
         <b-col cols="2">Created Time</b-col>
         <b-col cols="2">Edited Time</b-col>
         <b-col cols="1">Complete</b-col>
-        <b-col cols="3">Action</b-col>
+        <b-col cols="2">Action</b-col>
       </b-row>
       <b-row
           no-gutters
-          v-for="rep in reportList" v-bind:key="rep.id"
+          v-for="rep in ownReports" v-bind:key="rep.id"
           class="list list-content"
           align-content="center"
+          align-h="center"
           align-v="center">
         <b-col cols="1">{{rep.author}}</b-col>
-        <b-col cols="3" @click="displayRep(rep.id)" class="list-content-display">{{rep.name}}</b-col>
+        <b-col cols="2" @click="displayRep(rep.id)" class="list-content-display" v-b-tooltip.hover title="View Report">{{rep.name}}</b-col>
+        <b-col cols="2">{{rep.evaluationName}}</b-col>
         <b-col cols="2">{{rep.dateCreated.toDate().toLocaleString('en-US')}}</b-col>
         <b-col cols="2">{{rep.dateEdited.toDate().toLocaleString('en-US')}}</b-col>
         <b-col cols="1">
@@ -52,15 +61,16 @@
               @change="toggleIsComplete(rep)">
           </b-form-checkbox>
         </b-col>
-        <b-col cols="3">
+        <b-col cols="2">
           <b-button
               v-if="rep.isCompleted"
               @click="openSendWindow(rep.id)"
               size="sm"
               variant="link"
               style="padding:0"
-              class="action_btn"><b-avatar
-              variant="primary"
+              class="action_btn"
+              v-b-tooltip.hover title="Share Report"><b-avatar
+              style="background:#006eb6;color: white"
               icon="share" size="2rem"></b-avatar></b-button>
           <b-button
               v-if="rep.isCompleted"
@@ -68,7 +78,8 @@
               size="sm"
               variant="link"
               style="padding:0"
-              class="action_btn"><b-avatar
+              class="action_btn"
+              v-b-tooltip.hover title="Download Report"><b-avatar
               variant="dark"
               icon="file-earmark-arrow-down" size="2rem"></b-avatar></b-button>
           <b-button
@@ -77,6 +88,7 @@
               class="action_btn"
               size="sm"
               style="padding:0"
+              v-b-tooltip.hover title="Edit Report"
               >
             <b-avatar
                 variant="success"
@@ -89,9 +101,11 @@
               class="action_btn"
               size="sm"
               style="padding:0"
+              v-b-tooltip.hover title="Delete Report"
               ><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
         </b-col>
       </b-row>
+      </div>
     </div>
     <!-- <b-row>
       <b-col>
@@ -179,7 +193,7 @@
       <el-button type="primary" @click="sendEmail()">Confirm</el-button>
     </span>
     </el-dialog>
-  </div>
+  </b-overlay>
 </template>
 
 <script>
@@ -207,8 +221,21 @@ export default {
         message:"",
       },
       Id:"",
-      repID:""
+      repID:"",
+      show:""
     };
+  },
+  mounted() {
+    this.onHidden()
+  },
+  computed:{
+    ownReports(){
+      if(this.$store.getters.userProfile.role === "Senior Consultant"){
+        return this.reportList;
+      }else{
+        return this.reportList.filter(report=> report.authorUid === this.$store.getters.userProfile.uid)
+      }
+    }
   },
   methods: {
     deleteReport(repId){
@@ -222,14 +249,18 @@ export default {
     displayRep: function (repID) {
       this.$router.push("/report_preview/" + repID)
     },
-
+    onHidden(){
+      setTimeout(()=>{
+        this.show = false
+      },600)
+    },
     setRepId(id){
       this.repID = id;
     },
 
     async downloadReport(repId){
       const repInfo = await getDocument("report",repId)
-      await JSZipUtils.getBinaryContent('/Template.docx', function(error, content) {
+      JSZipUtils.getBinaryContent('/ReportTemplate.docx', function(error, content) {
 
         if (error) {
           throw error
@@ -237,6 +268,8 @@ export default {
 
         const zip = new PizZip(content)
         const doc = new Docxtemplater().loadZip(zip)
+
+
 
         doc.setData({
           repName: repInfo.name,
@@ -267,10 +300,10 @@ export default {
         })
         saveAs(downloadReport, repInfo.name + '.docx')
 
-        let storageRef = firebase.storage().ref()
-        let repRef = storageRef.child('Report/'+repId+ '.docx')
+        var storageRef = firebase.storage().ref()
+        var repRef = storageRef.child('Report/'+repId+ '.docx')
 
-        let file = downloadReport
+        var file = downloadReport
         repRef.put(file)
       });
     },
