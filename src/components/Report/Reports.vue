@@ -287,12 +287,12 @@ export default {
             path : url
           }]
       }).then(()=>{
-          this.sendWindowVisible = false
-          window.alert("Report has been sent to "+ this.sendReport.email)
-          this.sendReport.email=""
-          this.sendReport.message=""
-          global.repInfoSend = {}
-          global.Id = ""}
+        this.sendWindowVisible = false
+        window.alert("Report has been sent to "+ this.sendReport.email)
+        this.sendReport.email=""
+        this.sendReport.message=""
+        global.repInfoSend = {}
+        global.Id = ""}
       )
     }
   },
