@@ -28,7 +28,7 @@
     opacity="0.9"
     @hidden="onHidden">
     <div class="list-container">
-      <b-row class="funtional-container">
+      <b-row no-gutters class="funtional-container">
         <b-input-group size="sm" class="list-search">
           <b-form-input type="search" placeholder="Search"></b-form-input>
           <b-input-group-append is-text>
@@ -37,7 +37,10 @@
         </b-input-group>
         <b-button @click="createNewFramework" class="list-create-btn">New</b-button>
       </b-row>
-      <b-row class="list list-header" align-content="center">
+      <b-row 
+      no-gutters
+      class="list list-header" 
+      align-content="center">
         <b-col cols="1">Author</b-col>
         <b-col cols="3">Framework Name</b-col>
         <b-col cols="1" style="text-align:left">Status</b-col>
@@ -48,12 +51,14 @@
       </b-row>
       <b-row 
       v-for="(framework,index) in frameworks" :key=framework.id
+      no-gutters
       class="list list-content" 
       align-content="center" 
+      align-h="center"
       align-v="center">
         <b-col cols="1">{{framework.author}}</b-col>
         <b-col cols="3">{{framework.name}}</b-col>
-        <b-col cols="1" align-self="center">
+        <b-col cols="1" >
           <b-form-checkbox
             v-if="$store.getters.userProfile['role']==='Senior Consultant'"
             v-model="framework.isActive"
