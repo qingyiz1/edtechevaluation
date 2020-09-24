@@ -1,10 +1,17 @@
 <template>
   <b-container class="text-left mt-4">
-    <b-row align-h="center" v-if="reportData">
+    <b-row
+      align-h="center"
+      v-if="reportData"
+    >
       <b-col cols="9">
-        <b-row>
+        <b-row class="border-bottom border-top">
           <b-col cols="3">
-            <b-img :src="logo" fluid alt="Edtech Logo"></b-img>
+            <b-img
+              :src="logo"
+              fluid
+              alt="Edtech Logo"
+            ></b-img>
           </b-col>
           <b-col cols="9">
             <h2 class="mt-4">EdTech Product Evaluation Report</h2>
@@ -16,23 +23,65 @@
             </p>
           </b-col>
         </b-row>
-          <h5>Background</h5>
-          <p>This report is based on the application of the EdTech Product Evaluation Framework developed by EdTech Evaluation Consulting. The Framework evaluates how well an educational technology fits to the needs of an educational institution. It evaluates the EdTech product against seven areas that are relevant to education. It is intended to be used in conjunction with other software evaluation frameworks, which usually look at more technical criteria.</p>
-          <h5>Evaluation Method</h5>
-          <p>
-            1. The needs of the educational institution were compiled to provide a baseline to judge the appropriateness of the EdTech product.
-            2. The reviewer gathered all available information on the EdTech product. This included general information supplied by the Vendor as well as any independent reviews or research, etc.
-            3. The reviewer logged in as all types of users (teachers, learners, administrators, parents or other stakeholders).
-            4. The reviewer worked systematically through the product information and the product, filling in the question ratings as relevant evidence was found..
-          </p>
-          <h5>Report</h5>
-          <p>
-            The report contains two sections.
-            1. A SUMMARY that shows the ratings assigned per category and the overall comments and recommendations
-            2. A DETAILED REPORT that shows the descriptor and review comments per rating
-          </p>
+        <h5>Background</h5>
+        <p>This report is based on the application of the EdTech Product Evaluation Framework developed by EdTech Evaluation Consulting. The Framework evaluates how well an educational technology fits to the needs of an educational institution. It evaluates the EdTech product against seven areas that are relevant to education. It is intended to be used in conjunction with other software evaluation frameworks, which usually look at more technical criteria.</p>
+        <h5>Evaluation Method</h5>
+        <ul>
+          <li>1. The needs of the educational institution were compiled to provide a baseline to judge the appropriateness of the EdTech product.</li>
+          <li>2. The reviewer gathered all available information on the EdTech product. This included general information supplied by the Vendor as well as any independent reviews or research, etc.</li>
+          <li>3. The reviewer logged in as all types of users (teachers, learners, administrators, parents or other stakeholders).</li>
+          <li>4. The reviewer worked systematically through the product information and the product, filling in the question ratings as relevant evidence was found..</li>
+        </ul>
+        <h5>Report</h5>
+        <p>
+          The report contains two sections.
+        <ul>
+          <li>1. A SUMMARY that shows the ratings assigned per category and the overall comments and recommendations</li>
+          <li>2. A DETAILED REPORT that shows the descriptor and review comments per rating</li>
+        </ul>
 
-          <b-table striped hover :items="tableitems"></b-table>
+        </p>
+        <h5>Summary Report</h5>
+        <b-table
+          hover
+          :fields="summaryTableFields"
+          :items="summaryTableItems"
+          head-variant="light"
+          class="mb-0"
+        ></b-table>
+        <div class="border p-2">
+          Recommendations:<br>
+          {{recommendation}}
+        </div>
+        <h5>Detailed Report</h5>
+        <b-table
+          hover
+          :fields="detailedTableFields"
+          :items="detailedTableItems"
+          head-variant="light"
+          class="detailedReport"
+        >
+          <template v-slot:cell(NotApplicable)="data">
+            {{data.value[0]}}
+            <p class="text-center">{{data.value[1]}}</p>
+          </template>
+          <template v-slot:cell(BelowBasic)="data">
+            {{data.value[0]}}
+            <p class="text-center">{{data.value[1]}}</p>
+          </template>
+          <template v-slot:cell(Basic)="data">
+            {{data.value[0]}}
+            <p class="text-center">{{data.value[1]}}</p>
+          </template>
+          <template v-slot:cell(Adequet)="data">
+            {{data.value[0]}}
+            <p class="text-center">{{data.value[1]}}</p>
+          </template>
+          <template v-slot:cell(Exceptional)="data">
+            {{data.value[0]}}
+            <p class="text-center">{{data.value[1]}}</p>
+          </template>
+        </b-table>
       </b-col>
     </b-row>
   </b-container>
@@ -60,7 +109,29 @@ export default {
       reportData: {},
       sections: [],
       recommendation: "",
-      tableitems: [],
+      summaryTableItems: [],
+      summaryTableFields: [
+        {
+          key: "No",
+          label: "No.",
+        },
+        "Summary",
+        "NotApplicable",
+        "BelowBasic",
+        "Basic",
+        "Adequet",
+        "Exceptional",
+      ],
+      detailedTableItems: [],
+      detailedTableFields: [
+        "DetailedReport",
+        "NotApplicable",
+        "BelowBasic",
+        "Basic",
+        "Adequet",
+        "Exceptional",
+        "Comments",
+      ],
     };
   },
   methods: {
@@ -80,7 +151,6 @@ export default {
     },
   },
   created: async function () {
-    console.log(this.$route.params.reportId)
     let report_ref = db.collection("report").doc(this.$route.params.reportId);
     this.reportRef = await report_ref.get();
     this.reportData = this.reportRef.data();
@@ -90,14 +160,12 @@ export default {
       this.sections.push(section.data());
     }
     this.recommendation = this.reportData.recommendation;
-    console.log(this.reportData);
-    console.log(this.sections);
 
     this.sections.forEach((section, Sindex) => {
       section.question.forEach((question, Qindex) => {
         let tableRow = {
           No: Sindex + 1 + "." + (Qindex + 1),
-          summary: question.questionName,
+          Summary: question.questionName,
           NotApplicable: "□",
           BelowBasic: "□",
           Basic: "□",
@@ -105,7 +173,41 @@ export default {
           Exceptional: "□",
         };
         tableRow[selectedConvertToText[question.selected]] = "■";
-        this.tableitems.push(tableRow);
+        this.summaryTableItems.push(tableRow);
+      });
+    });
+    console.log(this.reportData);
+    console.log(this.sections);
+    this.sections.forEach((section, Sindex) => {
+      this.detailedTableItems.push({
+        DetailedReport: Sindex+1+". "+section.name,
+        _rowVariant: 'primary'
+      });
+      section.question.forEach((question, Qindex) => {
+        console.log(question.selected == 1 ? "■" : "□");
+        let tableRow = {
+          DetailedReport:
+            Sindex + 1 + "." + (Qindex + 1) + " " + question.questionName,
+          NotApplicable: [
+            question.descriptions[0],
+            question.selected == 0 ? "■" : "□",
+          ],
+          BelowBasic: [
+            question.descriptions[1],
+            question.selected == 1 ? "■" : "□",
+          ],
+          Basic: [question.descriptions[2], question.selected == 2 ? "■" : "□"],
+          Adequet: [
+            question.descriptions[3],
+            question.selected == 3 ? "■" : "□",
+          ],
+          Exceptional: [
+            question.descriptions[4],
+            question.selected == 4 ? "■" : "□",
+          ],
+          Comments: question.comment,
+        };
+        this.detailedTableItems.push(tableRow);
       });
     });
   },
@@ -116,5 +218,20 @@ export default {
 * {
   color: #000;
   margin: 0;
+}
+
+h5 {
+  margin: 35px 0 15px;
+}
+
+ul {
+  list-style: none;
+}
+
+.detailedReport {
+  font-size: 0.6em;
+}
+.detailedReport p {
+  font-size: 1rem;
 }
 </style>
