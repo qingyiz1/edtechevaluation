@@ -81,7 +81,7 @@ export default {
   },
   firestore(){
     return{
-      userdata: db.collection("userInfo").doc(this.$store.getters.userProfile.email)
+      userdata: db.collection("userInfo").doc(this.$route.params.nickname)
     }
   },
 

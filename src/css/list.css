@@ -78,6 +78,12 @@
     color: #7DB4EF;
   }
 
+.list-container .list-content .list-inline-btn-lg {
+  background-color: #004C9D;
+  border: none;
+  border-radius: 1rem;
+}
+
   .list-container .list-content .list-inline-btn {
     background-color: #004C9D;
     border: none;

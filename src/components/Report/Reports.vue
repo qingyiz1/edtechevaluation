@@ -31,14 +31,16 @@
           </b-input-group>
         </b-row>
         <b-row no-gutters class="list list-header" align-content="center">
-        <b-col cols="1">Author</b-col>
-        <b-col cols="2">Report Name</b-col>
-        <b-col cols="2">Evaluation Name</b-col>
+          <b-col cols="1">Complete</b-col>
+          <b-col cols="2">Report Name</b-col>
+        <b-col cols="1">Evaluation</b-col>
+          <b-col cols="1">Author</b-col>
         <b-col cols="2">Created Time</b-col>
+          <b-col cols="1">Recommender</b-col>
         <b-col cols="2">Edited Time</b-col>
-        <b-col cols="1">Complete</b-col>
         <b-col cols="2">Action</b-col>
       </b-row>
+        <h3 v-if="this.ownReports.length === 0">You may not have generated any report yet or the connection to database is lost, try to reload this page!</h3>
       <b-row
           no-gutters
           v-for="rep in ownReports" v-bind:key="rep.id"
@@ -46,12 +48,7 @@
           align-content="center"
           align-h="center"
           align-v="center">
-        <b-col cols="1">{{rep.author}}</b-col>
-        <b-col cols="2" @click="displayRep(rep.id)" class="list-content-display" v-b-tooltip.hover title="View Report">{{rep.name}}</b-col>
-        <b-col cols="2">{{rep.evaluationName}}</b-col>
-        <b-col cols="2">{{rep.dateCreated.toDate().toLocaleString('en-US')}}</b-col>
-        <b-col cols="2">{{rep.dateEdited.toDate().toLocaleString('en-US')}}</b-col>
-        <b-col cols="1">
+        <b-col>
           <b-form-checkbox
               v-model="rep.isCompleted"
               name="check-button"
@@ -61,9 +58,15 @@
               @change="toggleIsComplete(rep)">
           </b-form-checkbox>
         </b-col>
+        <b-col cols="2" @click="displayRep(rep.id)" class="list-content-display" v-b-tooltip.hover title="View Report">{{rep.name}}</b-col>
+        <b-col cols="1">{{rep.evaluationName}}</b-col>
+        <b-col cols="1">{{rep.author}}</b-col>
+        <b-col cols="2">{{rep.dateCreated.toDate().toLocaleString('en-US')}}</b-col>
+        <b-col cols="1">{{rep.author}}</b-col>
+        <b-col cols="2">{{rep.dateEdited.toDate().toLocaleString('en-US')}}</b-col>
         <b-col cols="2">
           <b-button
-              v-if="rep.isCompleted"
+              :disabled="!rep.isCompleted"
               @click="openSendWindow(rep.id)"
               size="sm"
               variant="link"
@@ -73,7 +76,7 @@
               style="background:#006eb6;color: white"
               icon="share" size="2rem"></b-avatar></b-button>
           <b-button
-              v-if="rep.isCompleted"
+              :disabled="!rep.isCompleted"
               @click="downloadReport(rep.id)"
               size="sm"
               variant="link"
@@ -233,7 +236,9 @@ export default {
       if(this.$store.getters.userProfile.role === "Senior Consultant"){
         return this.reportList;
       }else{
-        return this.reportList.filter(report=> report.authorUid === this.$store.getters.userProfile.uid)
+        let ownreport = this.reportList.filter(report=> report.authorUid === this.$store.getters.userProfile.uid)
+        console.log(ownreport)
+        return ownreport
       }
     }
   },

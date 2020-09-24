@@ -41,42 +41,51 @@
       no-gutters
       class="list list-header" 
       align-content="center">
-        <b-col cols="1">Author</b-col>
-        <b-col cols="3">Framework Name</b-col>
         <b-col cols="1">Status</b-col>
+        <b-col cols="2">Framework Name</b-col>
+        <b-col cols="1">Author</b-col>
         <b-col cols="2">Created Time</b-col>
+        <b-col cols="1">Editor</b-col>
         <b-col cols="2">Edited Time</b-col>
         <b-col cols="1">Version</b-col>
         <b-col cols="2">Action</b-col>
-
       </b-row>
+      <h3 v-if="this.visibleFramework.length === 0">No active framework present or the connection to database is lost, try to reload this page!</h3>
       <b-row 
-      v-for="(framework,index) in frameworks" :key=framework.id
+      v-for="(framework,index) in visibleFramework" :key=framework.id
       no-gutters
       class="list list-content" 
       align-content="center" 
       align-h="center"
       align-v="center">
-        <b-col cols="1">{{framework.author}}</b-col>
-        <b-col cols="3">{{framework.name}}</b-col>
         <b-col cols="1">
           <b-form-checkbox
               class="action_btn"
-            v-if="$store.getters.userProfile['role']==='Senior Consultant'"
-            v-model="framework.isActive"
-            name="check-button"
-            size="lg"
-            switch
-            @change="onActive(framework)">
+              v-if="$store.getters.userProfile['role'] ==='Senior Consultant'"
+              v-model="framework.isActive"
+              name="check-button"
+              size="lg"
+              switch
+              @change="onActive(framework)">
           </b-form-checkbox>
+          <b-icon
+              v-if="$store.getters.userProfile['role'] !=='Senior Consultant'"
+              variant="success"
+              icon="check-circle-fill"
+              size="2.5rem"
+          ></b-icon>
         </b-col>
+        <b-col cols="2">{{framework.name}}</b-col>
+        <b-col cols="1">{{framework.author}}</b-col>
         <b-col cols="2">{{framework.dateCreated.toDate().toLocaleString('en-US')}}</b-col>
+        <b-col cols="1">{{framework.author}}</b-col>
         <b-col cols="2">{{framework.dateEdited.toDate().toLocaleString('en-US')}}</b-col>
         <b-col cols="1">{{framework.version}}</b-col>
         <b-col cols="2">
           <b-button
               class="action_btn"
-              v-if="framework.isActive"
+              v-if="$store.getters.userProfile['role']==='Senior Consultant'"
+              :disabled="!framework.isActive"
               variant="link"
               style="padding:0"
               @click="openEvaWindow(framework)"
@@ -95,8 +104,13 @@
             v-if="$store.getters.userProfile['role']==='Senior Consultant'"
             @click="deleteFramework(framework,index)"
             v-b-tooltip.hover title="Delete Framework"><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
+          <b-button
+              v-if="$store.getters.userProfile['role']!=='Senior Consultant'"
+            variant="primary"
+            class="list-inline-btn-lg action_btn"
+              @click="openEvaWindow(framework)"
+          >Start Evaluation</b-button>
         </b-col>
-
       </b-row>
     </div>
     </b-overlay>
@@ -148,16 +162,17 @@ export default {
       frameworkPreview:{},
     }
   },
-  // computed:{
-  //   activeStyle(isActive) { 
-  //     if (isActive) {
-  //       return "background-color: #28a745 !important"
-  //     } else {
-  //       return "background-color:#6c757d !important"
-  //     }
-
-  //   }
-  // },
+  computed:{
+    visibleFramework() {
+      if(this.$store.getters.userProfile.role === "Senior Consultant"){
+        return this.frameworks;
+      }else{
+        let visibleFrameworks = this.frameworks.filter(frameworks=> frameworks.isActive === true)
+        console.log(visibleFrameworks)
+        return visibleFrameworks
+      }
+    }
+  },
   firestore(){
     return{
       frameworks: db.collection("framework")
@@ -208,6 +223,8 @@ export default {
         id: evaRef.id,
         author: this.$store.getters.userProfile.nickname,
         authorUid: this.$store.getters.userProfile.uid,
+        editor:this.$store.getters.userProfile.nickname,
+        editorUid: this.$store.getters.userProfile.uid,
         dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
         dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
         frameworkId: inputData.framework.id,

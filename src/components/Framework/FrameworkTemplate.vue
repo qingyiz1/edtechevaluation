@@ -71,7 +71,7 @@
 
 </template>
 <script>
-import { createDocument, getDocument } from "@/tools/firebaseTool";
+import {createDocument, getDocument, updateDocument} from "@/tools/firebaseTool";
 import "firebase/auth";
 import {db, frameworkCollection} from "@/tools/firebaseConfig";
 import * as firebase from "firebase";
@@ -146,20 +146,36 @@ export default {
             await sectionRef.set(this.sections[i])
             sectionArray.push(db.doc('section/' + sectionRef.id));
           }
-          this.framework = {
-            id:frameworkPath,
-            name:this.frameworkName,
-            section:sectionArray,
-            dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
-            dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
-            author:this.$store.getters.userProfile.nickname,
-            authorUid:this.$store.getters.userProfile.uid,
-            version:this.version,
-            isActive:true
-        }
-          createDocument("framework",frameworkPath,this.framework);
+          if(frameworkPath === this.$route.params.id){
+            this.framework = {
+              id:frameworkPath,
+              name:this.frameworkName,
+              section:sectionArray,
+              dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
+              editor:this.$store.getters.userProfile.nickname,
+              editorUid:this.$store.getters.userProfile.uid,
+              version:this.version,
+              isActive:true
+            }
+            updateDocument("framework",frameworkPath,this.framework);
+          }else{
+            this.framework = {
+              id:frameworkPath,
+              name:this.frameworkName,
+              section:sectionArray,
+              dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
+              dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
+              author:this.$store.getters.userProfile.nickname,
+              authorUid:this.$store.getters.userProfile.uid,
+              editor:this.$store.getters.userProfile.nickname,
+              editorUid:this.$store.getters.userProfile.uid,
+              version:this.version,
+              isActive:true
+            }
+            createDocument("framework",frameworkPath,this.framework);
+          }
           this.showOverlay = false;
-          this.$router.push('/framework')
+          await this.$router.push('/framework')
         }
       } else {
         this.showOverlay = false;

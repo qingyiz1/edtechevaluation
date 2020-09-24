@@ -30,44 +30,46 @@
             </b-input-group>
           </b-row>
           <b-row no-gutters class="list list-header" align-content="center">
-            <b-col cols="1">Author</b-col>
+            <b-col cols="1">Complete</b-col>
             <b-col cols="2">Evaluation Name</b-col>
             <b-col cols="2">Framework</b-col>
+            <b-col cols="1">Author</b-col>
             <b-col cols="2">Created Time</b-col>
+            <b-col cols="1">Editor</b-col>
             <b-col cols="2">Edited Time</b-col>
-            <b-col cols="1">Complete</b-col>
-            <b-col cols="2">Action</b-col>
+            <b-col cols="1">Action</b-col>
           </b-row>
+          <h3 v-if="this.ownEvaluations.length === 0">You may not have started any evaluation yet or the connection to database is lost, try to reload this page!</h3>
           <b-row 
           no-gutters
           v-for="eva in ownEvaluations" v-bind:key="eva.id"
           class="list list-content" 
           align-content="center" 
           align-v="center">
-            <b-col cols="1">{{eva.author}}</b-col>
-            <b-col cols="2" @click="displayEva(eva.id)" class="list-content-display" v-b-tooltip.hover title="View Evaluation">{{eva.name}}</b-col>
-            <b-col cols="2">{{eva.frameworkName}}</b-col>
-            <b-col cols="2">{{getTime(eva.dateCreated)}}</b-col>
-            <b-col cols="2">{{getTime(eva.dateEdited)}}</b-col>
             <b-col cols="1" >
               <b-form-checkbox
-              v-model="eva.isCompleted"
-              class="action_btn"
-              name="check-button"
-              size="lg"
-              switch
-              @change="changeCompleted(eva)">
+                  v-model="eva.isCompleted"
+                  class="action_btn"
+                  name="check-button"
+                  size="lg"
+                  switch
+                  @change="changeCompleted(eva)">
               </b-form-checkbox>
             </b-col>
-            
-            <b-col cols="2">
+            <b-col cols="2" @click="displayEva(eva.id)" class="list-content-display" v-b-tooltip.hover title="View Evaluation">{{eva.name}}</b-col>
+            <b-col cols="2">{{eva.frameworkName}}</b-col>
+            <b-col cols="1">{{eva.author}}</b-col>
+            <b-col cols="2">{{getTime(eva.dateCreated)}}</b-col>
+            <b-col cols="1">{{eva.editor}}</b-col>
+            <b-col cols="2">{{getTime(eva.dateEdited)}}</b-col>
+            <b-col cols="1">
               <b-button
               :to="'/Reports/'" variant="link"
               @click="generateReport(eva.id)"
               class="action_btn"
               style="padding:0"
               size="sm"
-              v-if="eva.isCompleted === true"
+              :disabled="eva.isCompleted !== true"
               v-b-tooltip.hover title="Generate Report"><b-avatar
                   style="background:#006eb6;color: white"
                   icon="clipboard-data" size="2rem"></b-avatar></b-button>
@@ -189,7 +191,7 @@ export default {
       this.evaluationInfo = Data
       let repRef = await reportCollection.doc()
       await repRef.set({
-        author: this.evaluationInfo.author,
+        author: this.$store.getters.userProfile.nickname,
         authorUid: this.$store.getters.userProfile.uid,
         dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
         dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
