@@ -10,7 +10,7 @@
             <b-nav-item to="/framework" >Framework</b-nav-item>
             <b-nav-item to="/evaluation" >Evaluation</b-nav-item>
             <b-nav-item to="/reports" >Report</b-nav-item>
-            <b-nav-item :to=" '/profile/' + this.userdata['email']" >Profile</b-nav-item>
+            <b-nav-item :to=" '/profile/' + this.userdata['uid']" >Profile</b-nav-item>
             <b-nav-item v-if="$store.getters.userProfile['role']==='Senior Consultant'" to="/userlist" >User List</b-nav-item>
             <b-nav-item @click="signOut" >Sign out</b-nav-item>
           </b-navbar-nav>
@@ -41,7 +41,7 @@ export default {
       switch (this.userdata['role']) {
         case "Senior Consultant":
           return "SC"
-        case "Contultant":
+        case "Consultant":
           return "CO"
         default:
           return "EL"
@@ -65,7 +65,7 @@ export default {
   },
   firestore(){
     return{
-      userdata: db.collection("userInfo").doc(auth.currentUser.email)
+      userdata: db.collection("userInfo").doc(auth.currentUser.uid)
     }
   },
 };

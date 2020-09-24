@@ -55,8 +55,7 @@ export const store = new Vuex.Store({
         },
         async fetchUserProfile({ commit }, user) {
             // fetch user profile
-            const userProfile = await firebase.usersCollection.doc(user.email).get()
-
+            const userProfile = await firebase.usersCollection.doc(user.uid).get()
             // set user profile in state
             await commit('setUserProfile', userProfile.data())
         },

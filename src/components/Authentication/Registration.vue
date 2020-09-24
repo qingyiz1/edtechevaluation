@@ -69,7 +69,7 @@ export default {
         auth.createUserWithEmailAndPassword(this.userInfo['email'],this.userInfo['password'])
             .then(async (newUser) => {
               this.userInfo.uid  = newUser.user.uid
-              createDocument("userInfo",this.userInfo['email'],this.userInfo)
+              createDocument("userInfo",this.userInfo.uid,this.userInfo)
               window.alert(this.userInfo['email']+" created")
               this.$store.commit("loggedIn")
               await this.$router.push({path: "/framework"})
