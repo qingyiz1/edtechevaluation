@@ -17,7 +17,6 @@
 
 <script>
 import * as firebase from "firebase";
-import router from "@/router";
 //import {createDocument} from "@/firebaseTool";
 
 export default {
@@ -33,8 +32,6 @@ export default {
       this.$store.dispatch('login', {
         email: this.email,
         password: this.password
-      }).then(()=>{
-        router.push({path: "/framework"})
       })
     }
   },

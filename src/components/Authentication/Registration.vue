@@ -72,7 +72,7 @@ export default {
               createDocument("userInfo",this.userInfo['email'],this.userInfo)
               window.alert(this.userInfo['email']+" created")
               this.$store.commit("loggedIn")
-              await this.$router.push({path: "/profile/" + this.userInfo['email']})
+              await this.$router.push({path: "/framework"})
             }).catch((_error) => {
           window.alert("Registration Failed!"+_error);
         })

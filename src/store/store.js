@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as firebase from "@/tools/firebaseConfig";
-//import router from '../router/index'
+import router from "@/router";
 
 Vue.use(Vuex)
 
@@ -42,6 +42,7 @@ export const store = new Vuex.Store({
                         } else if((await firebase.usersCollection.doc(form.email).get()).data()['isActive'] === true) {
                             // fetch user profile and set in state
                             dispatch('fetchUserProfile', user)
+                            await router.push({path: "/framework"})
                         }
                     }else{
                         window.alert("User not found or deactivated, please contact your senior consultant!")
