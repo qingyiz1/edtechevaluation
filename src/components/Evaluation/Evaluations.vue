@@ -64,7 +64,7 @@
             <b-col cols="2">{{getTime(eva.dateEdited)}}</b-col>
             <b-col cols="1">
               <b-button
-              :to="'/Reports/'" variant="link"
+              variant="link"
               @click="generateReport(eva.id)"
               class="action_btn"
               style="padding:0"
@@ -203,7 +203,7 @@ export default {
         recommendation:"",
         recommendationAuthor:this.$store.getters.userProfile.nickname,
       })
-      console.log(repRef)
+      await this.$router.push("/report_view_online/" + repRef.id)
     },
   },
   firestore:{

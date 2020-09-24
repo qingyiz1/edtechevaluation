@@ -236,9 +236,7 @@ export default {
       if(this.$store.getters.userProfile.role === "Senior Consultant"){
         return this.reportList;
       }else{
-        let ownreport = this.reportList.filter(report=> report.authorUid === this.$store.getters.userProfile.uid)
-        console.log(ownreport)
-        return ownreport
+        return this.reportList.filter(report=> report.authorUid === this.$store.getters.userProfile.uid)
       }
     }
   },
@@ -252,7 +250,7 @@ export default {
       updateDocument("report", rep.id, {"isCompleted": rep.isCompleted})
     },
     displayRep: function (repID) {
-      this.$router.push("/report_preview/" + repID)
+      this.$router.push("/report_view_online/" + repID)
     },
     onHidden(){
       setTimeout(()=>{
