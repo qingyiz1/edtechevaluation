@@ -107,24 +107,26 @@ export default {
       this.show = true
       this.editable = false
       let user = auth.currentUser;
-
-      await auth.signInWithEmailAndPassword(this.$store.getters.userProfile.email, this.$store.getters.userProfile.password)
-      await user.updateEmail(this.userdata.email).catch((err)=>{window.alert(err)})
-      await auth.signInWithEmailAndPassword(this.userdata.email,this.$store.getters.userProfile.password)
-      await user.updatePassword(this.userdata.password).then(()=>{
-        updateDocument("userInfo",user.uid,this.userdata)
-        this.$store.dispatch("fetchUserProfile",user)
-        this.$bvModal.msgBoxOk('Profile updated successfully', {
-          title: 'Success',
-          size: 'sm',
-          buttonSize: 'sm',
-          okVariant: 'success',
-          headerClass: 'p-2 border-bottom-0',
-          footerClass: 'p-2 border-top-0',
-          centered: true
-        })
-        this.show = false
-      }).catch((err)=>{window.alert(err)})
+      if(this.$store.getters.userProfile.email !== this.userdata.email){
+        await auth.signInWithEmailAndPassword(this.$store.getters.userProfile.email, this.$store.getters.userProfile.password)
+        await user.updateEmail(this.userdata.email).catch((err)=>{window.alert(err)})
+      }
+      if(this.$store.getters.userProfile.password !== this.userdata.password){
+        await auth.signInWithEmailAndPassword(this.userdata.email,this.$store.getters.userProfile.password)
+        await user.updatePassword(this.userdata.password).catch((err)=>{window.alert(err)})
+      }
+      await updateDocument("userInfo",user.uid,this.userdata)
+      await this.$store.dispatch("fetchUserProfile",user)
+      await this.$bvModal.msgBoxOk('Profile updated successfully', {
+        title: 'Success',
+        size: 'sm',
+        buttonSize: 'sm',
+        okVariant: 'success',
+        headerClass: 'p-2 border-bottom-0',
+        footerClass: 'p-2 border-top-0',
+        centered: true
+      })
+      this.show = false
     },
   },
   firestore(){
