@@ -84,6 +84,7 @@
         </b-table>
       </b-col>
     </b-row>
+    <b-button style="position: fixed;top:20%;right:0" size="lg" variant="info" to="/reports" >Back to Report List</b-button>
   </b-container>
 </template>
 
