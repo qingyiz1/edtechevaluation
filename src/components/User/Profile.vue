@@ -1,21 +1,57 @@
 <template>
-  <body style="margin-top: 20px">
-  <div style="font-size:50px;text-align: center" v-if="userdata === null">Error getting user profile!</div>
-  <form v-if="userdata !== null" class="form-profile">
+  <div class="profile">
+    <h2 class="profile-title">User Profile</h2>
+    <b-card class="profile-body">
+      <b-row no-gutters>
+        <b-col cols="3">
+        <b-avatar class="avatar" variant="info" size="9rem"></b-avatar>
+        </b-col>
+        <b-col cols="8" offset="" class="profile-form"> 
+          <b-row>
+            <b-col cols="5">
+              <label>Email</label>
+              <b-form-input :disabled="!editable" v-model="userdata['email']" id="email" trim></b-form-input>
+            </b-col>
+            <b-col cols="5" offset="1">
+              <label>Password</label>
+              <b-form-input :disabled="!editable" v-model="userdata['password']" id="password" type="password" trim></b-form-input>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col cols="5">
+              <label>Nickname</label>
+              <b-form-input :disabled="!editable" v-model="userdata['nickname']" id="nickname" trim></b-form-input>
+            </b-col>
+            <b-col cols="5" offset="1">
+              <label>Role</label>
+              <b-form-select :disabled="!editable" v-model="userdata['role']" :options="options"></b-form-select>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col cols="5">
+              <label>Employer</label>
+              <b-form-input :disabled="!editable" v-model="userdata['employer']" id="employer" trim></b-form-input>
+            </b-col>
+            <b-col cols="5" offset="1">
+              <label>Phone Number</label>
+              <b-form-input :disabled="!editable" v-model="userdata['phoneNumber']" id="phoneNum" trim></b-form-input>
+            </b-col>
+          </b-row>
+        </b-col>
+      </b-row>
+      <b-row align-h="end" class="save-btn-group">
+        <b-button variant="info" class="btn" v-if="!editable" @click="Edit()">Edit</b-button>
+        <b-button variant="info" class="btn" v-if="editable" @click="updateProfile">Save</b-button>
+        <b-button variant="outline-info" @click="Cancel" class="btn-cancel">Cancel</b-button>
+      </b-row>
+    </b-card>
+    <!-- <div style="font-size:50px;text-align: center" v-if="userdata === null">Error getting user profile!</div> -->
+  <!-- <form v-if="userdata !== null" class="form-profile">
     <h1 class="h3 mb-3 font-weight-normal">User Profile</h1>
     <div class="user-attribute">
       <h5>Email: </h5>
       <p>{{userdata['email']}}</p>
     </div>
-    <div class="user-attribute">
-      <h5>Role: </h5>
-      <!--        <div v-if="editable">-->
-      <!--           <input type="radio" name="role" v-model="userdata['role']" value="Consultant">-->
-      <!--           <label style="padding-left:2px;padding-right:5px"> Consultant</label>-->
-      <!--           <input type="radio" name="role" v-model="userdata['role']" value="Educational Leader">-->
-      <!--           <label style="padding-left:2px;padding-right:5px">Educational Leader</label>-->
-      <!--        </div>-->
-      <p>{{userdata['role']}}</p>
     </div>
     <div class="user-attribute">
       <h5>Nickname: </h5>
@@ -37,12 +73,9 @@
     <br>
     <button class="btn btn-lg btn-primary btn-block" v-if="!editable" @click.prevent="Edit()">Edit</button>
     <button class="btn btn-lg btn-primary btn-block" v-if="editable" @click.prevent="updateProfile()">Save</button>
-  </form>
-  </body>
-
-
-
-
+  </form> -->
+  <!-- </body> -->
+  </div>
 </template>
 
 <script>
@@ -64,9 +97,26 @@ export default {
       });
     });
   },
+  computed: {
+    isEdit () {
+      if (this.editable) {
+        return "Save"
+      } else {
+        return "Edit"
+      }
+    }
+  },
   methods: {
     Edit(){
       this.editable = true
+      this.profileStore = JSON.parse(JSON.stringify(this.userdata));
+      // if (this.editable) {
+      //   this.updateProfile()
+      // }
+    },
+    Cancel:  function () {
+      this.editable = false
+      this.userdata = JSON.parse(JSON.stringify(this.profileStore));
     },
     updateProfile(){
       this.editable = false
@@ -77,6 +127,12 @@ export default {
     return {
       userdata:'',
       editable:false,
+      options: [
+          { value: "Senior Consultant", text: "Senior Consultant" },
+          { value: "Consultant", text: "Consultant" },
+          { value: "Educational leader", text: "Educational leader" },
+        ],
+        profileStore:""
     }
   },
   firestore(){
@@ -93,7 +149,7 @@ export default {
 
 <style scoped>
 @import "../../css/general.css";
-.form-profile {
+/* .form-profile {
   background-color: #f5f5f5;
   width: 100%;
   max-width: 330px;
@@ -113,6 +169,44 @@ h5, p {
 }
 .user-attribute{
   margin-bottom: 5px;
+} */ 
+.profile {
+    margin: 1.5rem 2rem;
+}
+.profile .profile-title {
+  text-align: left;
+  color: #6A757E;
+  margin-bottom: 1.5rem;
+}
+
+.profile .profile-body {
+  width: 100%;
+  background: transparent;
+  border-radius: 1rem;
+}
+
+.profile .profile-form {
+  text-align: left;
+  margin-left: 2rem;
+}
+.profile-form .row {
+  margin-bottom: 1.5rem;
+}
+label {
+  color:  #6C757D;
+  margin-bottom: 0.25rem;
+  font-size: .875rem;
+}
+.save-btn-group {
+padding-right: 9.25rem;
+}
+
+.save-btn-group .btn {
+  border-radius: .5rem;;
+}
+.save-btn-group .btn-cancel {
+  margin-left: 1rem;
+  border: 2px solid #17a2b8
 }
 
 </style>
