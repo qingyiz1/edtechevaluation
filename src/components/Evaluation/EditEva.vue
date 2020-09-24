@@ -53,24 +53,22 @@
             <textarea cols="12" v-model="summary" type="text" rows="5" class="form-control input-lg" name="summary" placeholder="Summary"></textarea>
           </b-card>
         </b-tab>
-        <b-tab v-if="this.value>80" title="Evaluation saved" disabled></b-tab>
-        <b-tab v-if="this.value<=80" title="Saving" disabled></b-tab>
+        <b-tab v-if="this.isSaving === false" title="Evaluation saved" disabled></b-tab>
+        <b-tab v-if="this.isSaving === true" title="Saving" disabled></b-tab>
       </b-tabs>
     </b-card>
 
 
 
       <!-- Control buttons-->
-    <div class="text-center">
+    <div class="text-center" style="margin-bottom: 2rem">
       <b-button-group class="mt-2">
         <b-button variant="success" @click="saveEvaluation">Save</b-button>
         <b-button variant="warning" @click="completeEvaluation" >Complete</b-button>
-        <b-button variant="info" @click="tabIndex--">Previous</b-button>
-        <b-button variant="info" @click="tabIndex++">Next</b-button>
+        <b-button variant="info" @click="previousPage">Previous</b-button>
+        <b-button variant="info" @click="nextPage">Next</b-button>
         <b-button variant="dark" to="/evaluation" >Back</b-button>
-
       </b-button-group>
-
     </div>
 
     </b-overlay>
@@ -104,7 +102,7 @@ export default {
       dismissCountDown:0,
       dismissCountDown2:0,
       sectionsRef:"",
-      isTyping: false,
+      isSaving: false,
     };
   },
   watch:{
@@ -112,31 +110,20 @@ export default {
       handler:'debouncedUpdate'
     },
     "sections":{
-      handler: 'getSomeVal',
+      handler: 'updateSections',
       deep: true
     }
   },
   methods: {
     debouncedUpdate: debounce(function() {
-      this.updateSummary()
-    }, 3000),
-    updateSummary(){
-      this.getSomeVal()
-    },
-    getSomeVal(){
-      let increment;
-      this.value = 0
-      increment = setInterval(()=>{
-        if(this.value < this.max)this.value+=15
-      },400)
-      setTimeout(()=>{
-        clearInterval(increment)
-      },3000)
-
+      this.updateSections()
+    }, 1500),
+    updateSections(){
+      this.isSaving = true
       if (this.saveInterval) clearTimeout(this.saveInterval);
       this.saveInterval = setTimeout(() => {
-        // your action
         this.updateDatabase()
+        this.isSaving = false
       }, 3000);
     },
     loadSummary(){
@@ -149,6 +136,14 @@ export default {
     },
     select(indexS,indexQ,option){
       this.sections[indexS].question[indexQ].selected = option
+    },
+    nextPage(){
+      this.tabIndex++;
+      window.scrollTo(0,0)
+    },
+    previousPage(){
+      this.tabIndex--;
+      window.scrollTo(0,0)
     },
     async saveEvaluation() {
       await this.updateDatabase()
@@ -168,6 +163,7 @@ export default {
           .update({
             summary:this.summary,
             editor:this.$store.getters.userProfile.nickname,
+            editorUid:this.$store.getters.userProfile.uid,
             dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
           })
           .catch(function (error) {

@@ -71,7 +71,7 @@
 
 </template>
 <script>
-import { createDocument, getDocument } from "@/tools/firebaseTool";
+import {createDocument, getDocument, updateDocument} from "@/tools/firebaseTool";
 import "firebase/auth";
 import {db, frameworkCollection} from "@/tools/firebaseConfig";
 import * as firebase from "firebase";
@@ -124,26 +124,58 @@ export default {
           }
         }
         if (checkSection && checkQuestion) {
+          // Delete old section reference
+          console.log(frameworkPath)
+          let sectionsRef;
+          await frameworkCollection.doc(frameworkPath)
+              .get()
+              .then((doc) => {
+                sectionsRef = doc.data().section;
+                for(const sectionRef of sectionsRef){
+                  db.doc(sectionRef.path).delete()
+                }
+              })
+              .catch((error) => {
+                console.log("Error getting documents: ", error);
+              });
+
+          // update section reference
           let sectionArray = [];
           for (let i = 0; i < this.sections.length; i++ ) {
             let sectionRef = db.collection("section").doc()
             await sectionRef.set(this.sections[i])
             sectionArray.push(db.doc('section/' + sectionRef.id));
           }
-          this.framework = {
-            id:frameworkPath,
-            name:this.frameworkName,
-            section:sectionArray,
-            dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
-            dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
-            author:this.$store.getters.userProfile.nickname,
-            authorUid:this.$store.getters.userProfile.uid,
-            version:this.version,
-            isActive:true
-        }
-          createDocument("framework",frameworkPath,this.framework);
+          if(frameworkPath === this.$route.params.id){
+            this.framework = {
+              id:frameworkPath,
+              name:this.frameworkName,
+              section:sectionArray,
+              dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
+              editor:this.$store.getters.userProfile.nickname,
+              editorUid:this.$store.getters.userProfile.uid,
+              version:this.version,
+              isActive:true
+            }
+            updateDocument("framework",frameworkPath,this.framework);
+          }else{
+            this.framework = {
+              id:frameworkPath,
+              name:this.frameworkName,
+              section:sectionArray,
+              dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
+              dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
+              author:this.$store.getters.userProfile.nickname,
+              authorUid:this.$store.getters.userProfile.uid,
+              editor:this.$store.getters.userProfile.nickname,
+              editorUid:this.$store.getters.userProfile.uid,
+              version:this.version,
+              isActive:true
+            }
+            createDocument("framework",frameworkPath,this.framework);
+          }
           this.showOverlay = false;
-          this.$router.push('/framework')
+          await this.$router.push('/framework')
         }
       } else {
         this.showOverlay = false;
@@ -173,9 +205,8 @@ export default {
   created: async function () {
     this.showOverlay = true;
     if (this.$route.params.id) {
-      console.log(this.$route.params.id)
       this.isEdit = true;
-      frameworkPath = "/" + this.$route.params.id;
+      frameworkPath = this.$route.params.id;
       let framework = await getDocument("framework",this.$route.params.id);
       this.framework = framework;
       this.frameworkName = framework.name;
@@ -187,12 +218,10 @@ export default {
           })
         })
       }
-      // this.showOverlay = false;
     } else{
       frameworkPath = frameworkCollection.doc().id
     }
     this.showOverlay = false;
-    console.log(frameworkPath)
   }
 }
 </script>

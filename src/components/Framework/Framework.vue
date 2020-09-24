@@ -1,5 +1,5 @@
 <template>
-  <div class="framework-list">
+  <div>
     <el-dialog :visible.sync="windowVisible" title="Enter Evaluation Name" width="360px">
       <el-form ref="form" :model="newEva" >
         <el-form-item>
@@ -27,67 +27,92 @@
     :show="show"
     opacity="0.9"
     @hidden="onHidden">
-      <b-button variant="success" @click="createNewFramework">Create a New Framework</b-button>
-      <b-row  v-for="(framework,index) in frameworks" :key=framework.id>
-        <b-col>
-          <b-card
-          class="framework-card"
-          header-tag="header">
-            <template v-slot:header>
-              <b-row align-h="between" align-v="center">
-                <b-col cols="11"><h6 class="mb-0">{{framework.name}}</h6></b-col>
-                <b-col cols="1">
-                  <b-button  v-b-modal.preview size="sm" variant="link" @click="onPreview(framework)">
-                    <b-icon icon="eye"></b-icon>
-                  </b-button>
-                </b-col>
-              </b-row>
-            </template>
-            <b-row align-h="between" align-v="center"  no-gutters>
-              <b-col cols="10">
-                <b-card-text>
-                  <b-icon
-                  icon="person-circle"
-                  style="margin-right:10px">
-                  </b-icon>
-                {{framework.author}}
-                </b-card-text>
-                <b-card-text>
-                  <b-icon 
-                  icon="calendar-date"
-                  style="margin-right:10px"></b-icon>{{framework.dateEdited.toDate().toLocaleString('en-US')}}
-                </b-card-text>
-              </b-col>
-              <b-col cols="2">
-                <b-form-checkbox
-                  v-if="$store.getters.userProfile['role']==='Senior Consultant'"
-                  v-model="framework.isActive"
-                  name="check-button"
-                  size="lg"
-                  style="margin-bottom: 0.625rem"
-                  switch
-                  @change="onActive(framework)">
-                <b-button 
-                v-if="$store.getters.userProfile['role']==='Senior Consultant'" 
-                size="sm"
-                style="margin-right: 1rem;margin-left:0.5rem"
-                variant="primary"
-                @click="editFramework(framework)"><b-icon icon="pencil"></b-icon></b-button>
-                <b-button  
-                v-if="$store.getters.userProfile['role']==='Senior Consultant'" 
-                size="sm"
-                variant="danger"
-                @click="deleteFramework(framework,index)"><b-icon icon="trash"></b-icon></b-button>
-                </b-form-checkbox>
-                <b-button 
-                :disabled="!framework.isActive"
-                variant="primary"
-                @click="openEvaWindow(framework)">Start Evaluation</b-button>
-              </b-col>
-            </b-row>
-          </b-card>
+    <div class="list-container">
+      <b-row no-gutters class="functional-container">
+        <b-input-group size="sm" class="list-search">
+          <b-form-input type="search" placeholder="Search"></b-form-input>
+          <b-input-group-append is-text>
+            <b-icon icon="search"></b-icon>
+          </b-input-group-append>
+        </b-input-group>
+        <b-button @click="createNewFramework" class="list-create-btn">New</b-button>
+      </b-row>
+      <b-row 
+      no-gutters
+      class="list list-header" 
+      align-content="center">
+        <b-col cols="1">Status</b-col>
+        <b-col cols="2">Framework Name</b-col>
+        <b-col cols="1">Author</b-col>
+        <b-col cols="2">Created Time</b-col>
+        <b-col cols="1">Editor</b-col>
+        <b-col cols="2">Edited Time</b-col>
+        <b-col cols="1">Version</b-col>
+        <b-col cols="2">Action</b-col>
+      </b-row>
+      <h3 v-if="this.visibleFramework.length === 0">No active framework present or the connection to database is lost, try to reload this page!</h3>
+      <b-row 
+      v-for="(framework,index) in visibleFramework" :key=framework.id
+      no-gutters
+      class="list list-content" 
+      align-content="center" 
+      align-h="center"
+      align-v="center">
+        <b-col cols="1">
+          <b-form-checkbox
+              class="action_btn"
+              v-if="$store.getters.userProfile['role'] ==='Senior Consultant'"
+              v-model="framework.isActive"
+              name="check-button"
+              size="lg"
+              switch
+              @change="onActive(framework)">
+          </b-form-checkbox>
+          <b-icon
+              v-if="$store.getters.userProfile['role'] !=='Senior Consultant'"
+              variant="success"
+              icon="check-circle-fill"
+              size="2.5rem"
+          ></b-icon>
+        </b-col>
+        <b-col cols="2">{{framework.name}}</b-col>
+        <b-col cols="1">{{framework.author}}</b-col>
+        <b-col cols="2">{{framework.dateCreated.toDate().toLocaleString('en-US')}}</b-col>
+        <b-col cols="1">{{framework.author}}</b-col>
+        <b-col cols="2">{{framework.dateEdited.toDate().toLocaleString('en-US')}}</b-col>
+        <b-col cols="1">{{framework.version}}</b-col>
+        <b-col cols="2">
+          <b-button
+              class="action_btn"
+              v-if="$store.getters.userProfile['role']==='Senior Consultant'"
+              :disabled="!framework.isActive"
+              variant="link"
+              style="padding:0"
+              @click="openEvaWindow(framework)"
+              v-b-tooltip.hover title="Start Evaluation"><b-avatar style="background:#006eb6;color: white" icon="file-earmark-plus" size="2rem"></b-avatar></b-button>
+          <b-button
+              class="action_btn"
+            variant="link" 
+            style="padding:0"
+            v-if="$store.getters.userProfile['role']==='Senior Consultant'" 
+            @click="editFramework(framework)"
+              v-b-tooltip.hover title="Edit Framework"><b-avatar variant="success" icon="pencil" size="2rem"></b-avatar></b-button>
+          <b-button
+            class="action_btn"
+            variant="link"
+            style="padding:0"
+            v-if="$store.getters.userProfile['role']==='Senior Consultant'"
+            @click="deleteFramework(framework,index)"
+            v-b-tooltip.hover title="Delete Framework"><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
+          <b-button
+              v-if="$store.getters.userProfile['role']!=='Senior Consultant'"
+            variant="primary"
+            class="list-inline-btn-lg action_btn"
+              @click="openEvaWindow(framework)"
+          >Start Evaluation</b-button>
         </b-col>
       </b-row>
+    </div>
     </b-overlay>
 
       <b-modal 
@@ -112,7 +137,7 @@
 </template>
 
 <script>
-import {db, evaluationCollection} from "@/tools/firebaseConfig"
+import {db, evaluationCollection, frameworkCollection} from "@/tools/firebaseConfig"
 import {updateDocument, deleteDocument, getDocument } from "@/tools/firebaseTool"
 import * as firebase from "firebase";
 
@@ -137,16 +162,17 @@ export default {
       frameworkPreview:{},
     }
   },
-  // computed:{
-  //   activeStyle(isActive) { 
-  //     if (isActive) {
-  //       return "background-color: #28a745 !important"
-  //     } else {
-  //       return "background-color:#6c757d !important"
-  //     }
-
-  //   }
-  // },
+  computed:{
+    visibleFramework() {
+      if(this.$store.getters.userProfile.role === "Senior Consultant"){
+        return this.frameworks;
+      }else{
+        let visibleFrameworks = this.frameworks.filter(frameworks=> frameworks.isActive === true)
+        console.log(visibleFrameworks)
+        return visibleFrameworks
+      }
+    }
+  },
   firestore(){
     return{
       frameworks: db.collection("framework")
@@ -166,7 +192,7 @@ export default {
     },
     onActive: function (framework) {
         framework.isActive = !framework.isActive;
-        updateDocument("framework",framework.id, framework);
+        updateDocument("framework",framework.id, {isActive:framework.isActive});
     },
       openEvaWindow(framework){
         this.windowVisible = true;
@@ -194,11 +220,15 @@ export default {
 
       let evaRef = await evaluationCollection.doc()
       await evaRef.set({
+        id: evaRef.id,
         author: this.$store.getters.userProfile.nickname,
         authorUid: this.$store.getters.userProfile.uid,
+        editor:this.$store.getters.userProfile.nickname,
+        editorUid: this.$store.getters.userProfile.uid,
         dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
         dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
-        frameworkId: inputData.framework.name,
+        frameworkId: inputData.framework.id,
+        frameworkName: inputData.framework.name,
         isCompleted: false,
         name: inputData.name,
         section: newSections,
@@ -232,7 +262,19 @@ export default {
       .then(value => {
         if(value === true){
           this.dismissCountDown = this.dismissSecs
-          deleteDocument('framework',framework.id)
+          let sectionsRef;
+          frameworkCollection.doc(framework.id)
+              .get()
+              .then((doc) => {
+                sectionsRef = doc.data().section;
+                for(const sectionRef of sectionsRef){
+                  db.doc(sectionRef.path).delete()
+                }
+                deleteDocument('framework',framework.id)
+              })
+              .catch((error) => {
+                console.log("Error getting documents: ", error);
+              });
         }
       })
       .catch(err => {
@@ -270,13 +312,7 @@ export default {
 
 <style scoped>
 @import "../../css/general.css";
-.framework-card{
-  margin: 10px 50px;
-  text-align: left;
-}
-.framework-list {
-  margin-top: 10px;
-}
+@import "../../css/list.css";
 #frameworkDeleteAlert{
   position: fixed;
   top: 50%;

@@ -1,24 +1,21 @@
 <template>
   <div style="width: 100%">
-    <div>
+    <div id="navContainer">
       <b-navbar toggleable="lg" class="header" >
-        <b-navbar-brand to="/"><img src="../assets/EdTech.png" height="30px" width="100px"></b-navbar-brand>
-        <b-avatar class="avatar" variant="info" :text="Role"></b-avatar>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+        <b-navbar-brand style="margin: auto;padding-top: 15px;padding-bottom: 15px;padding-right: 25px" to="/"><img src="../assets/EdTech.png" height="30px" width="100px"></b-navbar-brand>
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav class="navbar">
-            <b-nav-item v-if="!$store.getters.loggedIn" to="/login">Login</b-nav-item>
             <b-nav-item v-if="userdata['role']==='Senior Consultant'" to="/createuser">Create User</b-nav-item>
-            <b-nav-item v-if="$store.getters.loggedIn" to="/framework" >Framework</b-nav-item>
-            <b-nav-item v-if="$store.getters.loggedIn" to="/evaluation" >Evaluation</b-nav-item>
-            <b-nav-item v-if="$store.getters.loggedIn" to="/reports" >Report</b-nav-item>
-            <b-nav-item v-if="$store.getters.loggedIn" :to=" '/profile/' + this.userdata['email']" >Profile</b-nav-item>
-            <b-nav-item v-if="$store.getters.loggedIn&&$store.getters.userProfile['role']==='Senior Consultant'" to="/userlist" >User List</b-nav-item>
-            <b-nav-item v-if="$store.getters.loggedIn" @click="signOut" >Sign out</b-nav-item>
-            <b-nav-text v-if="$store.getters.loggedIn"></b-nav-text>
+            <b-nav-item to="/framework" >Framework</b-nav-item>
+            <b-nav-item to="/evaluation" >Evaluation</b-nav-item>
+            <b-nav-item to="/reports" >Report</b-nav-item>
+            <b-nav-item :to=" '/profile/' + this.userdata['email']" >Profile</b-nav-item>
+            <b-nav-item v-if="$store.getters.userProfile['role']==='Senior Consultant'" to="/userlist" >User List</b-nav-item>
+            <b-nav-item @click="signOut" >Sign out</b-nav-item>
           </b-navbar-nav>
         </b-collapse>
-
+        <b-avatar class="avatar" variant="info" :text="Role"></b-avatar>
 
         <!-- Right aligned nav items -->
         <!--            <b-navbar-nav class="ml-auto">-->
@@ -80,11 +77,24 @@ export default {
   font-weight: 500;
   font-size: 1.25rem;
   box-shadow: 0 8px 10px 0 #C3C2C2;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+  min-height: 60px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+#navContainer{
+  height: 66px;
+
 }
 
 .avatar {
   margin-right: 2rem;
-  background: #0059a7;
+  position: fixed;
+  top:6px;
+  right: 0;
 }
 
 .navbar-light .navbar-nav .nav-link {
