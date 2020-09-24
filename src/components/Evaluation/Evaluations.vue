@@ -72,7 +72,7 @@
               :disabled="eva.isCompleted !== true"
               v-b-tooltip.hover title="Generate Report"><b-avatar
                   style="background:#006eb6;color: white"
-                  icon="clipboard-data" size="2rem"></b-avatar></b-button>
+                  icon="clipboard-data" size="1.5rem"></b-avatar></b-button>
               <b-button
                   class="action_btn"
               variant="link"
@@ -81,14 +81,14 @@
                   v-b-tooltip.hover title="Edit Evaluation">
                 <b-avatar
               variant="success"
-              icon="pencil" size="2rem"></b-avatar></b-button>
+              icon="pencil" size="1.5rem"></b-avatar></b-button>
               <b-button
                   class="action_btn"
               v-b-modal.delete 
               variant="link" 
               style="padding:0"
               @click="setEvaId(eva.id)"
-                  v-b-tooltip.hover title="Delete Evaluation"><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
+                  v-b-tooltip.hover title="Delete Evaluation"><b-avatar variant="danger" icon="trash" size="1.5rem"></b-avatar></b-button>
             </b-col>
           </b-row>
         </div>
