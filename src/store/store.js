@@ -35,11 +35,11 @@ export const store = new Vuex.Store({
             await firebase.auth.signInWithEmailAndPassword(form.email, form.password)
                 .then(async (user) => {
                     if(user != null){
-                        if((await firebase.usersCollection.doc(form.email).get()).data() === undefined || (await firebase.usersCollection.doc(form.email).get()).data()['isActive'] === false)
+                        if((await firebase.usersCollection.doc(user.user.uid).get()).data() === undefined || (await firebase.usersCollection.doc(user.user.uid).get()).data()['isActive'] === false)
                         {
                             window.alert("User not found or deactivated, please contact your senior consultant!")
                             return
-                        } else if((await firebase.usersCollection.doc(form.email).get()).data()['isActive'] === true) {
+                        } else if((await firebase.usersCollection.doc(user.user.uid).get()).data()['isActive'] === true) {
                             // fetch user profile and set in state
                             dispatch('fetchUserProfile', user)
                             await router.push({path: "/framework"})
