@@ -29,7 +29,7 @@
     @hidden="onHidden">
     <div class="list-container">
       <b-row no-gutters class="functional-container">
-        <h4 class="list-title">Frameworks</h4>
+        <h4 class="list-title"  v-if="isMobile">Frameworks</h4>
         <b-input-group size="sm" class="list-search">
           <b-form-input type="search" placeholder="Search"></b-form-input>
           <b-input-group-append is-text>
