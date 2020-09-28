@@ -10,36 +10,36 @@
     >
     <b-card class="profile-body">
       <b-row no-gutters>
-        <b-col cols="3">
+        <b-col sm="3" cols="12" style="margin-right:2rem">
         <b-avatar class="avatar" variant="info" size="9rem"></b-avatar>
         </b-col>
-        <b-col cols="8" offset="" class="profile-form"> 
+        <b-col sm="8" sm-offset="1" cols="12" class="profile-form"> 
           <b-row>
-            <b-col cols="5">
+            <b-col sm="5" cols="12">
               <label>Email</label>
               <b-form-input :disabled="!editable" v-model="userdata['email']" id="email" trim></b-form-input>
             </b-col>
-            <b-col cols="5" offset="1">
+            <b-col sm="5" sm-offset="1" cols="12">
               <label v-if="editable">Password</label>
               <b-form-input v-if="editable" v-model="userdata['password']" id="password" type="text" trim></b-form-input>
             </b-col>
           </b-row>
           <b-row>
-            <b-col cols="5">
+            <b-col sm="5" cols="12">
               <label>Nickname</label>
               <b-form-input :disabled="!editable" v-model="userdata['nickname']" id="nickname" trim></b-form-input>
             </b-col>
-            <b-col cols="5" offset="1">
+            <b-col sm="5" sm-offset="1" cols="12">
               <label>Role</label>
               <b-form-input disabled v-model="userdata['role']"></b-form-input>
             </b-col>
           </b-row>
           <b-row>
-            <b-col cols="5">
+            <b-col sm="5" cols="12">
               <label>Employer</label>
               <b-form-input :disabled="!editable" v-model="userdata['employer']" id="employer" trim></b-form-input>
             </b-col>
-            <b-col cols="5" offset="1">
+            <b-col sm="5" sm-offset="1" cols="12">
               <label>Phone Number</label>
               <b-form-input :disabled="!editable" v-model="userdata['phoneNumber']" id="phoneNum" trim></b-form-input>
             </b-col>
@@ -47,9 +47,11 @@
         </b-col>
       </b-row>
       <b-row align-h="end" class="save-btn-group">
-        <b-button variant="info" class="btn" v-if="!editable" @click="Edit()">Edit</b-button>
-        <b-button variant="info" class="btn" v-if="editable" @click="updateProfile">Save</b-button>
-        <b-button v-if="editable" variant="outline-info" @click="Cancel" class="btn-cancel">Cancel</b-button>
+        <b-col sm="4" sm-offset="8">
+          <b-button variant="info" class="btn" v-if="!editable" @click="Edit()">Edit</b-button>
+          <b-button variant="info" class="btn" v-if="editable" @click="updateProfile">Save</b-button>
+          <b-button v-if="editable" variant="outline-info" @click="Cancel" class="btn-cancel">Cancel</b-button>
+        </b-col>
       </b-row>
     </b-card>
     </b-overlay>
@@ -71,7 +73,7 @@ export default {
       userdata:'',
       editable:false,
       profileStore:"",
-      show:false
+      show:false,
     }
   },
   mounted(){
@@ -181,7 +183,7 @@ h5, p {
 
 .profile .profile-form {
   text-align: left;
-  margin-left: 2rem;
+  /* margin-left: 2rem; */
 }
 .profile-form .row {
   margin-bottom: 1.5rem;
@@ -190,9 +192,6 @@ label {
   color:  #6C757D;
   margin-bottom: 0.25rem;
   font-size: .875rem;
-}
-.save-btn-group {
-padding-right: 9.25rem;
 }
 
 .save-btn-group .btn {

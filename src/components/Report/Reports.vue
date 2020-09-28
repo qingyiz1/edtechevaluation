@@ -3,7 +3,7 @@
       :show="show"
       opacity="0.9"
       @hidden="onHidden">
-    <div>
+    <div :class="isMobile? 'mobile': 'desktop'">
     <b-modal
         id="delete"
         button-size="md"
@@ -23,6 +23,7 @@
 
       <div class="list-container">
         <b-row no-gutters class="functional-container">
+          <h4 class="list-title" v-if="isMobile">Reports</h4>
           <b-input-group size="sm" class="list-search">
             <b-form-input type="search" placeholder="Search"></b-form-input>
             <b-input-group-append is-text>
@@ -30,7 +31,7 @@
             </b-input-group-append>
           </b-input-group>
         </b-row>
-        <b-row no-gutters class="list list-header" align-content="center">
+        <b-row no-gutters class="list list-header" v-if="!isMobile" align-content="center">
           <b-col cols="1">Complete</b-col>
           <b-col cols="2">Report Name</b-col>
         <b-col cols="1">Evaluation</b-col>
@@ -41,7 +42,9 @@
         <b-col cols="2">Action</b-col>
       </b-row>
         <h3 v-if="this.ownReports.length === 0">You may not have generated any report yet or the connection to database is lost, try to reload this page!</h3>
+      <!-- layout for desktop -->
       <b-row
+          :hidden="isMobile"
           no-gutters
           v-for="rep in ownReports" v-bind:key="rep.id"
           class="list list-content"
@@ -108,80 +111,53 @@
               ><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
         </b-col>
       </b-row>
+      <!-- layout for mobile -->
+
+      <b-row 
+        :hidden="!isMobile"
+        no-gutters
+          v-for="rep in ownReports" v-bind:key="rep.id"
+          class="list list-content"
+          align-content="center"
+          align-h="center"
+          align-v="center">
+            <b-col cols="9">
+              <b-col class="item-title">{{rep.name}}</b-col>
+              <b-col class="item-content"><b-icon icon="person-fill" style="margin-right:10px;font-size:12px"></b-icon>{{rep.author}}</b-col>
+              <b-col class="item-content"><b-icon icon="calendar3" style="margin-right:10px;font-size:12px"></b-icon>{{rep.dateEdited.toDate().toLocaleString('en-US')}}</b-col>
+              <b-col class="item-content"><b-icon icon="file-earmark-check" style="margin-right:10px;font-size:12px"></b-icon>{{rep.evaluationName}}</b-col>
+            </b-col>
+            <b-col cols="3" style="text-align:right">
+              <b-dropdown class="action-menu" variant="link" no-caret>
+                <template v-slot:button-content>
+                  <b-icon icon="three-dots"></b-icon>
+                </template>
+                <b-dropdown-item
+                :disabled="!rep.isCompleted"
+                @click="openSendWindow(rep.id)"
+                v-b-tooltip.hover title="Share Report">Share Report</b-dropdown-item>
+                <b-dropdown-item
+                :disabled="!rep.isCompleted"
+                @click="downloadReport(rep.id)">Download Report</b-dropdown-item>
+                <b-dropdown-item
+                @click="editReport(rep.id)"
+                >Edit</b-dropdown-item>
+                <b-dropdown-item
+                v-b-modal.delete
+                @click="setRepId(rep.id)"
+                >Delete</b-dropdown-item>
+              </b-dropdown>
+              <b-form-checkbox
+              v-model="rep.isCompleted"
+              name="check-button"
+              class="action_btn"
+              switch
+              @change="toggleIsComplete(rep)">
+          </b-form-checkbox>
+            </b-col>
+          </b-row>
       </div>
     </div>
-    <!-- <b-row>
-      <b-col>
-        <div v-for="rep in reportList" v-bind:key="rep.id" class="report" >
-          <b-card
-          :header="rep.name"
-          class="text-left mt-3">
-          <template v-slot:header>
-            <b-row align-h="between" align-v="center">
-              <b-col cols="9"><h6 class="mb-0">{{rep.name}}</h6></b-col>
-                <b-col cols="1">
-                <b-button  size="sm" variant="link" @click="Edit(rep.id)" >
-                  <b-icon icon="pencil"></b-icon>
-                </b-button>
-              </b-col>
-              <b-col cols="2">
-              <b-form-checkbox
-                v-model="rep.isCompleted"
-                name="check-button"
-                size="sm"
-                style="margin-bottom: 0.625rem"
-                switch
-                @change="toggleIsComplete(rep)">{{rep.isCompleted?'completed':'uncompleted'}}</b-form-checkbox>
-            </b-col>
-            </b-row>
-          </template>
-          <b-row align-h="between" align-v="center" b-row  no-gutters>
-          <b-col cols="8">
-            <b-card-text>
-                <b-icon
-                icon="person-circle"
-                style="margin-right:10px">
-                </b-icon>
-                {{rep.recommendationAuthor}}
-            </b-card-text>
-            <b-card-text>
-                <b-icon
-                icon="calendar-date"
-                style="margin-right:10px"></b-icon>
-                {{rep.dateCreated.toDate().toLocaleString('en-US')}}
-            </b-card-text>
-            </b-col>
-          <b-col cols="4">
-            <b-button
-              :to="'/report_preview/'+rep.id"
-              size="sm"
-              style="margin-right: 1rem;margin-left:0.5rem"
-              variant="primary"><b-icon icon="eye"></b-icon></b-button>
-
-            <b-button
-              size="sm"
-              style="margin-right: 1rem;margin-left:0.5rem"
-              variant="danger"
-              @click="deleteReport(rep.id)"><b-icon icon="trash"></b-icon></b-button>
-
-            <b-button
-              size="sm"
-              style="margin-right: 1rem;margin-left:0.5rem"
-              variant="info"
-              @click="downloadReport(rep.id)"><b-icon icon="download"></b-icon></b-button>
-
-              <b-button
-              size="sm"
-              style="margin-right: 1rem;margin-left:0.5rem"
-              variant="info"
-              @click="openSendWindow(rep.id)"><b-icon icon="envelope"></b-icon></b-button>
-
-          </b-col>
-            </b-row>
-          </b-card>
-        </div>
-      </b-col>
-    </b-row> -->
     <el-dialog :visible.sync="sendWindowVisible" title="Send Report" width="360px">
       <el-form ref="form" :model="sendReport" label-width="80px">
         <el-form-item label="Email">
@@ -225,11 +201,15 @@ export default {
       },
       Id:"",
       repID:"",
-      show:""
+      show:"",
+      isMobile:false
     };
   },
   mounted() {
     this.onHidden()
+    if( /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+      this.isMobile = true
+    }
   },
   computed:{
     ownReports(){

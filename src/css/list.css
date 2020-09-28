@@ -33,7 +33,7 @@
   .list-header div {
     padding: 0;
   }
-  .list-container .list-create-btn {
+  .desktop .list-container .list-create-btn {
     margin-bottom: 1.5rem;
     background-color: #004C9D;
     border: none;
@@ -70,9 +70,7 @@
   .action_btn:hover{
     opacity: 0.8;
   }
-  .list-content:hover {
-    /*opacity: 0.8;*/
-  }
+
   .list-content .list-content-display:hover {
     cursor: pointer;
     color: #7DB4EF;
@@ -99,4 +97,55 @@
 
   .list-container .list-content div {
     font-size: 0.92rem;
+  }
+
+  .mobile .functional-container {
+    justify-content: space-between;
+    align-content: center;
+  }
+
+  .mobile .list-title  {
+    display: inline-flex;
+    color: #6A757E;
+  }
+
+  .mobile .list-search {
+    width: 8rem;
+    height: 2rem;
+  }
+
+  .mobile .list {
+    padding: 0.5rem 1rem;
+  }
+
+  .mobile .action-menu button {
+    padding-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  .mobile .list-content {
+    text-align: left;
+  }
+
+  .mobile .list-container .list-content .item-title {
+    font-size: 18px;
+    padding: 0;
+  }
+
+  .mobile .list-container .list-content .item-content {
+    font-size: 10px;
+    padding: 0;
+  }
+
+  .mobile .list-content .dropdown-menu {
+    width: 6rem;
+    min-width: 7.5rem;
+    font-size: 0.75rem;
+    transform:translate3d(-1.875rem, 1.875rem, 0px) !important;
+
+  }
+
+  .mobile .list-content .dropdown-menu a {
+    padding: 0.25rem 0;
+    text-align: center;
   }
