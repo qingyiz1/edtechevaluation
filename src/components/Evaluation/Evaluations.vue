@@ -4,7 +4,7 @@
       :show="show"
       opacity="0.9"
       @hidden="onHidden">
-      <div>
+      <div :class="isMobile? 'mobile': 'desktop'">
         <b-modal
           id="delete"
           button-size="md"
@@ -22,6 +22,7 @@
       </b-modal>
         <div class="list-container">
           <b-row no-gutters class="functional-container">
+            <h4 class="list-title" v-if="isMobile">Evaluations</h4>
             <b-input-group size="sm" class="list-search">
               <b-form-input type="search" placeholder="Search"></b-form-input>
               <b-input-group-append is-text>
@@ -29,7 +30,7 @@
               </b-input-group-append>
             </b-input-group>
           </b-row>
-          <b-row no-gutters class="list list-header" align-content="center">
+          <b-row no-gutters class="list list-header" align-content="center" v-if="!isMobile">
             <b-col cols="1">Complete</b-col>
             <b-col cols="2">Evaluation Name</b-col>
             <b-col cols="2">Framework</b-col>
@@ -40,7 +41,9 @@
             <b-col cols="1">Action</b-col>
           </b-row>
           <h3 v-if="this.ownEvaluations.length === 0">You may not have started any evaluation yet or the connection to database is lost, try to reload this page!</h3>
+          <!-- layout for desktop -->
           <b-row 
+          :hidden="isMobile"
           no-gutters
           v-for="eva in ownEvaluations" v-bind:key="eva.id"
           class="list list-content" 
@@ -91,6 +94,45 @@
                   v-b-tooltip.hover title="Delete Evaluation"><b-avatar variant="danger" icon="trash" size="1.5rem"></b-avatar></b-button>
             </b-col>
           </b-row>
+
+          <!-- layout for mobile -->
+          <b-row 
+          :hidden="!isMobile"
+          no-gutters
+          v-for="eva in ownEvaluations" v-bind:key="eva.id"
+          class="list list-content" 
+          align-content="center" 
+          align-v="center">
+              <b-col cols="9">
+                <b-col class="item-title">{{eva.name}}</b-col>
+                <b-col class="item-content"><b-icon icon="person-fill" style="margin-right:10px;font-size:12px"></b-icon>{{eva.author}}</b-col>
+                <b-col class="item-content"><b-icon icon="calendar3" style="margin-right:10px;font-size:12px"></b-icon>{{getTime(eva.dateCreated)}}</b-col>
+                <b-col class="item-content"><b-icon icon="file-earmark-medical" style="margin-right:10px;font-size:12px"></b-icon>{{eva.frameworkName}}</b-col>
+              </b-col>
+              <b-col cols="3" style="text-align:right">
+                <b-dropdown class="action-menu" variant="link" no-caret>
+                  <template v-slot:button-content>
+                    <b-icon icon="three-dots"></b-icon>
+                  </template>
+                  <b-dropdown-item
+                  @click="generateReport(eva.id)"
+                  :disabled="eva.isCompleted !== true">Generate Report</b-dropdown-item>
+                  <b-dropdown-item
+                  :to="'/EditEva/'+eva.id">Edit</b-dropdown-item>
+                  <b-dropdown-item
+                  v-b-modal.delete 
+                  @click="setEvaId(eva.id)"
+                  >Delete</b-dropdown-item>
+                </b-dropdown>
+                <b-form-checkbox
+                    class="action_btn"
+                    v-model="eva.isCompleted"
+                    name="check-button"
+                    switch
+                    @change="changeCompleted(eva)">
+                </b-form-checkbox>
+              </b-col>
+            </b-row>
         </div>
       </div>
   </b-overlay>
@@ -140,6 +182,7 @@ export default {
       evaluationInfo: {},
       evaId:"",
       show:"",
+      isMobile:false
     };
   },
   computed:{
@@ -211,6 +254,9 @@ export default {
   },
   mounted() {
     this.onHidden()
+    if( /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+      this.isMobile = true
+    }
   }
 };
 </script>
