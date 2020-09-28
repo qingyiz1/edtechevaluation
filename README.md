@@ -16,14 +16,14 @@ Client: Mike Timms
 
 <br />
 ### Architecture
-* [Authentication(register & login)](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/Authentication)
-* [Evaluation](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/Evaluation)
-* [Framework](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/Framework)
-* [Report](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/Report)
-* [User(Dashboard & Profile)](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/User)
-* [UserManagement(Create user & User list)](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/UserManagement)
-* [Navigation](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/Top-Header.vue)
-* [Testing](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/tests)
+* [Authentication(register & login)](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/Authentication/)
+* [Evaluation](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/Evaluation/)
+* [Framework](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/Framework/)
+* [Report](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/Report/)
+* [User(Dashboard & Profile)](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/User/)
+* [UserManagement(Create user & User list)](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/UserManagement/)
+* [Navigation](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/Top-Header.vue/)
+* [Testing](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/tests/)
 
 <br />
 <!-- GETTING STARTED -->
