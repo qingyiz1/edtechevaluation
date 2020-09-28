@@ -87,7 +87,7 @@
               icon="file-earmark-arrow-down" size="2rem"></b-avatar></b-button>
           <b-button
               variant="link"
-              @click="displayRep(rep.id)"
+              @click="editRep(rep.id)"
               class="action_btn"
               size="sm"
               style="padding:0"
@@ -251,6 +251,9 @@ export default {
     },
     displayRep: function (repID) {
       this.$router.push("/report_view_online/" + repID)
+    },
+    editRep: function (repID) {
+      this.$router.push("/report_preview/" + repID)
     },
     onHidden(){
       setTimeout(()=>{
