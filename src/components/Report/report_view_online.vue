@@ -4,7 +4,7 @@
       align-h="center"
       v-if="reportData"
     >
-      <b-col cols="9">
+      <b-col lg="9" col="12">
         <b-row class="border-bottom border-top">
           <b-col cols="3">
             <b-img
