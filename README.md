@@ -10,7 +10,7 @@
   * [Compiles and minifies for production](#Compiles-and-minifies-for-production)
   * [Lints and fixes files](#Lints-and-fixes-files)
   * [Customize configuration](#Customize-configuration)
-* [Usage](## Usage)
+* [Usage](##Usage)
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -29,13 +29,6 @@ Client: Mike Timms
 
 <!-- GETTING STARTED -->
 ## Getting Started
-
-### Prerequisites
-
-* Node.js
-```sh
-npm install npm@latest -g
-```
 
 ### Installation
 1. Clone the repo
