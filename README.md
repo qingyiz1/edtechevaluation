@@ -1,11 +1,8 @@
-# swen90014-2020-ee-echidna
-<h1 align="center">
-    Project EdTech Evaluation - Team Echidna
-</h1>
+# Project EdTech Evaluation - Team Echidna
 
 ## Table of Contents
 
-* [About the Project](#about-the-project)
+* [About the Project](## About The Project)
   * [Built With](#built-with)
 * [Getting Started](#getting-started)
   * [Installation](#installation)
@@ -13,7 +10,7 @@
   * [Compiles and minifies for production](#Compiles-and-minifies-for-production)
   * [Lints and fixes files](#Lints-and-fixes-files)
   * [Customize configuration](#Customize-configuration)
-* [Usage](#usage)
+* [Usage](## Usage)
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -76,4 +73,3 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
