@@ -104,7 +104,7 @@
           align-content="center" 
           align-v="center">
               <b-col cols="9">
-                <b-col class="item-title">{{eva.name}}</b-col>
+                <b-col class="item-title" @click="displayEva(eva.id)">{{eva.name}}</b-col>
                 <b-col class="item-content"><b-icon icon="person-fill" style="margin-right:10px;font-size:12px"></b-icon>{{eva.author}}</b-col>
                 <b-col class="item-content"><b-icon icon="calendar3" style="margin-right:10px;font-size:12px"></b-icon>{{getTime(eva.dateCreated)}}</b-col>
                 <b-col class="item-content"><b-icon icon="file-earmark-medical" style="margin-right:10px;font-size:12px"></b-icon>{{eva.frameworkName}}</b-col>
