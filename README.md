@@ -14,7 +14,7 @@ Client: Mike Timms
 * [BootstrapVue](https://bootstrap-vue.org/)
 * [Firebase](https://firebase.google.com/)
 
-<br>
+<br />
 ### Architecture
 * [Authentication(register & login)](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/Authentication)
 * [Evaluation](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/Evaluation)
@@ -25,7 +25,7 @@ Client: Mike Timms
 * [Navigation](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/src/components/Top-Header.vue)
 * [Testing](https://bitbucket.cis.unimelb.edu.au:8445/projects/SWEN900142020EEECHIDNA/repos/swen90014-2020-ee-echidna/browse/tests)
 
-<br>
+<br />
 <!-- GETTING STARTED -->
 ## Getting Started
 
