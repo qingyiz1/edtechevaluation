@@ -79,7 +79,7 @@
               size="2.5rem"
           ></b-icon>
         </b-col>
-        <b-col cols="2">{{framework.name}}</b-col>
+        <b-col cols="2" @click="onPreview(framework)" class="list-content-display">{{framework.name}}</b-col>
         <b-col cols="1">{{framework.author}}</b-col>
         <b-col cols="2">{{framework.dateCreated.toDate().toLocaleString('en-US')}}</b-col>
         <b-col cols="1">{{framework.author}}</b-col>
@@ -126,7 +126,7 @@
       align-h="center"
       align-v="center">
         <b-col cols="9">
-          <b-col class="item-title">{{framework.name}}</b-col>
+          <b-col class="item-title" @click="onPreview(framework)">{{framework.name}}</b-col>
           <b-col class="item-content"><b-icon icon="person-fill" style="margin-right:10px;font-size:12px"></b-icon>{{framework.author}}</b-col>
           <b-col class="item-content"><b-icon icon="calendar3" style="margin-right:10px;font-size:12px"></b-icon>{{framework.dateCreated.toDate().toLocaleString('en-US')}}</b-col>
           <b-col class="item-content"><b-icon icon="info-circle" style="margin-right:10px;font-size:12px"></b-icon>{{framework.version}}</b-col>
@@ -171,12 +171,8 @@
         <b-overlay
         :show="showPreview"
         opacity="0.9">
-          <b-card no-body>
-            <b-tabs card lazy pills vertical>
-              <b-tab v-for="section in frameworkPreview.section" :key="section.id" :title="section.name" active @click="onPreviewTabChanged">
-                <b-card-text v-for="question in section.question" :key="question.id">{{question.questionName}}</b-card-text>
-              </b-tab>
-            </b-tabs>
+          <b-card no-body style="border:none">
+            <framework-preview :framework="frameworkPreview"></framework-preview>
           </b-card>
         </b-overlay>
     </b-modal>
@@ -187,6 +183,7 @@
 import {db, evaluationCollection, frameworkCollection} from "@/tools/firebaseConfig"
 import {updateDocument, deleteDocument, getDocument } from "@/tools/firebaseTool"
 import * as firebase from "firebase";
+import FrameworkPreview from "@/components/Framework/FrameworkPreview";
 
 export default {
   name: "Framework",
@@ -220,6 +217,9 @@ export default {
         return visibleFrameworks
       }
     }
+  },
+    components:{
+    FrameworkPreview
   },
   firestore(){
     return{
@@ -336,6 +336,7 @@ export default {
     },
     onPreview: async function (framework) {
       //console.log(framework)
+      this.$bvModal.show("preview")
       let sections = [];
       this.showPreview = true;
       this.frameworkPreview = await getDocument("framework",framework.id);

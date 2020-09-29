@@ -122,7 +122,7 @@
           align-h="center"
           align-v="center">
             <b-col cols="9">
-              <b-col class="item-title">{{rep.name}}</b-col>
+              <b-col class="item-title" @click="displayRep(rep.id)">{{rep.name}}</b-col>
               <b-col class="item-content"><b-icon icon="person-fill" style="margin-right:10px;font-size:12px"></b-icon>{{rep.author}}</b-col>
               <b-col class="item-content"><b-icon icon="calendar3" style="margin-right:10px;font-size:12px"></b-icon>{{rep.dateEdited.toDate().toLocaleString('en-US')}}</b-col>
               <b-col class="item-content"><b-icon icon="file-earmark-check" style="margin-right:10px;font-size:12px"></b-icon>{{rep.evaluationName}}</b-col>
