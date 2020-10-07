@@ -4,7 +4,7 @@
       :show="show"
       opacity="0.9"
       @hidden="onHidden">
-      <div :class="isMobile? 'mobile': 'desktop'">
+      <div>
         <b-modal
           id="delete"
           button-size="md"
@@ -22,7 +22,6 @@
       </b-modal>
         <div class="list-container">
           <b-row no-gutters class="functional-container">
-            <h4 class="list-title" v-if="isMobile">Evaluations</h4>
             <b-input-group size="sm" class="list-search">
               <b-form-input type="search" placeholder="Search"></b-form-input>
               <b-input-group-append is-text>
@@ -30,7 +29,7 @@
               </b-input-group-append>
             </b-input-group>
           </b-row>
-          <b-row no-gutters class="list list-header" align-content="center" v-if="!isMobile">
+          <b-row no-gutters class="list list-header" align-content="center">
             <b-col cols="1">Complete</b-col>
             <b-col cols="2">Evaluation Name</b-col>
             <b-col cols="2">Framework</b-col>
@@ -41,9 +40,7 @@
             <b-col cols="1">Action</b-col>
           </b-row>
           <h3 v-if="this.ownEvaluations.length === 0">You may not have started any evaluation yet or the connection to database is lost, try to reload this page!</h3>
-          <!-- layout for desktop -->
           <b-row 
-          :hidden="isMobile"
           no-gutters
           v-for="eva in ownEvaluations" v-bind:key="eva.id"
           class="list list-content" 
@@ -67,15 +64,16 @@
             <b-col cols="2">{{getTime(eva.dateEdited)}}</b-col>
             <b-col cols="1">
               <b-button
+              :model="newRep"
               variant="link"
-              @click="generateReport(eva.id)"
+              @click="generateReport(newRep)"
               class="action_btn"
               style="padding:0"
               size="sm"
               :disabled="eva.isCompleted !== true"
               v-b-tooltip.hover title="Generate Report"><b-avatar
                   style="background:#006eb6;color: white"
-                  icon="clipboard-data" size="1.5rem"></b-avatar></b-button>
+                  icon="clipboard-data" size="2rem"></b-avatar></b-button>
               <b-button
                   class="action_btn"
               variant="link"
@@ -84,55 +82,16 @@
                   v-b-tooltip.hover title="Edit Evaluation">
                 <b-avatar
               variant="success"
-              icon="pencil" size="1.5rem"></b-avatar></b-button>
+              icon="pencil" size="2rem"></b-avatar></b-button>
               <b-button
                   class="action_btn"
               v-b-modal.delete 
               variant="link" 
               style="padding:0"
               @click="setEvaId(eva.id)"
-                  v-b-tooltip.hover title="Delete Evaluation"><b-avatar variant="danger" icon="trash" size="1.5rem"></b-avatar></b-button>
+                  v-b-tooltip.hover title="Delete Evaluation"><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
             </b-col>
           </b-row>
-
-          <!-- layout for mobile -->
-          <b-row 
-          :hidden="!isMobile"
-          no-gutters
-          v-for="eva in ownEvaluations" v-bind:key="eva.id"
-          class="list list-content" 
-          align-content="center" 
-          align-v="center">
-              <b-col cols="9">
-                <b-col class="item-title" @click="displayEva(eva.id)">{{eva.name}}</b-col>
-                <b-col class="item-content"><b-icon icon="person-fill" style="margin-right:10px;font-size:12px"></b-icon>{{eva.author}}</b-col>
-                <b-col class="item-content"><b-icon icon="calendar3" style="margin-right:10px;font-size:12px"></b-icon>{{getTime(eva.dateCreated)}}</b-col>
-                <b-col class="item-content"><b-icon icon="file-earmark-medical" style="margin-right:10px;font-size:12px"></b-icon>{{eva.frameworkName}}</b-col>
-              </b-col>
-              <b-col cols="3" style="text-align:right">
-                <b-dropdown class="action-menu" variant="link" no-caret>
-                  <template v-slot:button-content>
-                    <b-icon icon="three-dots"></b-icon>
-                  </template>
-                  <b-dropdown-item
-                  @click="generateReport(eva.id)"
-                  :disabled="eva.isCompleted !== true">Generate Report</b-dropdown-item>
-                  <b-dropdown-item
-                  :to="'/EditEva/'+eva.id">Edit</b-dropdown-item>
-                  <b-dropdown-item
-                  v-b-modal.delete 
-                  @click="setEvaId(eva.id)"
-                  >Delete</b-dropdown-item>
-                </b-dropdown>
-                <b-form-checkbox
-                    class="action_btn"
-                    v-model="eva.isCompleted"
-                    name="check-button"
-                    switch
-                    @change="changeCompleted(eva)">
-                </b-form-checkbox>
-              </b-col>
-            </b-row>
         </div>
       </div>
   </b-overlay>
@@ -171,7 +130,7 @@ import {deleteDocument, updateDocument} from "@/tools/firebaseTool";
 import {db, evaluationCollection} from "@/tools/firebaseConfig";
 import {reportCollection} from "@/tools/firebaseConfig";
 import * as firebase from "firebase";
-import {getDocument} from "@/tools/firebaseTool"
+//import {getDocument} from "@/tools/firebaseTool"
 
 
 export default {
@@ -182,7 +141,10 @@ export default {
       evaluationInfo: {},
       evaId:"",
       show:"",
-      isMobile:false
+      newRep:{
+        
+        evaluation:null,
+      },
     };
   },
   computed:{
@@ -229,34 +191,55 @@ export default {
     displayEva: function (evaID) {
       this.$router.push("/DisplayEva/" + evaID)
     },
-    async generateReport(evaluationId){
-      const Data = await getDocument("evaluation",evaluationId)
-      this.evaluationInfo = Data
+    async generateReport(inputData){
+     
+      let newSections = [];
+      let newSecData;
+      for (const section of inputData.evaluation['section']) {
+        await db.collection("section").doc(section.id).get().then(function(doc) {
+          if (doc.exists) {
+            newSecData = doc.data()
+          }else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+          }
+        }).catch((error) => {
+              console.log("Error getting documents: ", error);
+            });
+        let newSecRef = await db.collection("section").doc()
+        await newSecRef.set(newSecData)
+        await newSecRef.update({id: newSecRef.id})
+        newSections.push(db.doc('section/' + newSecRef.id))
+      }
+
+     
       let repRef = await reportCollection.doc()
       await repRef.set({
+        id: repRef.id,
         author: this.$store.getters.userProfile.nickname,
         authorUid: this.$store.getters.userProfile.uid,
         dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
         dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
-        evaluationId: this.evaluationInfo.id,
-        evaluationName: this.evaluationInfo.name,
+        evaluationId: inputData.evaluation.id,
+        evaluationName: inputData.evaluation.name,
         isCompleted: false,
-        name: this.evaluationInfo.name,
-        content: this.evaluationInfo.section,
+        name: inputData.evaluation.name,
+        content: newSections,
         recommendation:"",
         recommendationAuthor:this.$store.getters.userProfile.nickname,
       })
-      await this.$router.push("/report_view_online/" + repRef.id)
+      console.log(repRef)
+       await this.$router.push('/report_preview/' + repRef.id)
     },
   },
-  firestore:{
-    evaluationList:evaluationCollection
+  firestore(){
+    return{
+    evaluationList:evaluationCollection,
+    evaluation: db.collection("evaluation")
+    }
   },
   mounted() {
     this.onHidden()
-    if( /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-      this.isMobile = true
-    }
   }
 };
 </script>
