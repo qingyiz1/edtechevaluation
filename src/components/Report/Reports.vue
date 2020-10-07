@@ -89,7 +89,7 @@
             </b-button>
             <b-button
               :disabled="!rep.isCompleted"
-              @click="downloadReport(rep.id, rep.name, rep.author,rep.dateEdited.toDate().toLocaleString('en-US'))"
+              @click="downloadReport(rep.id, rep.name, rep.author,rep.dateEdited.toDate().toLocaleString('en-US'),rep.recommendation)"
               size="sm"
               variant="link"
               style="padding:0"
@@ -323,11 +323,12 @@ export default {
       this.repID = id
     },
 
-    async downloadReport(repId, name, author, editedDate) {
+    async downloadReport(repId, name, author, editedDate,recommendation) {
       this.repInfo = {
         name,
         author,
-        editedDate
+        editedDate,
+        recommendation,
       }
       let report_ref = db.collection('report').doc(repId)
       this.reportRef = await report_ref.get()
