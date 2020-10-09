@@ -59,6 +59,10 @@
         </template>
       </b-table>
     </div>
+    <div class="border p-2">
+          Recommendations:<br>
+          {{repInfo.recommendation}}
+    </div>
     <div class="detailed-report">
       <h3 style="color: #355085;">Detailed Report</h3>
       <b-table

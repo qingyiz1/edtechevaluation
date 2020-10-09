@@ -175,7 +175,7 @@ export default {
         isCompleted: true,
         dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
       });
-      window.alert("Successfully uploaded");
+      window.alert("Successfully saved");
     },
     download(){
       let styles = "table{border-collapse:collapse;border-spacing:0;border:1px solid;}td{border:1px solid;}th{background:#355085;color:#fff;}td{text-align: center;}";
@@ -218,7 +218,8 @@ export default {
     this.repInfo = {
       name: this.reportData.name,
       author: this.reportData.author,
-      editedDate: this.reportData.dateEdited.toDate().toLocaleString('en-US')
+      editedDate: this.reportData.dateEdited.toDate().toLocaleString('en-US'),
+      recommendation: this.reportData.recommendation
     }
     this.sections.forEach((section, Sindex) => {
       this.detailedTableItems.push({
