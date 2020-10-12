@@ -79,7 +79,7 @@ export default {
         adminApp.auth().createUserWithEmailAndPassword(this.userInfo['email'],this.userInfo['password'])
           .then(async (newUser) => {
             this.userInfo.uid  = newUser.user.uid
-            createDocument("userInfo",this.userInfo['email'],this.userInfo)
+            createDocument("userInfo",this.userInfo.uid,this.userInfo)
             window.alert(this.userInfo['email']+" created")
             document.getElementById('form-signup').reset();
           }).catch((_error) => {

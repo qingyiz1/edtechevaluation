@@ -64,8 +64,9 @@
             <b-col cols="2">{{getTime(eva.dateEdited)}}</b-col>
             <b-col cols="1">
               <b-button
-              :to="'/Reports/'" variant="link"
-              @click="generateReport(eva.id)"
+              :model="newRep"
+              variant="link"
+              @click="generateReport(newRep)"
               class="action_btn"
               style="padding:0"
               size="sm"
@@ -129,7 +130,7 @@ import {deleteDocument, updateDocument} from "@/tools/firebaseTool";
 import {db, evaluationCollection} from "@/tools/firebaseConfig";
 import {reportCollection} from "@/tools/firebaseConfig";
 import * as firebase from "firebase";
-import {getDocument} from "@/tools/firebaseTool"
+//import {getDocument} from "@/tools/firebaseTool"
 
 
 export default {
@@ -140,6 +141,10 @@ export default {
       evaluationInfo: {},
       evaId:"",
       show:"",
+      newRep:{
+        
+        evaluation:null,
+      },
     };
   },
   computed:{
@@ -186,28 +191,52 @@ export default {
     displayEva: function (evaID) {
       this.$router.push("/DisplayEva/" + evaID)
     },
-    async generateReport(evaluationId){
-      const Data = await getDocument("evaluation",evaluationId)
-      this.evaluationInfo = Data
+    async generateReport(inputData){
+     
+      let newSections = [];
+      let newSecData;
+      for (const section of inputData.evaluation['section']) {
+        await db.collection("section").doc(section.id).get().then(function(doc) {
+          if (doc.exists) {
+            newSecData = doc.data()
+          }else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+          }
+        }).catch((error) => {
+              console.log("Error getting documents: ", error);
+            });
+        let newSecRef = await db.collection("section").doc()
+        await newSecRef.set(newSecData)
+        await newSecRef.update({id: newSecRef.id})
+        newSections.push(db.doc('section/' + newSecRef.id))
+      }
+
+     
       let repRef = await reportCollection.doc()
       await repRef.set({
+        id: repRef.id,
         author: this.$store.getters.userProfile.nickname,
         authorUid: this.$store.getters.userProfile.uid,
         dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
         dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
-        evaluationId: this.evaluationInfo.id,
-        evaluationName: this.evaluationInfo.name,
+        evaluationId: inputData.evaluation.id,
+        evaluationName: inputData.evaluation.name,
         isCompleted: false,
-        name: this.evaluationInfo.name,
-        content: this.evaluationInfo.section,
+        name: inputData.evaluation.name,
+        content: newSections,
         recommendation:"",
         recommendationAuthor:this.$store.getters.userProfile.nickname,
       })
       console.log(repRef)
+       await this.$router.push('/report_preview/' + repRef.id)
     },
   },
-  firestore:{
-    evaluationList:evaluationCollection
+  firestore(){
+    return{
+    evaluationList:evaluationCollection,
+    evaluation: db.collection("evaluation")
+    }
   },
   mounted() {
     this.onHidden()

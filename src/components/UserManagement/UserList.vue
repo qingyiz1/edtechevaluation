@@ -17,10 +17,10 @@
       <el-table-column label="Operation" align="center" min-width="150px" >
         <template slot-scope="scope">
           <el-tooltip effect="dark" content="Edit" placement="top" :enterable="false">
-            <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.email)"></el-button>
+            <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.uid)"></el-button>
           </el-tooltip>
           <el-tooltip effect="dark" content="Delete" placement="top" :enterable="false">
-            <el-button type="danger" icon="el-icon-delete" @click="Delete(scope.row.email)"></el-button>
+            <el-button type="danger" icon="el-icon-delete" @click="Delete(scope.row)"></el-button>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -124,9 +124,9 @@ export default {
         if(confirmResult !== 'confirm') {
           return this.$message.info('Operation cancelled')
         }else{
-          deleteDocument("userInfo", msg)
+          deleteDocument("userInfo", msg.uid)
           const Url='https://us-central1-ee---echidna---2020.cloudfunctions.net/deleteUserByEmail'
-          const data={userEmail:msg}
+          const data={userEmail:msg.email}
           $.post(Url,data,()=>{
             console.log(data)
           })

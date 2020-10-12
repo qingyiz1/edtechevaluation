@@ -1,55 +1,66 @@
 <template>
-  <body style="margin-top: 20px">
-  <div style="font-size:50px;text-align: center" v-if="userdata === null">Error getting user profile!</div>
-  <form v-if="userdata !== null" class="form-profile">
-    <h1 class="h3 mb-3 font-weight-normal">User Profile</h1>
-    <div class="user-attribute">
-      <h5>Email: </h5>
-      <p>{{userdata['email']}}</p>
-    </div>
-    <div class="user-attribute">
-      <h5>Role: </h5>
-      <!--        <div v-if="editable">-->
-      <!--           <input type="radio" name="role" v-model="userdata['role']" value="Consultant">-->
-      <!--           <label style="padding-left:2px;padding-right:5px"> Consultant</label>-->
-      <!--           <input type="radio" name="role" v-model="userdata['role']" value="Educational Leader">-->
-      <!--           <label style="padding-left:2px;padding-right:5px">Educational Leader</label>-->
-      <!--        </div>-->
-      <p>{{userdata['role']}}</p>
-    </div>
-    <div class="user-attribute">
-      <h5>Nickname: </h5>
-      <p v-if="!editable">{{userdata['nickname']}}</p>
-      <input v-if="editable" type="nickname" v-model="userdata['nickname']" id="nickname" class="form-control" placeholder="Nickname" >
-    </div>
-    <div class="user-attribute">
-      <h5>Employer: </h5>
-      <p v-if="!editable">{{userdata['employer']}}</p>
-      <input v-if="editable" type="employer" v-model="userdata['employer']" id="employer" class="form-control" placeholder="Employer" required>
-    </div>
-    <div class="user-attribute">
-      <h5>Phone Number: </h5>
-      <p v-if="!editable">{{userdata['phoneNumber']}}</p>
-      <label for="inputPhoneNumber" class="sr-only">Phone Number</label>
-      <input v-if="editable" type="tel" v-model="userdata['phoneNumber']" id="inputPhoneNumber" class="form-control" placeholder="Phone Number" required>
-    </div>
+  <div class="profile">
+    <h2 class="profile-title">User Profile</h2>
+    <b-overlay
+        :show="show"
+        spinner-variant="success"
+        spinner-type="grow"
+        spinner-large
+        rounded="sm"
+    >
+    <b-card class="profile-body">
+      <b-row no-gutters>
+        <b-col sm="3" cols="12" style="margin-right:2rem">
+        <b-avatar class="avatar" variant="info" size="9rem"></b-avatar>
+        </b-col>
+        <b-col sm="8" sm-offset="1" cols="12" class="profile-form"> 
+          <b-row>
+            <b-col sm="5" cols="12">
+              <label>Email</label>
+              <b-form-input :disabled="!editable" v-model="userdata['email']" id="email" trim></b-form-input>
+            </b-col>
+            <b-col sm="5" sm-offset="1" cols="12">
+              <label v-if="editable">Password</label>
+              <b-form-input v-if="editable" v-model="userdata['password']" id="password" type="text" trim></b-form-input>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col sm="5" cols="12">
+              <label>Nickname</label>
+              <b-form-input :disabled="!editable" v-model="userdata['nickname']" id="nickname" trim></b-form-input>
+            </b-col>
+            <b-col sm="5" sm-offset="1" cols="12">
+              <label>Role</label>
+              <b-form-input disabled v-model="userdata['role']"></b-form-input>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col sm="5" cols="12">
+              <label>Employer</label>
+              <b-form-input :disabled="!editable" v-model="userdata['employer']" id="employer" trim></b-form-input>
+            </b-col>
+            <b-col sm="5" sm-offset="1" cols="12">
+              <label>Phone Number</label>
+              <b-form-input :disabled="!editable" v-model="userdata['phoneNumber']" id="phoneNum" trim></b-form-input>
+            </b-col>
+          </b-row>
+        </b-col>
+      </b-row>
+      <b-row align-h="end" class="save-btn-group">
+        <b-col sm="4" sm-offset="8">
+          <b-button variant="info" class="btn" v-if="!editable" @click="Edit()">Edit</b-button>
+          <b-button variant="info" class="btn" v-if="editable" @click="updateProfile">Save</b-button>
+          <b-button v-if="editable" variant="outline-info" @click="Cancel" class="btn-cancel">Cancel</b-button>
+        </b-col>
+      </b-row>
+    </b-card>
+    </b-overlay>
 
-    <br>
-    <button class="btn btn-lg btn-primary btn-block" v-if="!editable" @click.prevent="Edit()">Edit</button>
-    <button class="btn btn-lg btn-primary btn-block" v-if="editable" @click.prevent="updateProfile()">Save</button>
-  </form>
-  </body>
-
-
-
-
+  </div>
 </template>
 
 <script>
-import {db} from "@/tools/firebaseConfig"
-//import * as firebase from "firebase/app"
-import "firebase/auth"
-//import * as firebase from "firebase";
+import {db, auth} from "@/tools/firebaseConfig"
 import {updateDocument} from "@/tools/firebaseTool"
 import $ from "jquery";
 
@@ -57,6 +68,14 @@ import $ from "jquery";
 
 export default {
   name:"Profile",
+  data(){
+    return {
+      userdata:'',
+      editable:false,
+      profileStore:"",
+      show:false,
+    }
+  },
   mounted(){
     $(function() {
       $("input[type='tel']").on('input', function() {
@@ -64,24 +83,57 @@ export default {
       });
     });
   },
+  computed: {
+    isEdit () {
+      if (this.editable) {
+        return "Save"
+      } else {
+        return "Edit"
+      }
+    }
+  },
+
   methods: {
     Edit(){
       this.editable = true
+      this.profileStore = JSON.parse(JSON.stringify(this.userdata));
+      // if (this.editable) {
+      //   this.updateProfile()
+      // }
     },
-    updateProfile(){
+    Cancel:  function () {
       this.editable = false
-      updateDocument("userInfo",this.$route.params.nickname,this.userdata)
+      this.userdata = JSON.parse(JSON.stringify(this.profileStore));
     },
-  },
-  data(){
-    return {
-      userdata:'',
-      editable:false,
-    }
+    async updateProfile(){
+      this.show = true
+      this.editable = false
+      let user = auth.currentUser;
+      if(this.$store.getters.userProfile.email !== this.userdata.email){
+        await auth.signInWithEmailAndPassword(this.$store.getters.userProfile.email, this.$store.getters.userProfile.password)
+        await user.updateEmail(this.userdata.email).catch((err)=>{window.alert(err)})
+      }
+      if(this.$store.getters.userProfile.password !== this.userdata.password){
+        await auth.signInWithEmailAndPassword(this.userdata.email,this.$store.getters.userProfile.password)
+        await user.updatePassword(this.userdata.password).catch((err)=>{window.alert(err)})
+      }
+      await updateDocument("userInfo",user.uid,this.userdata)
+      await this.$store.dispatch("fetchUserProfile",user)
+      await this.$bvModal.msgBoxOk('Profile updated successfully', {
+        title: 'Success',
+        size: 'sm',
+        buttonSize: 'sm',
+        okVariant: 'success',
+        headerClass: 'p-2 border-bottom-0',
+        footerClass: 'p-2 border-top-0',
+        centered: true
+      })
+      this.show = false
+    },
   },
   firestore(){
     return{
-      userdata: db.collection("userInfo").doc(this.$route.params.nickname)
+      userdata: db.collection("userInfo").doc(this.$route.params.uid)
     }
   },
 
@@ -93,7 +145,7 @@ export default {
 
 <style scoped>
 @import "../../css/general.css";
-.form-profile {
+/* .form-profile {
   background-color: #f5f5f5;
   width: 100%;
   max-width: 330px;
@@ -113,6 +165,40 @@ h5, p {
 }
 .user-attribute{
   margin-bottom: 5px;
+} */ 
+.profile {
+    margin: 1.5rem 2rem;
+}
+.profile .profile-title {
+  text-align: left;
+  color: #6A757E;
+  margin-bottom: 1.5rem;
 }
 
+.profile .profile-body {
+  width: 100%;
+  background: transparent;
+  border-radius: 1rem;
+}
+
+.profile .profile-form {
+  text-align: left;
+  /* margin-left: 2rem; */
+}
+.profile-form .row {
+  margin-bottom: 1.5rem;
+}
+label {
+  color:  #6C757D;
+  margin-bottom: 0.25rem;
+  font-size: .875rem;
+}
+
+.save-btn-group .btn {
+  border-radius: .5rem;;
+}
+.save-btn-group .btn-cancel {
+  margin-left: 1rem;
+  border: 2px solid #17a2b8
+}
 </style>

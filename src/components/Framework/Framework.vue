@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="isMobile? 'mobile': 'desktop'">
     <el-dialog :visible.sync="windowVisible" title="Enter Evaluation Name" width="360px">
       <el-form ref="form" :model="newEva" >
         <el-form-item>
@@ -29,15 +29,17 @@
     @hidden="onHidden">
     <div class="list-container">
       <b-row no-gutters class="functional-container">
+        <h4 class="list-title"  v-if="isMobile">Frameworks</h4>
         <b-input-group size="sm" class="list-search">
           <b-form-input type="search" placeholder="Search"></b-form-input>
           <b-input-group-append is-text>
             <b-icon icon="search"></b-icon>
           </b-input-group-append>
         </b-input-group>
-        <b-button @click="createNewFramework" class="list-create-btn">New</b-button>
+        <b-button @click="createNewFramework" class="list-create-btn" :hidden="isMobile">New</b-button>
       </b-row>
       <b-row 
+      v-if="!isMobile"
       no-gutters
       class="list list-header" 
       align-content="center">
@@ -51,7 +53,9 @@
         <b-col cols="2">Action</b-col>
       </b-row>
       <h3 v-if="this.visibleFramework.length === 0">No active framework present or the connection to database is lost, try to reload this page!</h3>
+      <!-- layout for desktop -->
       <b-row 
+      :hidden="isMobile"
       v-for="(framework,index) in visibleFramework" :key=framework.id
       no-gutters
       class="list list-content" 
@@ -75,7 +79,7 @@
               size="2.5rem"
           ></b-icon>
         </b-col>
-        <b-col cols="2">{{framework.name}}</b-col>
+        <b-col cols="2" @click="onPreview(framework)" class="list-content-display">{{framework.name}}</b-col>
         <b-col cols="1">{{framework.author}}</b-col>
         <b-col cols="2">{{framework.dateCreated.toDate().toLocaleString('en-US')}}</b-col>
         <b-col cols="1">{{framework.author}}</b-col>
@@ -112,6 +116,49 @@
           >Start Evaluation</b-button>
         </b-col>
       </b-row>
+      <!-- layout for mobile -->
+      <b-row 
+      :hidden="!isMobile"
+      v-for="(framework,index) in visibleFramework" :key=framework.id
+      no-gutters
+      class="list list-content" 
+      align-content="center" 
+      align-h="center"
+      align-v="center">
+        <b-col cols="9">
+          <b-col class="item-title" @click="onPreview(framework)">{{framework.name}}</b-col>
+          <b-col class="item-content"><b-icon icon="person-fill" style="margin-right:10px;font-size:12px"></b-icon>{{framework.author}}</b-col>
+          <b-col class="item-content"><b-icon icon="calendar3" style="margin-right:10px;font-size:12px"></b-icon>{{framework.dateCreated.toDate().toLocaleString('en-US')}}</b-col>
+          <b-col class="item-content"><b-icon icon="info-circle" style="margin-right:10px;font-size:12px"></b-icon>{{framework.version}}</b-col>
+        </b-col>
+        <b-col cols="3" style="text-align:right">
+          <b-dropdown class="action-menu" variant="link" no-caret>
+            <template v-slot:button-content>
+              <b-icon icon="three-dots"></b-icon>
+            </template>
+            <b-dropdown-item
+            :disabled="!framework.isActive"
+            v-if="$store.getters.userProfile['role']==='Senior Consultant'"
+            @click="openEvaWindow(framework)">Start Evaluation</b-dropdown-item>
+            <b-dropdown-item
+            :disabled="!framework.isActive"
+            v-if="$store.getters.userProfile['role']!=='Senior Consultant'"
+            @click="openEvaWindow(framework)">Start Evaluation</b-dropdown-item>
+            <b-dropdown-item
+            v-if="$store.getters.userProfile['role']==='Senior Consultant'"
+            @click="deleteFramework(framework,index)"
+            >Delete</b-dropdown-item>
+          </b-dropdown>
+          <b-form-checkbox
+              class="action_btn"
+              v-if="$store.getters.userProfile['role'] ==='Senior Consultant'"
+              v-model="framework.isActive"
+              name="check-button"
+              switch
+              @change="onActive(framework)">
+          </b-form-checkbox>
+        </b-col>
+      </b-row>
     </div>
     </b-overlay>
 
@@ -124,12 +171,8 @@
         <b-overlay
         :show="showPreview"
         opacity="0.9">
-          <b-card no-body>
-            <b-tabs card lazy pills vertical>
-              <b-tab v-for="section in frameworkPreview.section" :key="section.id" :title="section.name" active @click="onPreviewTabChanged">
-                <b-card-text v-for="question in section.question" :key="question.id">{{question.questionName}}</b-card-text>
-              </b-tab>
-            </b-tabs>
+          <b-card no-body style="border:none">
+            <framework-preview :framework="frameworkPreview"></framework-preview>
           </b-card>
         </b-overlay>
     </b-modal>
@@ -140,6 +183,7 @@
 import {db, evaluationCollection, frameworkCollection} from "@/tools/firebaseConfig"
 import {updateDocument, deleteDocument, getDocument } from "@/tools/firebaseTool"
 import * as firebase from "firebase";
+import FrameworkPreview from "@/components/Framework/FrameworkPreview";
 
 export default {
   name: "Framework",
@@ -160,6 +204,7 @@ export default {
       dismissCountDown: 0,
       showPreview:false,
       frameworkPreview:{},
+      isMobile:false
     }
   },
   computed:{
@@ -172,6 +217,9 @@ export default {
         return visibleFrameworks
       }
     }
+  },
+    components:{
+    FrameworkPreview
   },
   firestore(){
     return{
@@ -288,6 +336,7 @@ export default {
     },
     onPreview: async function (framework) {
       //console.log(framework)
+      this.$bvModal.show("preview")
       let sections = [];
       this.showPreview = true;
       this.frameworkPreview = await getDocument("framework",framework.id);
@@ -304,6 +353,9 @@ export default {
   created: async function () {
     this.show = true;
     this.onHidden();
+    if( /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+      this.isMobile = true
+    }
   },
 }
 </script>

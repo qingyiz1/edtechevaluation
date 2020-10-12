@@ -1,20 +1,23 @@
 <template>
-  <b-container class="text-left mt-4">
+
+
+  <section class="text-left mt-4">
+    <div class="export" id="export">
     <b-row
       align-h="center"
       v-if="reportData"
     >
-      <b-col cols="9">
-        <b-row class="border-bottom border-top">
-          <b-col cols="3">
+      <b-col lg="9" col="12">
+        <b-row class="border-bottom border-top" id="row">
+          <b-col cols="3" id="col3">
             <b-img
               :src="logo"
               fluid
               alt="Edtech Logo"
             ></b-img>
           </b-col>
-          <b-col cols="9">
-            <h2 class="mt-4">EdTech Product Evaluation Report</h2>
+          <b-col cols="9" id="col9">
+            <h2 class="title mt-4 bt">EdTech Product Evaluation Report</h2>
             <h2>[product name]</h2>
             <p>
               Completed by {{reportData.author}}
@@ -84,14 +87,41 @@
         </b-table>
       </b-col>
     </b-row>
-  </b-container>
+ 
+</div>
+    <div>
+            <div class="text-center">
+              <b-button-group>
+                <b-button variant="info" @click="download()">Download</b-button>
+                <b-button variant="dark" to="/Reports">Back</b-button>
+              </b-button-group>
+            </div>
+          </div>
+      <word-report
+        :repInfo="repInfo"
+        :logo="logo"
+        :summaryTableFields="summaryTableFields"
+        :summaryTableItems="summaryTableItems"
+        :detailedTableItems="detailedTableItems"
+        :detailedTableFields="detailedTableFields"
+      >
+      </word-report>
+  </section>
+  
+
 </template>
+
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.js"></script>
 
 <script>
 import logo from "@/assets/Logo.png";
 import { updateDocument } from "@/tools/firebaseTool";
 import * as firebase from "firebase";
 import { db } from "@/tools/firebaseConfig";
+import $ from 'jquery';
+//import saveAs from 'file-saver'
+import wordExport from '@/tools/jquery.wordexport';
+import wordReport from './wordReport'
 const selectedConvertToText = [
   "NotApplicable",
   "BelowBasic",
@@ -102,8 +132,12 @@ const selectedConvertToText = [
 
 export default {
   name: "report_preview_online",
+  components: {
+    wordReport
+  },
   data() {
     return {
+      repInfo: {},
       logo: logo,
       reportRef: {},
       reportData: {},
@@ -141,7 +175,11 @@ export default {
         isCompleted: true,
         dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
       });
-      window.alert("Successfully uploaded");
+      window.alert("Successfully saved");
+    },
+    download(){
+      let styles = "table{border-collapse:collapse;border-spacing:0;border:1px solid;}td{border:1px solid;}th{background:#355085;color:#fff;}td{text-align: center;}";
+      wordExport($(".word-report"), "report", styles,this.$route.params.reportId);
     },
     getTime: function (rawDate) {
       if (rawDate) {
@@ -150,6 +188,7 @@ export default {
       }
     },
   },
+
   created: async function () {
     let report_ref = db.collection("report").doc(this.$route.params.reportId);
     this.reportRef = await report_ref.get();
@@ -176,8 +215,12 @@ export default {
         this.summaryTableItems.push(tableRow);
       });
     });
-    console.log(this.reportData);
-    console.log(this.sections);
+    this.repInfo = {
+      name: this.reportData.name,
+      author: this.reportData.author,
+      editedDate: this.reportData.dateEdited.toDate().toLocaleString('en-US'),
+      recommendation: this.reportData.recommendation
+    }
     this.sections.forEach((section, Sindex) => {
       this.detailedTableItems.push({
         DetailedReport: Sindex+1+". "+section.name,
@@ -213,6 +256,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 * {
