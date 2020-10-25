@@ -18,7 +18,7 @@
           </b-col>
           <b-col cols="9" id="col9">
             <h2 class="title mt-4 bt">EdTech Product Evaluation Report</h2>
-            <h2>[product name]</h2>
+            <h2>{{reportData.name}}</h2>
             <p>
               Completed by {{reportData.author}}
               <br />

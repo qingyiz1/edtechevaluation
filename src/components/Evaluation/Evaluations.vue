@@ -226,6 +226,7 @@ export default {
         dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
         evaluationId: inputData.id,
         evaluationName: inputData.name,
+        name: inputData.name,
         isCompleted: false,
         content: newSections,
         recommendation:"",
