@@ -15,7 +15,7 @@
       <b-form-select id="roleselect" v-model="userInfo['role']" :options="options" required></b-form-select>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Create User</button>
       <p style="margin-top:5px;margin-bottom:0px;font-weight:bold;text-align: center;font-size: 20px">Or</p>
-      <button id='sendInviteBtn' class="btn btn-lg btn-primary btn-block" @click.prevent="openSendWindow()">Send Invitation Code</button>
+      <button class="btn btn-lg btn-primary btn-block" @click.prevent="openSendWindow()">Send Invitation Code</button>
     </form>
 
     <el-dialog title="Send Invitation Code" :visible.sync="sendWindowVisible" width="360px">
@@ -26,7 +26,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="sendWindowVisible = false">Cancel</el-button>
-        <el-button id='confirmBtn' type="primary" @click="sendEmail">Confirm</el-button>
+        <el-button type="primary" @click="sendEmail">Confirm</el-button>
       </span>
     </el-dialog>
   </div>

@@ -23,9 +23,9 @@
         <div class="list-container">
           <b-row no-gutters class="functional-container">
             <b-input-group size="sm" class="list-search">
-              <b-form-input type="search" placeholder="Search"></b-form-input>
+              <b-form-input type="text" v-model = "searchText" @keyup.enter="searchEva" placeholder="Search by name"></b-form-input>
               <b-input-group-append is-text>
-                <b-icon icon="search"></b-icon>
+                <b-icon icon="search" @click = 'search'></b-icon>
               </b-input-group-append>
             </b-input-group>
           </b-row>
@@ -144,9 +144,18 @@ export default {
   computed:{
     ownEvaluations(){
       if(this.$store.getters.userProfile.role === "Senior Consultant"){
-        return this.evaluationList;
+        if (this.searchText) {
+          return this.evaluationList.filter(eva=> eva.name.toLowerCase().match(this.searchText.toLowerCase()));
+        }else{
+          return this.evaluationList;
+        }
       }else{
-        return this.evaluationList.filter(eva=> eva.authorUid === this.$store.getters.userProfile.uid)
+        if (this.searchText) {         
+          return this.evaluationList.filter(eva=> eva.authorUid === this.$store.getters.userProfile.uid).filter(eva=> eva.name.toLowerCase().match(this.searchText));
+        }else{
+          return this.evaluationList.filter(eva=> eva.authorUid === this.$store.getters.userProfile.uid);
+        }
+        
       }
     }
   },
@@ -222,6 +231,10 @@ export default {
       })
       console.log(repRef)
        await this.$router.push('/viewReport/' + repRef.id)
+    },
+    search: async function() {
+    },
+    searchEva: function() {
     },
   },
   firestore(){

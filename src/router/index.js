@@ -13,8 +13,8 @@ import Framework_Template from "@/components/Framework/FrameworkTemplate";
 import Userlist from "@/components/UserManagement/UserList";
 import CreateUser from "@/components/UserManagement/CreateUser";
 import Dashboard from "@/components/User/Dashboard";
-import ViewReport from "@/components/Report/ViewReport";
-import EditReport from "@/components/Report/EditReport";
+import Report_preview from "@/components/Report/report_preview";
+import Report_view_online from "@/components/Report/report_view_online";
 Vue.use(VueRouter)
 
 const routes = [
@@ -95,15 +95,15 @@ const routes = [
         meta:{requiresAuth: true}
     },
     {
-        path:'/editReport/:reportId',
-        name:'editReport',
-        component: EditReport,
+        path:'/report_preview/:reportId',
+        name:'report_preview',
+        component: Report_preview,
         meta:{requiresAuth: true}
     },
     {
-        path:'/viewReport/:reportId',
-        name:'ViewReport',
-        component: ViewReport,
+        path:'/report_view_online/:reportId',
+        name:'report_view_online',
+        component: Report_view_online,
         meta:{requiresAuth: true}
     },
 ]

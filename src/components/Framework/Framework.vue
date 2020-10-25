@@ -8,7 +8,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="windowVisible = false">Cancel</el-button>
-        <el-button id='confirmNewEvaBtn' type="primary" @click="startEvaluation(newEva)">Confirm</el-button>
+        <el-button type="primary" @click="startEvaluation(newEva)">Confirm</el-button>
       </span>
     </el-dialog>
 
@@ -55,7 +55,6 @@
       <h3 v-if="this.visibleFramework.length === 0">No active framework present or the connection to database is lost, try to reload this page!</h3>
       <!-- layout for desktop -->
       <b-row 
-      id='desktopLayout'
       :hidden="isMobile"
       v-for="(framework,index) in visibleFramework" v-bind:key='framework.id'
       no-gutters
@@ -88,7 +87,6 @@
         <b-col cols="1">{{framework.version}}</b-col>
         <b-col cols="2">
           <b-button
-              id='newEvaBtnSnr'
               class="action_btn"
               v-if="$store.getters.userProfile['role']==='Senior Consultant'"
               :disabled="!framework.isActive"
@@ -111,17 +109,15 @@
             @click="deleteFramework(framework,index)"
             v-b-tooltip.hover title="Delete Framework"><b-avatar variant="danger" icon="trash" size="2rem"></b-avatar></b-button>
           <b-button
-            id='newEvaBtn'
-            v-if="$store.getters.userProfile['role']!=='Senior Consultant'"
+              v-if="$store.getters.userProfile['role']!=='Senior Consultant'"
             variant="primary"
             class="list-inline-btn-lg action_btn"
-            @click="openEvaWindow(framework)"
+              @click="openEvaWindow(framework)"
           >Start Evaluation</b-button>
         </b-col>
       </b-row>
       <!-- layout for mobile -->
       <b-row 
-      id='mobileLayout'
       :hidden="!isMobile"
       v-for="(framework,index) in visibleFramework" v-bind:key='framework.id + "_mobile"'
       no-gutters

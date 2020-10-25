@@ -35,9 +35,9 @@
     <!-- Control buttons-->
     <div class="text-center" style="margin-bottom: 2rem">
       <b-button-group class="mt-2">
-        <b-button id="previousBtn" variant="info" @click="previousPage">Previous</b-button>
-        <b-button id="nextBtn" variant="info" @click="nextPage">Next</b-button>
-        <b-button id="backBtn" variant="dark" to="/evaluation" >Back</b-button>
+        <b-button variant="info" @click="previousPage">Previous</b-button>
+        <b-button variant="info" @click="nextPage">Next</b-button>
+        <b-button variant="dark" to="/evaluation" >Back</b-button>
       </b-button-group>
     </div>
 
