@@ -240,10 +240,6 @@ export default {
       console.log(repRef)
        await this.$router.push('/report_preview/' + repRef.id)
     },
-    search: async function() {
-    },
-    searchEva: function() {
-    },
   },
   firestore(){
     return{
