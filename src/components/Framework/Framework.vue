@@ -31,9 +31,9 @@
       <b-row no-gutters class="functional-container">
         <h4 class="list-title"  v-if="isMobile">Frameworks</h4>
         <b-input-group size="sm" class="list-search">
-          <b-form-input type="search" placeholder="Search"></b-form-input>
+          <b-form-input type="text" v-model = "searchText" placeholder="Search by name" @keyup.enter="searchFramework"></b-form-input>
           <b-input-group-append is-text>
-            <b-icon icon="search"></b-icon>
+            <b-icon icon="search" @click="search"></b-icon>
           </b-input-group-append>
         </b-input-group>
         <b-button @click="createNewFramework" class="list-create-btn" :hidden="isMobile">New</b-button>
@@ -57,7 +57,7 @@
       <b-row 
       id='desktopLayout'
       :hidden="isMobile"
-      v-for="(framework,index) in visibleFramework" :key=framework.id
+      v-for="(framework,index) in visibleFramework" v-bind:key='framework.id'
       no-gutters
       class="list list-content" 
       align-content="center" 
@@ -123,7 +123,7 @@
       <b-row 
       id='mobileLayout'
       :hidden="!isMobile"
-      v-for="(framework,index) in visibleFramework" :key=framework.id
+      v-for="(framework,index) in visibleFramework" v-bind:key='framework.id + "_mobile"'
       no-gutters
       class="list list-content" 
       align-content="center" 
@@ -208,17 +208,26 @@ export default {
       dismissCountDown: 0,
       showPreview:false,
       frameworkPreview:{},
-      isMobile:false
+      isMobile:false,
+      searchText:"",
     }
   },
   computed:{
     visibleFramework() {
       if(this.$store.getters.userProfile.role === "Senior Consultant"){
-        return this.frameworks;
+        if (this.searchText) {
+          return this.frameworks.filter(frm => frm.name.toLowerCase().match(this.searchText.toLowerCase()));
+        }else{
+          return this.frameworks;
+        }
       }else{
         let visibleFrameworks = this.frameworks.filter(frameworks=> frameworks.isActive === true)
         console.log(visibleFrameworks)
-        return visibleFrameworks
+        if (this.searchText) {
+          return this.visibleFrameworks.filter(frm => frm.name.toLowerCase().match(this.searchText.toLowerCase()));
+        }else{
+          return this.visibleFrameworks;
+        }
       }
     }
   },
@@ -352,6 +361,10 @@ export default {
           this.showPreview = false;
         })
         }
+    },
+    search: function() {
+    },
+    searchFramework: function() {
     },
   },
   created: async function () {
