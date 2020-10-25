@@ -63,11 +63,11 @@
       <!-- Control buttons-->
     <div class="text-center" style="margin-bottom: 2rem">
       <b-button-group class="mt-2">
-        <b-button variant="success" @click="saveEvaluation">Save</b-button>
-        <b-button variant="warning" @click="completeEvaluation" >Complete</b-button>
-        <b-button variant="info" @click="previousPage">Previous</b-button>
-        <b-button variant="info" @click="nextPage">Next</b-button>
-        <b-button variant="dark" to="/evaluation" >Back</b-button>
+        <b-button id="saveBtn" variant="success" @click="saveEvaluation">Save</b-button>
+        <b-button id="completeBtn" variant="warning" @click="completeEvaluation" >Complete</b-button>
+        <b-button id="previousBtn" variant="info" @click="previousPage">Previous</b-button>
+        <b-button id="nextBtn" variant="info" @click="nextPage">Next</b-button>
+        <b-button id="backBtn" variant="dark" to="/evaluation" >Back</b-button>
       </b-button-group>
     </div>
 
@@ -95,7 +95,6 @@ export default {
       tabIndex: 1,
       sections: [],
       summary:"",
-      report: "",
       countdown:1,
       show:true,
       dismissSecs:2.5,

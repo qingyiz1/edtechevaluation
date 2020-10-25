@@ -43,7 +43,6 @@
           <li>2. A DETAILED REPORT that shows the descriptor and review comments per rating</li>
         </ul>
 
-        </p>
         <h5>Summary Report</h5>
         <b-table
           hover

@@ -64,9 +64,8 @@
             <b-col cols="2">{{getTime(eva.dateEdited)}}</b-col>
             <b-col cols="1">
               <b-button
-              :model="newRep"
               variant="link"
-              @click="generateReport(newRep)"
+              @click="generateReport(eva)"
               class="action_btn"
               style="padding:0"
               size="sm"
@@ -138,13 +137,8 @@ export default {
   data() {
     return {
       evaluationList: [],
-      evaluationInfo: {},
       evaId:"",
       show:"",
-      newRep:{
-        
-        evaluation:null,
-      },
     };
   },
   computed:{
@@ -192,10 +186,9 @@ export default {
       this.$router.push("/DisplayEva/" + evaID)
     },
     async generateReport(inputData){
-     
       let newSections = [];
       let newSecData;
-      for (const section of inputData.evaluation['section']) {
+      for (const section of inputData['section']) {
         await db.collection("section").doc(section.id).get().then(function(doc) {
           if (doc.exists) {
             newSecData = doc.data()
@@ -220,16 +213,15 @@ export default {
         authorUid: this.$store.getters.userProfile.uid,
         dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
         dateEdited: firebase.firestore.Timestamp.fromDate(new Date()),
-        evaluationId: inputData.evaluation.id,
-        evaluationName: inputData.evaluation.name,
+        evaluationId: inputData.id,
+        evaluationName: inputData.name,
         isCompleted: false,
-        name: inputData.evaluation.name,
         content: newSections,
         recommendation:"",
         recommendationAuthor:this.$store.getters.userProfile.nickname,
       })
       console.log(repRef)
-       await this.$router.push('/report_preview/' + repRef.id)
+       await this.$router.push('/viewReport/' + repRef.id)
     },
   },
   firestore(){
