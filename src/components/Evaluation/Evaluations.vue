@@ -138,7 +138,6 @@ export default {
   data() {
     return {
       evaluationList: [],
-      evaluationInfo: {},
       evaId:"",
       show:"",
       newRep:{
