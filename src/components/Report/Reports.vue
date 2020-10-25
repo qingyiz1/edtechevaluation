@@ -309,10 +309,10 @@ export default {
       updateDocument('report', rep.id, { isCompleted: rep.isCompleted })
     },
     displayRep: function(repID) {
-      this.$router.push('/report_view_online/' + repID)
+      this.$router.push('/viewReport/' + repID)
     },
     editRep: function(repID) {
-      this.$router.push('/report_preview/' + repID)
+      this.$router.push('/editReport/' + repID)
     },
     onHidden() {
       setTimeout(() => {

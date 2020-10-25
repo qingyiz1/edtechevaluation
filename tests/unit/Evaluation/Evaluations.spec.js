@@ -8,7 +8,8 @@ const localVue = createLocalVue()
 // install plugins as normal
 localVue.use(BootstrapVue)
 const $route = {
-  path: '/evaluation' ,
+  path: '/evaluation',
+
 }
 
 describe('Evaluations.vue', () => {
@@ -16,6 +17,11 @@ describe('Evaluations.vue', () => {
   beforeEach(()=>{
     wrapper = mount(Evaluations,{
       localVue,
+      computed:{
+        ownEvaluations(){
+          return []
+        }
+      },
       mocks: {
         // adds mocked `$route` object to the Vue instance
         // before mounting component
@@ -35,4 +41,7 @@ describe('Evaluations.vue', () => {
     expect(wrapper.find('.b-overlay').exists()).toBe(false)
   })
 
+  it("show warning message when list empty",async ()=>{
+    expect(wrapper.find("h3").text()).toMatch("You may not have started any evaluation yet or the connection to database is lost, try to reload this page!")
+  })
 })

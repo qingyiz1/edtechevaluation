@@ -95,7 +95,6 @@ export default {
       tabIndex: 1,
       sections: [],
       summary:"",
-      report: "",
       countdown:1,
       show:true,
       dismissSecs:2.5,
