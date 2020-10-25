@@ -22,9 +22,9 @@
         <b-row no-gutters class="functional-container">
           <h4 class="list-title" v-if="isMobile">Reports</h4>
           <b-input-group size="sm" class="list-search">
-            <b-form-input type="search" placeholder="Search"></b-form-input>
+            <b-form-input type="text" v-model="searchText" placeholder="Search" @keyup.enter="searchRep"></b-form-input>
             <b-input-group-append is-text>
-              <b-icon icon="search"></b-icon>
+              <b-icon icon="search" @click="search"></b-icon>
             </b-input-group-append>
           </b-input-group>
         </b-row>
@@ -130,7 +130,7 @@
           :hidden="!isMobile"
           no-gutters
           v-for="rep in ownReports"
-          v-bind:key="rep.id"
+          v-bind:key="rep.id + '_mobile'"
           class="list list-content"
           align-content="center"
           align-h="center"
@@ -275,6 +275,7 @@ export default {
       repID: '',
       show: '',
       isMobile: false,
+      searchText:"",
     }
   },
   async created() {},
@@ -287,11 +288,22 @@ export default {
   computed: {
     ownReports() {
       if (this.$store.getters.userProfile.role === 'Senior Consultant') {
-        return this.reportList
+        if (this.searchText){
+          return this.reportList.filter(rep => rep.name.toLowerCase().match(this.searchText.toLowerCase()))
+        }else{
+          return this.reportList
+        }
       } else {
-        return this.reportList.filter(
-          report => report.authorUid === this.$store.getters.userProfile.uid,
-        )
+        if (this.searchText){
+          return this.reportList.filter(
+            report => report.authorUid === this.$store.getters.userProfile.uid,
+            report => report.name.toLowerCase.match(this.searchText.toLowerCase())
+          )
+        }else{
+          return this.reportList.filter(
+            report => report.authorUid === this.$store.getters.userProfile.uid,
+          )
+        }
       }
     },
   },
@@ -309,10 +321,10 @@ export default {
       updateDocument('report', rep.id, { isCompleted: rep.isCompleted })
     },
     displayRep: function(repID) {
-      this.$router.push('/report_view_online/' + repID)
+      this.$router.push('/viewReport/' + repID)
     },
     editRep: function(repID) {
-      this.$router.push('/report_preview/' + repID)
+      this.$router.push('/editReport/' + repID)
     },
     onHidden() {
       setTimeout(() => {
@@ -426,6 +438,12 @@ export default {
         global.repInfoSend = {}
         global.Id = ''
       })
+    },
+    search:function() {
+
+    },
+    searchRep:function() {
+
     },
   },
   firestore: {

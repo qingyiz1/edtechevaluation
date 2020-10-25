@@ -7,7 +7,7 @@
 
 
 <script>
-import topHeader from './components/Top-Header'
+import topHeader from './Top-Header'
 import * as firebase from "firebase";
 
 export default {

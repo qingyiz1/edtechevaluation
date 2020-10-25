@@ -17,10 +17,10 @@
       <el-table-column label="Operation" align="center" min-width="150px" >
         <template slot-scope="scope">
           <el-tooltip effect="dark" content="Edit" placement="top" :enterable="false">
-            <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.uid)"></el-button>
+            <el-button id="showEditBtn" type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.uid)"></el-button>
           </el-tooltip>
           <el-tooltip effect="dark" content="Delete" placement="top" :enterable="false">
-            <el-button type="danger" icon="el-icon-delete" @click="Delete(scope.row)"></el-button>
+            <el-button id="deleteCfmBtn" type="danger" icon="el-icon-delete" @click="Delete(scope.row)"></el-button>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -53,7 +53,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">cancel</el-button>
-        <el-button type="primary" @click="updateProfile(editForm.email)">Confirm</el-button>
+        <el-button id='confirmUpdateBtn' type="primary" @click="updateProfile(editForm.email)">Confirm</el-button>
         </span>
     </el-dialog>
 

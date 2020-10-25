@@ -1,5 +1,5 @@
 import {mount, createLocalVue} from '@vue/test-utils'
-import DisplayEva from '@/components/Evaluation/DisplayEva'
+import EditEva from '@/components/Evaluation/EditEva'
 import {BootstrapVue} from "bootstrap-vue";
 
 // create an extended `Vue` constructor
@@ -8,14 +8,14 @@ const localVue = createLocalVue()
 // install plugins as normal
 localVue.use(BootstrapVue)
 const $route = {
-  path: '/DisplayEva/',
-  params: { evaId: 'Rrb0nLzUMH6qR9ukmbr6' },
+  path: '/EditEva/',
+  params: { evaId: 'E2fFB2ojLrt6g8rAoSxH' },
 }
 
-describe('DisplayEva.vue', () => {
+describe('EditEva.vue', () => {
   let wrapper;
   beforeEach(()=>{
-    wrapper = mount(DisplayEva,{
+    wrapper = mount(EditEva,{
       localVue,
       mocks: {
         // adds mocked `$route` object to the Vue instance
@@ -45,9 +45,9 @@ describe('DisplayEva.vue', () => {
     expect(wrapper.find('.b-overlay').exists()).toBe(false)
   })
 
-  it("Show Summary content correctly",async ()=>{
+  it("Show Summary tab correctly",async ()=>{
     await wrapper.setData({countdown: 0,sections:[]})
-    expect(wrapper.find("p").text()).toMatch("testing summary")
+    expect(wrapper.find("textarea").exists()).toBe(true)
   })
 
   it("Show sections and questions correctly", async()=>{
