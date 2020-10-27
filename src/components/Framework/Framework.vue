@@ -224,9 +224,9 @@ export default {
         let visibleFrameworks = this.frameworks.filter(frameworks=> frameworks.isActive === true)
         console.log(visibleFrameworks)
         if (this.searchText) {
-          return this.visibleFrameworks.filter(frm => frm.name.toLowerCase().match(this.searchText.toLowerCase()));
+          return visibleFrameworks.filter(frm => frm.name.toLowerCase().match(this.searchText.toLowerCase()));
         }else{
-          return this.visibleFrameworks;
+          return visibleFrameworks;
         }
       }
     }
