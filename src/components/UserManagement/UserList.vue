@@ -26,13 +26,16 @@
       </el-table-column>
     </el-table>
 
-     <b-btn variant="primary" to="/createuser" >Create user</b-btn>
+     <b-btn variant="primary" to="/createuser" style="margin-top:10px">Create user</b-btn>
 
 
     <el-dialog title="Edit information" :visible.sync="editDialogVisible" width="360px">
       <el-form ref="form" :model="editForm" label-width="75px">
         <el-form-item label="Email">
           <el-input v-model="editForm.email" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="Password">
+          <el-input v-model="editForm.password"></el-input>
         </el-form-item>
         <el-form-item label="Nickname">
           <el-input v-model="editForm.nickname"></el-input>
@@ -133,7 +136,7 @@ export default {
         }
     },
     isActiveChange(msg){
-      updateDocument("userInfo", msg.email, {"isActive": msg.isActive})
+      updateDocument("userInfo", msg.uid, {"isActive": msg.isActive})
     },
     updateProfile(id){
       updateDocument("userInfo",id,this.editForm)
