@@ -53,7 +53,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">cancel</el-button>
-        <el-button id='confirmUpdateBtn' type="primary" @click="updateProfile(editForm.email)">Confirm</el-button>
+        <el-button id='confirmUpdateBtn' type="primary" @click="updateProfile(editForm.uid)">Confirm</el-button>
         </span>
     </el-dialog>
 
