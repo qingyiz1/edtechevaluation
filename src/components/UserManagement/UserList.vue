@@ -35,7 +35,7 @@
           <el-input v-model="editForm.email" disabled></el-input>
         </el-form-item>
         <el-form-item label="Password">
-          <el-input v-model="editForm.password"></el-input>
+          <el-input v-model="editForm.password" disabled></el-input>
         </el-form-item>
         <el-form-item label="Nickname">
           <el-input v-model="editForm.nickname"></el-input>
