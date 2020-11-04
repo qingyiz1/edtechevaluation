@@ -7,7 +7,7 @@
       align-h="center"
       v-if="reportData"
     >
-      <b-col lg="9" col="12">
+      <b-col lg="9" cols="12">
         <b-row class="border-bottom border-top" id="row">
           <b-col cols="3" id="col3">
             <b-img
@@ -226,7 +226,6 @@ export default {
         _rowVariant: 'primary'
       });
       section.question.forEach((question, Qindex) => {
-        console.log(question.selected == 1 ? "■" : "□");
         let tableRow = {
           DetailedReport:
             Sindex + 1 + "." + (Qindex + 1) + " " + question.questionName,
